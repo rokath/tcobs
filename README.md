@@ -77,6 +77,8 @@
   </ol>
 </details>
 
+## [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing)
+
 
 
 <!-- ABOUT THE PROJECT -->
