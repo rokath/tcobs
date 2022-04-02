@@ -17,6 +17,14 @@ type testTable []struct {
 
 var testData = testTable{
 
+	{[]byte{0x02, 0x01, 0xff, 0x01, 0x01, 0x02, 0x02, 0x01, 0xff, 0x01, 0x01, 0x01, 0x01, 0x01},
+		[]byte{0x02, 0x01, 0xff, 0x01, 0x01, 0x02, 0x02, 0x01, 0xff, 0x01, 0xaa, 0x18}},
+	//                                                                     No10, R4o0
+
+	{[]byte{0x01, 0x02, 0x00, 0x00, 0xff, 0x02, 0xff, 0x01, 0x00, 0x00, 0x00, 0x02, 0x01, 0xff, 0x01, 0x01, 0x02, 0x02, 0x01, 0xff, 0x01, 0x01, 0x01, 0x01, 0x01},
+		[]byte{0x01, 0x02, 0x42, 0xff, 0x02, 0xff, 0x01, 0x64, 0x02, 0x01, 0xff, 0x01, 0x01, 0x02, 0x02, 0x01, 0xff, 0x01, 0xaa, 0x18}},
+	//                     Z2o2                          Z3o4                                                              No10  R4o0
+
 	{[]byte{}, []byte{}},
 
 	{[]byte{0}, []byte{0x20}},
@@ -132,18 +140,10 @@ func TestDecoder(t *testing.T) {
 	assert.Equal(t, i[7:], after)
 }
 
-func PrintAsGoCode(x []byte) {
-	fmt.Print("[]byte{")
-	for _, b := range x {
-		fmt.Printf("0x%02x, ", b)
-	}
-	fmt.Println("}")
-}
-
 // TestEncodeDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.
 func TestEncodeDecode12(t *testing.T) { // fails
 	max := 32768
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10000; i++ {
 		length := rand.Intn(max)
 		datBuf := make([]byte, max)
 		encBuf := make([]byte, 2*max) // max 1 + (1+1/32)*len) ~= 1.04 * len
@@ -153,16 +153,15 @@ func TestEncodeDecode12(t *testing.T) { // fails
 			datBuf[i] = b
 		}
 		dat := datBuf[:length]
-		fmt.Println()
 		n := tcobs.Encode(encBuf, dat)
 		enc := encBuf[:n]
 		n, e := tcobs.Decode(decBuf, enc)
 		assert.True(t, e == nil)
 		dec := decBuf[len(decBuf)-n:]
 
-		PrintAsGoCode(dat)
-		PrintAsGoCode(enc)
-		PrintAsGoCode(dec)
+		//PrintAsGoCode(dat)
+		//PrintAsGoCode(enc)
+		//PrintAsGoCode(dec)
 
 		assert.Equal(t, dat, dec)
 	}
@@ -171,7 +170,7 @@ func TestEncodeDecode12(t *testing.T) { // fails
 // TestEncodeDecode1 tests on generated random byte numbers 0xFF, 0x00 and 0x01 for random length 0-32767.
 func TestEncodeDecode1(t *testing.T) { // fails
 	max := 32768
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10000; i++ {
 		length := rand.Intn(max)
 		datBuf := make([]byte, max)
 		encBuf := make([]byte, 2*max) // max 1 + (1+1/32)*len) ~= 1.04 * len
@@ -188,9 +187,9 @@ func TestEncodeDecode1(t *testing.T) { // fails
 		assert.True(t, e == nil)
 		dec := decBuf[len(decBuf)-n:]
 
-		PrintAsGoCode(dat)
-		PrintAsGoCode(enc)
-		PrintAsGoCode(dec)
+		//PrintAsGoCode(dat)
+		//PrintAsGoCode(enc)
+		//PrintAsGoCode(dec)
 
 		assert.Equal(t, dat, dec)
 	}
@@ -199,7 +198,7 @@ func TestEncodeDecode1(t *testing.T) { // fails
 // TestEncodeDecode256 tests on generated random byte numbers for random length 0-32767.
 func TestEncodeDecode256(t *testing.T) {
 	max := 32768
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10000; i++ {
 		length := rand.Intn(max)
 		datBuf := make([]byte, max)
 		encBuf := make([]byte, 2*max) // max 1 + (1+1/32)*len) ~= 1.04 * len
@@ -216,10 +215,19 @@ func TestEncodeDecode256(t *testing.T) {
 		assert.True(t, e == nil)
 		dec := decBuf[len(decBuf)-n:]
 
-		PrintAsGoCode(dat)
-		PrintAsGoCode(enc)
-		PrintAsGoCode(dec)
+		//PrintAsGoCode(dat)
+		//PrintAsGoCode(enc)
+		//PrintAsGoCode(dec)
 
 		assert.Equal(t, dat, dec)
 	}
+}
+
+// PrintAsGoCode prints x for easy copy & paste into test table.
+func PrintAsGoCode(x []byte) {
+	fmt.Print("[]byte{")
+	for _, b := range x {
+		fmt.Printf("0x%02x, ", b)
+	}
+	fmt.Println("}")
 }
