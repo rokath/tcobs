@@ -38,13 +38,13 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 
 * See [./docs/TCOBSSpecification.md](./docs/TCOBSSpecification.md).
 
-<p align="right">(<a href="::top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ##  3. <a name='TCOCScode'></a>TCOCS code
 
 * See [./pkg/tcobs/](./pkg/tcobs/) folder
 
-<p align="right">(<a href="::top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 ##  4. <a name='GettingStarted'></a>Getting Started
@@ -54,19 +54,19 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 * Decoding is currently implemented only in **Go**, but its is no big deal to write a decoder in **C** or an other language of your choice using the documentation and the easy readable **Go** code.
 * Contributions are appreciated.
 
-<p align="right">(<a href="::top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ###  4.1. <a name='Prerequisites'></a>Prerequisites
 
 * Just a **C** compiler and, for testing, a **Go** installation.
 
-<p align="right">(<a href="::top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ###  4.2. <a name='Installation'></a>Installation
 
 * To use TCOBS with **Go** execute `go get github.com/rokath/tcobs`
 
-<p align="right">(<a href="::top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ###  4.3. <a name='Roadmap'></a>Roadmap
@@ -77,7 +77,7 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 
 See the [open issues](https://github.com/rokath/TCOBS/issues) for a full list of proposed features (and known issues).
 
-<p align="right">(<a href="::top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 ##  5. <a name='Contributing'></a>Contributing
@@ -128,7 +128,7 @@ Project Link: [https://github.com/rokath/TCOBS](https://github.com/rokath/TCOBS)
 * [React Icons](https://react-icons.github.io/react-icons/search)
 -->
 
-<p align="right">(<a href="::top">back to top</a>)</p>
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
