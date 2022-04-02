@@ -14,6 +14,7 @@
 #define OUTB( by ) do{ \
     *o++ = by; \
     offset++; \
+    ASSERT( offset <= 31 ); \
     if( offset == 31 ){ \
         *o++ = N | 31; \
         offset = 0; \
@@ -26,6 +27,7 @@
     ASSERT( b_1 == 0  ); \
     ASSERT( (fullCount|reptCount) == 0 ); \
     ASSERT( 1 <= zeroCount && zeroCount <= 3 ); \
+    ASSERT( offset <= 31 ); \
     *o++ = (zeroCount << 5) | offset; \
     offset = 0; \
     zeroCount = 0; \
@@ -37,6 +39,7 @@
     ASSERT( b_1 == 0xFF ); \
     ASSERT( (zeroCount|reptCount) == 0 ); \
     ASSERT( 2 <= fullCount && fullCount <= 4 ); \
+    ASSERT( offset <= 31 ); \
     *o++ = 0x80 | (fullCount << 5) | offset; \
     offset = 0; \
     fullCount = 0; \
@@ -48,6 +51,7 @@
 #define OUT_reptSigil do{ \
     ASSERT( (zeroCount|fullCount) == 0 ); \
     ASSERT( 2 <= reptCount && reptCount <= 4 ); \
+    ASSERT( offset <= 31 ); \
     if( offset > 7 ){ \
         *o++ = N | offset; \
         offset = 0; \
@@ -68,19 +72,16 @@
 #define R3 0x10 //!< sigil byte 0x00010ooo, offset 0-7
 #define R4 0x18 //!< sigil byte 0x00011ooo, offset 0-7
 
-uint8_t offset = 0; // link to next sigil or buffer start looking backwards
-    
 unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input, unsigned length){
     uint8_t* o = output; // write pointer
     uint8_t const * i = input; // read pointer
     uint8_t const * limit = input + length; // read limit
-    
     uint8_t zeroCount = 0; // counts zero bytes 1-3 for Z1-Z3
     uint8_t fullCount = 0; // counts 0xFF bytes 1-4 for FF and F2-F4
     uint8_t reptCount = 0; // counts repeat bytes 1-4 for !00 and R2-R4,
     uint8_t b_1 = 0; // previous byte
     uint8_t b = 0; // current byte
-    offset = 0;
+    uint8_t offset = 0; // link to next sigil or buffer start looking backwards
     // comment syntax:
     //     Sigil bytes chaining is done with offset and not shown explicitly.
     //     All left from comma is already written to o and if, only partially shown.
@@ -145,6 +146,8 @@ unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input,
                 // , r0 aa aa. aa aa aa -> , r4 -- aa.
                 
                 if( b_1 == b  ){ // , rn aa aa. xx ...
+                    ASSERT( b_1 != 0 );
+                    ASSERT( b_1 != 0xFF );
                     reptCount++; // , rm -- aa. xx ... 
                     if( reptCount == 4 ){ // , r4 -- aa. xx ...
                         OUTB( b ) // aa, r4 -- --. xx ...
@@ -274,6 +277,7 @@ unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input,
                     ASSERT( reptCount == 0 )
                     ASSERT( b_1 == 0xFF )
                     if( b == 0xFF ){ // , f1 FF FF.
+                        ASSERT( offset <= 31 );
                         *o++ = F3 | offset; // F3, -- --.
                         return o - output;
                     }
@@ -287,6 +291,7 @@ unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input,
                     ASSERT( reptCount == 0 )
                     ASSERT( b_1 == 0xFF )
                     if( b == 0xFF ){ // , f2 FF FF.
+                        ASSERT( offset <= 31 );
                         *o++ = F4 | offset; // F4, -- --.
                         return o - output;
                     }
@@ -302,6 +307,7 @@ unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input,
                     ASSERT( b_1 == 0xFF )
                     if( b == 0xFF ){ // , f3 FF FF.
                         OUT_fullSigil  // F3, FF FF.
+                        ASSERT( offset <= 31 );
                         *o++ = F2 | offset; // F3 F2, -- --.
                         return o - output; // option: F4 FF, -- --. is also right
                     }
@@ -317,7 +323,8 @@ unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input,
                     ASSERT( b_1 != 0 )
                     ASSERT( b_1 != 0xFF )
                     if( b_1 == b ){ // , r1 aa aa.
-                       OUTB( b_1 ) // aa, r1 -- aa.
+                        OUTB( b_1 ) // aa, r1 -- aa.
+                        ASSERT( offset <= 31 );
                         if( offset > 7 ){ 
                             *o++ = N | offset;
                             offset = 0;
@@ -336,6 +343,7 @@ unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input,
                     ASSERT( b_1 != 0xFF )
                     if( b_1 == b ){ // , r2 aa aa.
                         OUTB( b_1 ) // aa, r2 -- aa.
+                        ASSERT( offset <= 31 );
                         if( offset > 7 ){ 
                             *o++ = N | offset;
                             offset = 0;
@@ -354,6 +362,11 @@ unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input,
                     ASSERT( b_1 != 0xFF )
                     OUTB( b_1 ) // aa, r3 -- yy. 
                     if( b_1 == b ){ // , r3 aa aa.
+                        ASSERT( offset <= 31 );
+                        if( offset > 7 ){ 
+                            *o++ = N | offset;
+                            offset = 0;
+                        }
                         *o++ = R4 | offset; // aa R4, -- --.
                         return o - output;                        
                     }
@@ -376,11 +389,13 @@ unsigned TCOBSEncode( uint8_t* restrict output,  uint8_t const * restrict input,
 
 lastByte: // , -- xx.
     if( b == 0 ){ // , -- 00.
+        ASSERT( offset <= 31 );
         *o++ = Z1 | offset; // Z1, -- --.
         return o - output;
     }else{ // , -- aa.
         *o++ = b; // aa|ff, -- --.
         offset++;
+        ASSERT( offset <= 31 );
         *o++ = N | offset; // aa Nn, -- --.
         return o - output;
     }        
