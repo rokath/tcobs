@@ -1,5 +1,6 @@
 <!-- vscode-markdown-toc -->
 * 1. [ Preface](#Preface)
+	* 1.1. [ Why not in 2 steps?](#Whynotin2steps)
 * 2. [COBS Data Disruption](#COBSDataDisruption)
 * 3. [TCOBS Encoding Principle](#TCOBSEncodingPrinciple)
 	* 3.1. [Assumptions](#Assumptions)
@@ -34,14 +35,14 @@
 * TCOBS uses various chained sigil bytes to achieve an additional lossless compression if possible.
 * Each encoded package ends with an additional sigil byte and has in the worst case 1 additional byte per 32 bytes, but usually the encoded data are smaller than the unencoded because of the compression.
   * TCOBS encoding with an ending sigil byte is inspired also by [rCOBS](https://github.com/Dirbaio/rcobs). It allows a straight forward encoding avoiding lookahead and makes this way the embedded device code simpler.
-* `0` is used as delimiter byte.
+* `0` is used as delimiter byte between the packages containing no `0` anymore. It is up to the user to insert the **optional** delimiters for framing.
 
-###  Why not in 2 steps?
+###  1.1. <a name='Whynotin2steps'></a> Why not in 2 steps?
 
-* Generally it is better to do compression and COBS encoding separate. This is true if size and time do not really matter. 
-* The expected messages are typically in the range of 2 to 300 bytes, sometimes longer, and only a run-length encoding then makes sense for real-time compression.
+* Usually it is better to divide this task and do compression and COBS encoding separately. This is good if size and time do not really matter. 
+* The for TCOBS expected messages are typically in the range of 2 to 300 bytes, but not limited, and a run-length encoding then makes sense for real-time compression.
 * Separating RLE and COBS costs more time (2 processing loops) and does not allow to squeeze out the last byte.
-* With the TCOBS algorithm, in only one processing loop a slightly smaller transfer packet size is expected, combined with more speed.
+* With the TCOBS algorithm, in only one processing loop a smaller transfer packet size is expected, combined with more speed.
 
 ##  2. <a name='COBSDataDisruption'></a>COBS Data Disruption
   
@@ -225,29 +226,31 @@ func TCOBSDecode(p []byte) []byte
 
 * The reserved bytes `00000ooo` with `ooo` = 1-7 are usable in any manner.
 
-###  5.1. <a name='Example:RLEforlongerrowsofequalbytes'></a>Example: RLE for longer rows of equal bytes
+###  5.1. <a name='Example:RLEforlongerrowsofequalbytes'></a>Example: RLE for longer rows of equal bytes (not implemented)
 
-It is possible to improve compression slightly by the following means. This complicates the encoder and makes no sense for [*Trice*](https://github.com/rokath/trice) messages. But if user data with long equal byte rows are expected, it can make sense to implement it, when computing power matters and a standard zipping code is too slow.
+It is possible to improve compression by the following means. This complicates the encoder and makes no sense for messages like [*Trice*](https://github.com/rokath/trice) produces. But if user data with long equal byte rows are expected, it can make sense to implement it, when computing power matters and a standard zipping code is too slow.
 
+<!--
 | unencoded data             | encoded data | comment     |
 | -                          | -            | -           |
 | 7 \* `aa`                  | `aa R4 R2`   | addition    |
 | 13 \* `aa`                 | `aa R4 R4 R4`| addition    |
 | ...                        | ...          | addition    |
+-->
 
-* [ ] The reserved values `00000ooo` with `ooo` = `001`...`111` are usable for further extended compressing.
-* [x] These sigil bytes have implicit the offset 0. They are only allowed as "right" neighbor of an other sigil byte.
-* [ ] R = Repetition sigils repeat the data bytes according to their count value, if no M sigil is right of them.
-* [ ] Several repetition sigils are added. Examle:
-  * [ ] `aa R4 R3` = (1 + 4 + 3) \* `aa` = 8 \* `aa`
-* [ ] M = Multiply sigils multiply their count with the count of the sigil left of them.
-* [ ] A multiplication between M sigils is possible unlimited times.
-* [ ] If left of a M sigil a R, Z or F sigil occurs it is also multiplied, but the multiplication chain ends then.
-* [ ] Examples:
-  * [ ] `Z2 R3 R4 M8` = ( 2 + 3 + (4 \* 8)) \* `00` = 37 \* `00` 
-  * [ ] `aa R4 R2 M3 M3` = ( 1 + 4 + (2 \* 3 \*3 ) \* `aa` = 23 \* `aa`
-  * [ ] `F2 M3 R4 M3 M8 R5` = ( (2 \*3 ) + (4 \* 3 \* 8) + 5 ) ) \* `00` = 107 \* `00`
-* [x] The encoder has the choice how to encode. The decoder follows an clear algorithm. 
+* The reserved values `00000ooo` with `ooo` = `001`...`111` are usable for further extended compressing.
+* These sigil bytes then have implicit the offset 0. They are only allowed as "right" neighbor of an other sigil byte.
+* R = Repetition sigils repeat the data bytes according to their count value, if no M sigil (see below) is right of them.
+* Several repetition sigils are added. Examle:
+  ] `aa R4 R3` = (1 + 4 + 3) \* `aa` = 8 \* `aa`
+* M = Multiply sigils multiply their count with the count of the sigil left of them.
+* A multiplication between M sigils is possible unlimited times.
+* If left of a M sigil a R, Z or F sigil occurs it is also multiplied, but the multiplication chain ends then.
+* Examples:
+  * `Z2 R3 R4 M8` = ( 2 + 3 + (4 \* 8)) \* `00` = 37 \* `00` 
+  * `aa R4 R2 M3 M3` = ( 1 + 4 + (2 \* 3 \*3 ) \* `aa` = 23 \* `aa`
+  * `F2 M3 R4 M3 M8 R5` = ( (2 \*3 ) + (4 \* 3 \* 8) + 5 ) ) \* `00` = 107 \* `00`
+* The encoder has the choice how to encode. The decoder follows an clear algorithm. 
 
 | Sigil|code |Use count until 21 repetitions| Comment                    |
 | -    | -   |  :-:                         | -                          |
@@ -310,8 +313,8 @@ As said, these extended possibilities are currently **not implemented** and show
 | 2022-MAR-28 | 0.7.1 | Multiply sigil byte idea more specified |
 | 2022-MAR-29 | 0.8.0 | Document slightly restructured, some comments added |
 | 2022-APR-01 | 0.8.1 | Document slightly restructured |
-| 2022-MAR-   | 0.8.2 | Preface reworked |
+| 2022-APR-02 | 0.8.2 | Preface reworked |
 
 <!--
-| 2022-MAR-   | 0.6.0 | |
+| 2022-APR-   | 0.9.0 | |
 -->
