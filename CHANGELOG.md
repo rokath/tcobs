@@ -1,4 +1,10 @@
-# Changelog
+# TCOBS Changelog
+
+## v0.1.0
+
+### Added or Changed
+
+* [./README.md](./README.md) improved.
 
 ## v0.0.0
 

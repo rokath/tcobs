@@ -49,19 +49,22 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 <!-- GETTING STARTED -->
 ##  4. <a name='GettingStarted'></a>Getting Started
 
-_todo_
+* Add [./pkg/tcobs/tcobs.c](./pkg/tcobs/tcobs.c) to your embedded project and use function `TCOBSEncode` to convert a buffer into TCOBS format.
+* After transmitting one (or more) TCOBS package(s) transmit a 0-delimiter byte.
+* Decoding is currently implemented only in **Go**, but its is no big deal to write a decoder in **C** or an other language of your choice using the documentation and the easy readable **Go** code.
+* Contributions are appreciated.
 
 <p align="right">(<a href="::top">back to top</a>)</p>
 
 ###  4.1. <a name='Prerequisites'></a>Prerequisites
 
-_todo_
+* Just a **C** compiler and, for testing, a **Go** installation.
 
 <p align="right">(<a href="::top">back to top</a>)</p>
 
 ###  4.2. <a name='Installation'></a>Installation
 
-_todo_
+* To use TCOBS with **Go** execute `go get github.com/rokath/tcobs`
 
 <p align="right">(<a href="::top">back to top</a>)</p>
 
@@ -72,12 +75,9 @@ _todo_
 - [x] Add back to top links
 - [ ] Add Additional Templates w/ Examples
 
-
 See the [open issues](https://github.com/rokath/TCOBS/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="::top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 ##  5. <a name='Contributing'></a>Contributing
