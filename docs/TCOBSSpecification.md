@@ -1,6 +1,5 @@
 <!-- vscode-markdown-toc -->
 * 1. [ Preface](#Preface)
-	* 1.1. [Comment](#Comment)
 * 2. [COBS Data Disruption](#COBSDataDisruption)
 * 3. [TCOBS Encoding Principle](#TCOBSEncodingPrinciple)
 	* 3.1. [Assumptions](#Assumptions)
@@ -28,20 +27,21 @@
 
 ##  1. <a name='Preface'></a> Preface
 
-* TCOBS is a different kind of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) encoding, inspired by [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html) with focus on speed and future improvement.
+* TCOBS was originally developed as an optional [*Trice*](https://github.com/rokath/trice) part and that's the **T** is standing for.
+* TCOBS is stand-alone usable in any project for package framing with data minimizing.
+* Use cases in mind are speed, limited bandwidth and long time data recording in the field.
+* TCOBS is a different kind of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) package framing, inspired by [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html) with focus on speed and minimizing size.
 * TCOBS uses various chained sigil bytes to achieve an additional lossless compression if possible.
 * Each encoded package ends with an additional sigil byte and has in the worst case 1 additional byte per 32 bytes, but usually the encoded data are smaller than the unencoded because of the compression.
   * TCOBS encoding with an ending sigil byte is inspired also by [rCOBS](https://github.com/Dirbaio/rcobs). It allows a straight forward encoding avoiding lookahead and makes this way the embedded device code simpler.
 * `0` is used as delimiter byte.
 
-###  1.1. <a name='Comment'></a>Comment
+###  Why not in 2 steps?
 
-* Generally it is better do this task in two separate steps: compression and COBS encoding. This is true if size and time do not really matter. 
-* The [*Trice*](https://github.com/rokath/trice) messages are typically in the range of 16 bytes and only a run-length encoding (RLE) makes sense for real-time compression.
+* Generally it is better to do compression and COBS encoding separate. This is true if size and time do not really matter. 
+* The expected messages are typically in the range of 2 to 300 bytes, sometimes longer, and only a run-length encoding then makes sense for real-time compression.
 * Separating RLE and COBS costs more time (2 processing loops) and does not allow to squeeze out the last byte.
 * With the TCOBS algorithm, in only one processing loop a slightly smaller transfer packet size is expected, combined with more speed.
-* Use cases are immediate *Trice* mode and long time data recording in the field.
-* The user can choose the *Trice* encoding method during configuration.
 
 ##  2. <a name='COBSDataDisruption'></a>COBS Data Disruption
   
@@ -310,6 +310,8 @@ As said, these extended possibilities are currently **not implemented** and show
 | 2022-MAR-28 | 0.7.1 | Multiply sigil byte idea more specified |
 | 2022-MAR-29 | 0.8.0 | Document slightly restructured, some comments added |
 | 2022-APR-01 | 0.8.1 | Document slightly restructured |
+| 2022-MAR-   | 0.8.2 | Preface reworked |
+
 <!--
 | 2022-MAR-   | 0.6.0 | |
 -->
