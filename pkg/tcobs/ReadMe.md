@@ -15,6 +15,6 @@
 ## TCOBS Testing
 
 - [x] `tcobs_test.go` contains test code. CGO is not supported inside test files but usable through **Go** functions. 
-  - Testing: `go test ./...`
+  - Testing: `go test ./...`: ![../../docs/ref/Test.PNG](../../docs/ref/Test.PNG)
 - The test execution can take several seconds. If your computer is slow you can reduce the loop count in the test functions `TestEncodeDecode*`.
 - When using a Windows PC with some antivirus software, the test execution could be disturbed.
