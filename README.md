@@ -16,6 +16,7 @@
 * 5. [Contributing](#Contributing)
 * 6. [License](#License)
 * 7. [Contact](#Contact)
+	* 7.1. [Acknowledgments](#Acknowledgments)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -35,13 +36,13 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 
 ##  2. <a name='TCOBSSpecification'></a>TCOBS Specification
 
-* See [here](../docs/TCOBSSpecification.md).
+* See [./docs/TCOBSSpecification.md](./docs/TCOBSSpecification.md).
 
 <p align="right">(<a href="::top">back to top</a>)</p>
 
 ##  3. <a name='TCOCScode'></a>TCOCS code
 
-* See [../pkg/tcobs](../pkg/tcobs) folder
+* See [./pkg/tcobs/](./pkg/tcobs/) folder
 
 <p align="right">(<a href="::top">back to top</a>)</p>
 
@@ -110,11 +111,11 @@ Project Link: [https://github.com/rokath/TCOBS](https://github.com/rokath/TCOBS)
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
-###  9. <a name='Acknowledgments'></a>Acknowledgments
+###  7.1. <a name='Acknowledgments'></a>Acknowledgments
 
-* [COBS]
-* [rCOBS]
-* [rlecobs]
+* [COBS](https://pypi.org/project/cobs/)
+* [rCOBS](https://github.com/Dirbaio/rcobs)
+* [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html)
 
 <!--
 * [Choose an Open Source License](https://choosealicense.com)
@@ -160,10 +161,10 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
   <p align="center">
     Common Object Byte Stuffing with optimized Run-Length Encoding 
     <br />
-    <a href="https://github.com/rokath/TCOBS/docs"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/rokath/TCOBS/blob/master/docs/TCOBSSpecification.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/rokath/TCOBS/pkg/tcobs">View Code</a>
+    <a href="https://github.com/rokath/TCOBS/blob/master/pkg/tcobs">View Code</a>
     ·
     <a href="https://github.com/rokath/TCOBS/issues">Report Bug</a>
     ·
