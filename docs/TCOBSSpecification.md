@@ -242,7 +242,7 @@ It is possible to improve compression by the following means. This complicates t
 * These sigil bytes then have implicit the offset 0. They are only allowed as "right" neighbor of an other sigil byte.
 * R = Repetition sigils repeat the data bytes according to their count value, if no M sigil (see below) is right of them.
 * Several repetition sigils are added. Examle:
-  ] `aa R4 R3` = (1 + 4 + 3) \* `aa` = 8 \* `aa`
+  * `aa R4 R3` = (1 + 4 + 3) \* `aa` = 8 \* `aa`
 * M = Multiply sigils multiply their count with the count of the sigil left of them.
 * A multiplication between M sigils is possible unlimited times.
 * If left of a M sigil a R, Z or F sigil occurs it is also multiplied, but the multiplication chain ends then.
