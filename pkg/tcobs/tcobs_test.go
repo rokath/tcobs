@@ -4,9 +4,9 @@ package tcobs_test
 import (
 	"fmt"
 	"math/rand"
+	"tcobs/pkg/tcobs"
 	"testing"
 
-	"github.com/rokath/trice/pkg/tcobs"
 	"github.com/tj/assert"
 )
 
