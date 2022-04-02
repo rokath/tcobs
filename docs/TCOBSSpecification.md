@@ -32,7 +32,7 @@
 * TCOBS uses various chained sigil bytes to achieve an additional lossless compression if possible.
 * Each encoded package ends with an additional sigil byte and has in the worst case 1 additional byte per 32 bytes, but usually the encoded data are smaller than the unencoded because of the compression.
   * TCOBS encoding with an ending sigil byte is inspired also by [rCOBS](https://github.com/Dirbaio/rcobs). It allows a straight forward encoding avoiding lookahead and makes this way the embedded device code simpler.
-* `00` is used as delimiter byte, but this is changeable.
+* `0` is used as delimiter byte.
 
 ###  1.1. <a name='Comment'></a>Comment
 
