@@ -5,7 +5,7 @@
 ## TCOBS Encoding
 
 - [x] `tcobs.h` and `tcobs.c` contain the encoder as **C**-code.
-- [x] The encoding in **Go** is possible with `tcobs.c` using CGO.
+- [x] The encoding in **Go** is possible with `tcobs.go` using `tcobs.c` with CGO.
 
 ## TCOBS Decoding
 
@@ -17,4 +17,8 @@
 - [x] `tcobs_test.go` contains test code. CGO is not supported inside test files but usable through **Go** functions. 
   - Testing: `go test ./...`: ![../../docs/ref/Test.PNG](../../docs/ref/Test.PNG)
 - The test execution can take several seconds. If your computer is slow you can reduce the loop count in the test functions `TestEncodeDecode*`.
-- When using a Windows PC with some antivirus software, the test execution could be disturbed.
+
+## Issues
+
+- When using a Windows PC with some **antivirus** software, the `go vet ./...` and `go test ./...` execution could be disturbed:
+  - Possible message: `cgo: cannot parse $WORK\b080\_cgo_.o as ELF, Mach-O, PE or XCOFF`
