@@ -13,7 +13,7 @@ import (
 	"unsafe"
 )
 
-// Encode encodes i into o and returns number of bytes in o.
+// Encode encodes `i` into `o` and returns number of bytes in `o`.
 // For details see TCOBSSpecification.md.
 // The Encode implementation is done in C because the aimed use case is an embedded device running C.
 // This function is mainly for testing.
@@ -55,8 +55,8 @@ func sigilAndOffset(by uint8) (sigil, offset int) {
 	return
 }
 
-// Decode decodes a TCOBS frame in (without 0-delimiter) to d and returns as n the valid data length from the end in d.
-// ATTENTION: d is filled from the end! decoded:= d[len(d)-n:] is the final result.
+// Decode decodes a TCOBS frame `in` (without 0-delimiter) to `d` and returns as `n` the valid data length from the end in `d`.
+// ATTENTION: d is filled from the end! decoded := d[len(d)-n:] is the final result.
 // In case of an error n is 0. n can be 0 without having an error.
 // Framing with 0-delimiter to be done before is assumed, so no 0-checks performed.
 // For details see TCOBSSpecification.md.
