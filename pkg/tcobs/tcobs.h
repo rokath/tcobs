@@ -1,4 +1,4 @@
-/*! \file TCOBS.h
+/*! \file tcobs.h
 \author thomas.hoehenleitner [at] seerose.net
 *******************************************************************************/
 
