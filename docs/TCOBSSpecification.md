@@ -220,7 +220,7 @@ func TCOBSEncode(p []byte) []byte
 func TCOBSDecode(p []byte) []byte 
 ```
 
-* [../pkg/tcobs/rcobs.go](../pkg/tcobs/tcobs.go)
+* [../pkg/tcobs/tcobs.go](../pkg/tcobs/tcobs.go)
 
 ##  5. <a name='Appendix:ExtendedEncodingPossibilities'></a>Appendix: Extended Encoding Possibilities 
 
