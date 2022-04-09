@@ -109,7 +109,7 @@ func TestEncode(t *testing.T) {
 }
 
 // TestTCOBSDecode checks if encoded testData lead to the matching unencoded testData.
-func TestDecode(t *testing.T) { // fails
+func TestDecode(t *testing.T) {
 	b := make([]byte, 40000)
 	for _, k := range testData {
 		n, e := tcobs.Decode(b, k.enc) // func TCOBSDecode(d, in []byte) (n int, e error) {
