@@ -141,7 +141,7 @@ func TestDecoder(t *testing.T) {
 }
 
 // TestEncodeDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.
-func TestEncodeDecode12(t *testing.T) { // fails
+func TestEncodeDecode12(t *testing.T) {
 	max := 32768
 	for i := 0; i < 10000; i++ {
 		length := rand.Intn(max)
@@ -168,7 +168,7 @@ func TestEncodeDecode12(t *testing.T) { // fails
 }
 
 // TestEncodeDecode1 tests on generated random byte numbers 0xFF, 0x00 and 0x01 for random length 0-32767.
-func TestEncodeDecode1(t *testing.T) { // fails
+func TestEncodeDecode1(t *testing.T) {
 	max := 32768
 	for i := 0; i < 10000; i++ {
 		length := rand.Intn(max)
