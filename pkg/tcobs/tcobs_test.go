@@ -1,4 +1,4 @@
-// Package tcobs_test performs TCOBS whitebox tests.
+// Package tcobs_test contains TCOBS whitebox tests.
 package tcobs_test
 
 import (
