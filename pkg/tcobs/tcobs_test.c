@@ -1,7 +1,7 @@
 
 #include <stdint.h>
 #include <string.h>
-#include "TCOBS.h"
+#include "tcobs.h"
 
 //! ASSERT checks for a true condition, otherwise stop.
 #define ASSERT( condition ) do{ if( !(condition) ){ for(;;){} } }while(0);

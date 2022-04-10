@@ -4,7 +4,7 @@
 package tcobs
 
 // #include <stdint.h>
-// #include "TCOBS.h"
+// #include "tcobs.h"
 // #cgo CFLAGS: -g -Wall -flto
 import "C"
 import (
