@@ -21,9 +21,9 @@ func Encode(o, i []byte) (n int) {
 	if len(i) == 0 {
 		return
 	}
-	in := (*C.uint8_t)(unsafe.Pointer(&i[0]))
-	out := (*C.uint8_t)(unsafe.Pointer(&o[0]))
-	n = int(C.TCOBSEncode(out, in, C.uint(len(i))))
+	in := unsafe.Pointer(&i[0])
+	out := unsafe.Pointer(&o[0])
+	n = int(C.TCOBSEncode(out, in, C.size_t(len(i))))
 	return
 }
 
