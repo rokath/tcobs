@@ -2,6 +2,7 @@
 package tcobs_test
 
 import (
+	"bytes"
 	"fmt"
 	"math/rand"
 	"tcobs/pkg/tcobs"
@@ -155,14 +156,10 @@ func TestEncodeDecode12(t *testing.T) {
 		dat := datBuf[:length]
 		n := tcobs.Encode(encBuf, dat)
 		enc := encBuf[:n]
+		assert.False(t, bytes.Contains(enc, []byte{0}))
 		n, e := tcobs.Decode(decBuf, enc)
 		assert.True(t, e == nil)
 		dec := decBuf[len(decBuf)-n:]
-
-		//PrintAsGoCode(dat)
-		//PrintAsGoCode(enc)
-		//PrintAsGoCode(dec)
-
 		assert.Equal(t, dat, dec)
 	}
 }
@@ -183,14 +180,10 @@ func TestEncodeDecode1(t *testing.T) {
 		fmt.Println()
 		n := tcobs.Encode(encBuf, dat)
 		enc := encBuf[:n]
+		assert.False(t, bytes.Contains(enc, []byte{0}))
 		n, e := tcobs.Decode(decBuf, enc)
 		assert.True(t, e == nil)
 		dec := decBuf[len(decBuf)-n:]
-
-		//PrintAsGoCode(dat)
-		//PrintAsGoCode(enc)
-		//PrintAsGoCode(dec)
-
 		assert.Equal(t, dat, dec)
 	}
 }
@@ -211,14 +204,10 @@ func TestEncodeDecode256(t *testing.T) {
 		fmt.Println()
 		n := tcobs.Encode(encBuf, dat)
 		enc := encBuf[:n]
+		assert.False(t, bytes.Contains(enc, []byte{0}))
 		n, e := tcobs.Decode(decBuf, enc)
 		assert.True(t, e == nil)
 		dec := decBuf[len(decBuf)-n:]
-
-		//PrintAsGoCode(dat)
-		//PrintAsGoCode(enc)
-		//PrintAsGoCode(dec)
-
 		assert.Equal(t, dat, dec)
 	}
 }
