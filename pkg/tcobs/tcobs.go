@@ -13,11 +13,11 @@ import (
 	"unsafe"
 )
 
-// Encode encodes `i` into `o` and returns number of bytes in `o`.
+// CEncode encodes `i` into `o` and returns number of bytes in `o`.
 // For details see TCOBSSpecification.md.
-// The Encode implementation is done in C because the aimed use case is an embedded device running C.
+// The CEncode implementation is done in C because the aimed use case is an embedded device running C.
 // This function is mainly for testing.
-func Encode(o, i []byte) (n int) {
+func CEncode(o, i []byte) (n int) {
 	if len(i) == 0 {
 		return
 	}

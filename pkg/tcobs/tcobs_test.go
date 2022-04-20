@@ -100,10 +100,10 @@ var testData = testTable{
 }
 
 // TestTCOBSEncode checks if decoded testData lead to the matching encoded testData.
-func TestEncode(t *testing.T) {
+func TestCEncode(t *testing.T) {
 	for _, k := range testData {
 		enc := make([]byte, 40000)
-		n := tcobs.Encode(enc, k.dec)
+		n := tcobs.CEncode(enc, k.dec)
 		enc = enc[:n]
 		assert.Equal(t, k.enc, enc)
 	}
@@ -141,8 +141,8 @@ func TestDecoder(t *testing.T) {
 	assert.Equal(t, i[7:], after)
 }
 
-// TestEncodeDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.
-func TestEncodeDecode12(t *testing.T) {
+// TestCEncodeDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.
+func TestCEncodeDecode12(t *testing.T) {
 	max := 32768
 	for i := 0; i < 10000; i++ {
 		length := rand.Intn(max)
@@ -154,7 +154,7 @@ func TestEncodeDecode12(t *testing.T) {
 			datBuf[i] = b
 		}
 		dat := datBuf[:length]
-		n := tcobs.Encode(encBuf, dat)
+		n := tcobs.CEncode(encBuf, dat)
 		enc := encBuf[:n]
 		assert.False(t, bytes.Contains(enc, []byte{0}))
 		n, e := tcobs.Decode(decBuf, enc)
@@ -164,7 +164,7 @@ func TestEncodeDecode12(t *testing.T) {
 	}
 }
 
-// TestEncodeDecode1 tests on generated random byte numbers 0xFF, 0x00 and 0x01 for random length 0-32767.
+// TestCEncodeDecode1 tests on generated random byte numbers 0xFF, 0x00 and 0x01 for random length 0-32767.
 func TestEncodeDecode1(t *testing.T) {
 	max := 32768
 	for i := 0; i < 10000; i++ {
@@ -178,7 +178,7 @@ func TestEncodeDecode1(t *testing.T) {
 		}
 		dat := datBuf[:length]
 		fmt.Println()
-		n := tcobs.Encode(encBuf, dat)
+		n := tcobs.CEncode(encBuf, dat)
 		enc := encBuf[:n]
 		assert.False(t, bytes.Contains(enc, []byte{0}))
 		n, e := tcobs.Decode(decBuf, enc)
@@ -188,8 +188,8 @@ func TestEncodeDecode1(t *testing.T) {
 	}
 }
 
-// TestEncodeDecode256 tests on generated random byte numbers for random length 0-32767.
-func TestEncodeDecode256(t *testing.T) {
+// TestCEncodeDecode256 tests on generated random byte numbers for random length 0-32767.
+func TestCEncodeDecode256(t *testing.T) {
 	max := 32768
 	for i := 0; i < 10000; i++ {
 		length := rand.Intn(max)
@@ -202,7 +202,7 @@ func TestEncodeDecode256(t *testing.T) {
 		}
 		dat := datBuf[:length]
 		fmt.Println()
-		n := tcobs.Encode(encBuf, dat)
+		n := tcobs.CEncode(encBuf, dat)
 		enc := encBuf[:n]
 		assert.False(t, bytes.Contains(enc, []byte{0}))
 		n, e := tcobs.Decode(decBuf, enc)
@@ -212,11 +212,11 @@ func TestEncodeDecode256(t *testing.T) {
 	}
 }
 
-// PrintAsGoCode prints x for easy copy & paste into test table.
-func PrintAsGoCode(x []byte) {
-	fmt.Print("[]byte{")
-	for _, b := range x {
-		fmt.Printf("0x%02x, ", b)
-	}
-	fmt.Println("}")
-}
+//  // PrintAsGoCode prints x for easy copy & paste into test table.
+//  func PrintAsGoCode(x []byte) {
+//  	fmt.Print("[]byte{")
+//  	for _, b := range x {
+//  		fmt.Printf("0x%02x, ", b)
+//  	}
+//  	fmt.Println("}")
+//  }
