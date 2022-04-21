@@ -10,8 +10,59 @@ import "C"
 import (
 	"bytes"
 	"errors"
+	"io"
 	"unsafe"
 )
+
+type decoder struct {
+	r   io.Reader // inner reader
+	buf []byte    // inner buffer
+	pos int       // inner position
+}
+
+// NewDecoder creates a decoder instance and returns its address.
+// r will be used as inner reader and size is used as initial size for the inner buffer.
+func NewDecoder(r io.Reader, size int) *decoder {
+	d := new(decoder)
+	d.r = r
+	d.buf = make([]byte, size)
+	return d
+}
+
+func (p *decoder) Read(buffer []byte) (n int, e error) {
+	cnt, e := p.r.Read(p.buf[p.pos:])
+
+	if e != nil {
+		return
+	}
+	p.pos += cnt
+	tcobs, found := nextPackage(p.buf[:p.pos])
+	if !found {
+		return 0, nil
+	}
+	p.buf = p.buf[len(tcobs)+1:]
+	n, e = Decode(buffer, tcobs)
+	return
+}
+
+// nextPackage returns in cobs the first buf bytes until the 0-delimiter not including it.
+// If no 0-delimiter is found, found is false and len(cobs) is 0.
+// If a 0 delimiter was found (could be the first byte) found is true
+func nextPackage(buf []byte) (cobs []byte, found bool) {
+	// todo
+	return
+}
+
+/*
+// DecodeZ decodes a TCOBS frame `in` (until end or 0-delimiter) to `d` and returns as `n` the valid data length from the end in `d`.
+// ATTENTION: d is filled from the end! decoded := d[len(d)-n:] is the final result.
+// In `m` are returned the processed bytes inside `in`.
+// In case of an error n is 0. n can be 0 without having an error.
+// For details see TCOBSSpecification.md.
+func DecodeZ(d, in []byte) (n, m int, e error) {
+	return
+}
+*/
 
 // CEncode encodes `i` into `o` and returns number of bytes in `o`.
 // For details see TCOBSSpecification.md.
