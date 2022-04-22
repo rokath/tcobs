@@ -23,7 +23,7 @@ func TestSingleRead(t *testing.T) {
 	}
 }
 
-// TestMultiRead concatenates encoded testData with 0-delimiters and expects that Read return all packages decoded in one call.
+// TestMultiRead concatenates encoded testData with 0-delimiters and expects that Read returns all packages decoded in one call.
 func TestMultiRead(t *testing.T) {
 	enc := createEncodedSteam()
 	p := tcobs.NewReader(bytes.NewReader(enc), testBufferSize, true)
