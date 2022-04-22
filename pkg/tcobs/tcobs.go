@@ -10,7 +10,7 @@ import (
 )
 
 // CEncode encodes `i` into `o` and returns number of bytes in `o`.
-// For details see TCOBSSpecification.md.
+// For details see https://github.com/rokath/TCOBS/blob/master/docs/TCOBSSpecification.md.
 // The CEncode implementation is done in C because the aimed use case is an embedded device running C.
 // This function is mainly for testing.
 func CEncode(o, i []byte) (n int) {

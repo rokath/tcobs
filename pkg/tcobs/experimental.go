@@ -25,6 +25,30 @@ func NewReader(r io.Reader, size int, multi bool) (p *decoder) {
 	p.rest = make([]byte, size)
 	p.iBuf = make([]byte, size)
 	p.sBuf = make([]byte, size)
+	p.multi = multi
+	return
+}
+
+type encoder struct {
+	w    io.Writer // inner writer
+	iBuf []byte    // input buffer
+}
+
+// NewWriter creates an encoder instance and returns its address.
+// w will be used as inner writer and size is used as initial size for the inner buffer.
+func NewWriter(w io.Writer, size int) (p *encoder) {
+	p = new(encoder)
+	p.w = w
+	p.iBuf = make([]byte, size)
+	return
+}
+
+// Write encodes buffer and writes the encoded content. It returns the written encoded bytes as n.
+// The n can be (1 + 1/32) times bigger than len(buffer) or smaller what does not mean that not all
+func (p *encoder) Write(buffer []byte) (n int, e error) {
+	n = CEncode(p.iBuf, buffer)
+	enc := append(p.iBuf[:n], 0)
+	n, e = p.w.Write(enc)
 	return
 }
 
@@ -39,7 +63,7 @@ func (p *decoder) Read(buffer []byte) (n int, e error) {
 // singleRead returns one decoded COBS package if available.
 func (p *decoder) singleRead(buffer []byte) (n int, e error) {
 	cnt, e := p.get()
-	if e != nil {
+	if e != nil && e != io.EOF {
 		return
 	}
 	before, after, found := bytes.Cut(p.iBuf[:cnt], []byte{0})
@@ -82,7 +106,7 @@ func (p *decoder) multiRead(buffer []byte) (n int, e error) {
 func (p *decoder) get() (n int, e error) {
 	rCnt := copy(p.iBuf, p.rest[:p.restSize])
 	nCnt, e := p.r.Read(p.iBuf[rCnt:])
-	if e != nil {
+	if e != nil && e != io.EOF {
 		p.restSize = copy(p.rest, p.iBuf[:rCnt+nCnt])
 		return
 	}
