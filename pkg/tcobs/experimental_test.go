@@ -11,7 +11,7 @@ import (
 
 const testBufferSize = 64 * 1024
 
-// TestSingleRead concatenates encoded testData with 0-delimiters and expects that Read return decoded single packages.
+// TestSingleRead concatenates encoded testData with 0-delimiters and expects that Read returns decoded single packages.
 func TestSingleRead(t *testing.T) {
 	enc := createEncodedSteam()
 	p := tcobs.NewReader(bytes.NewReader(enc), testBufferSize, false)
