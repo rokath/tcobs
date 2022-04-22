@@ -71,9 +71,10 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 <!-- ROADMAP -->
 ###  4.3. <a name='Roadmap'></a>Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
+* [x] Add Changelog
+* [x] Add back to top links
+* [ ] Add **Go** Reader interface
+* [ ] Add Additional Templates w/ Examples
 
 See the [open issues](https://github.com/rokath/TCOBS/issues) for a full list of proposed features (and known issues).
 
