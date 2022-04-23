@@ -32,6 +32,7 @@ func NewReader(r io.Reader, size int, multi bool) (p *decoder) {
 type encoder struct {
 	w    io.Writer // inner writer
 	iBuf []byte    // input buffer
+        iCnt int // iCnt is byte count on hold in iBuf
 }
 
 // NewWriter creates an encoder instance and returns its address.
@@ -43,13 +44,35 @@ func NewWriter(w io.Writer, size int) (p *encoder) {
 	return
 }
 
-// Write encodes buffer and writes the encoded content. It returns the written encoded bytes as n.
-// The n can be (1 + 1/32) times bigger than len(buffer) or smaller what does not mean that not all
+// Write encodes buffer and writes the encoded content.
 func (p *encoder) Write(buffer []byte) (n int, e error) {
+        if p.iCnt > 0 {
+             e=errors.New( "inner buffer not empty" )
+        }
 	n = CEncode(p.iBuf, buffer)
 	enc := append(p.iBuf[:n], 0)
-	n, e = p.w.Write(enc)
-	return
+	m, e := p.w.Write(enc)
+        if m == len(enc) { // ok
+             n=len(buffer)
+	     return
+        }
+        if m == 0 {
+             n = 0
+             return 
+        }
+        p.iCnt = copy( p.iBuf, enc[m:])
+        n  = len(buffer)
+        e = errors.New (" need to call Flush" )
+        return
+}
+
+func (*p encoder)Flush() error{
+        n,e:=p.w.Write(p.iBuf[:p.iCnt]
+        if n == p.iCnt {
+              return e
+        }
+        p.iCnt -= n
+        return errors.New ("inner buffer notvempt yet")
 }
 
 func (p *decoder) Read(buffer []byte) (n int, e error) {
