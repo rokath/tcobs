@@ -56,7 +56,7 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-###  4.1. <a name='Prerequisites'></a>Prerequisites
+###  4.1. <a name='Prerequisites'></a>Prer⁷equisites
 
 * Just a **C** compiler and, for testing, a **Go** installation.
 
@@ -73,7 +73,7 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 
 * [x] Add Changelog
 * [x] Add back to top links
-* [ ] Add **Go** Reader interface
+* [ ] Add **Go** Reader & Writer interface
 * [ ] Add Additional Templates w/ Examples
 
 See the [open issues](https://github.com/rokath/TCOBS/issues) for a full list of proposed features (and known issues).
