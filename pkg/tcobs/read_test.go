@@ -19,6 +19,8 @@ func TestSingleRead(t *testing.T) {
 	for _, x := range testData {
 		n, e := p.Read(dec)
 		assert.Nil(t, e)
+		PrintAsGoCode(x.dec)
+		PrintAsGoCode(dec[:n])
 		assert.Equal(t, x.dec, dec[:n])
 	}
 }

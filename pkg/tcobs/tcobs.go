@@ -2,12 +2,14 @@ package tcobs
 
 // #include <stdint.h>
 // #include "tcobs.h"
-// #cgo CFLAGS: -g -Wall -flto
+// #cgo CFLAGS: -g -Wall
 import "C"
 import (
 	"errors"
 	"unsafe"
 )
+
+// todo: -flto switch does not work on some Windows (Antivirus?) setups.
 
 // CEncode encodes `i` into `o` and returns number of bytes in `o`.
 // For details see https://github.com/rokath/TCOBS/blob/master/docs/TCOBSSpecification.md.

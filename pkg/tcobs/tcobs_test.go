@@ -29,6 +29,7 @@ var testData = testTable{
 	{[]byte{}, []byte{}},
 
 	{[]byte{0}, []byte{0x20}},
+
 	{[]byte{0, 0xAA}, []byte{0x20, 0xAA, 0xA1}},
 	{[]byte{0, 0xFF}, []byte{0x20, 0xFF, 0xA1}},
 
@@ -50,6 +51,7 @@ var testData = testTable{
 	{[]byte{0, 0, 0, 0, 0, 0xAA, 0xFF, 0xFF, 0xAA}, []byte{0x60, 0x40, 0xAA, 0xC1, 0xAA, 0xA1}},
 
 	{[]byte{0xAA, 0xAA}, []byte{0xAA, 0xAA, 0xA2}},
+
 	{[]byte{0xAA, 0xBB}, []byte{0xAA, 0xBB, 0xA2}},
 
 	{[]byte{0xFF}, []byte{0xFF, 0xA1}},
@@ -192,11 +194,11 @@ func TestCEncodeDecode256(t *testing.T) {
 	}
 }
 
-//  // PrintAsGoCode prints x for easy copy & paste into test table.
-//  func PrintAsGoCode(x []byte) {
-//  	fmt.Print("[]byte{")
-//  	for _, b := range x {
-//  		fmt.Printf("0x%02x, ", b)
-//  	}
-//  	fmt.Println("}")
-//  }
+// PrintAsGoCode prints x for easy copy & paste into test table.
+func PrintAsGoCode(x []byte) {
+	fmt.Print("[]byte{")
+	for _, b := range x {
+		fmt.Printf("0x%02x, ", b)
+	}
+	fmt.Println("}")
+}

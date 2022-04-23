@@ -13,7 +13,7 @@
 //! A 0-delimiter is NOT added as last byte. Returns the number of bytes written to "output". 
 //! Buffer overlapping is allowed, when input lays inside output with a sufficient offset.
 //! The offset should be > 1+(length>>5) because in the worst case for each 32 bytes an additional sigil byte is inserted.
-//! The provided output buffer size should be > length + > 1+(length>>5).
+//! The provided output buffer size should be > length + > 1+(length>>5). This is a responsibility of the caller.
 //! Remove the "restrict" qualifiers if compiling with a pre-C99 C dialect.
 size_t TCOBSEncode( void * restrict output, const void * restrict input, size_t length);
 
