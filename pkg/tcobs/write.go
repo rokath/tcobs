@@ -13,9 +13,9 @@ type encoder struct {
 	iCnt int       // iCnt is byte count on hold in iBuf
 }
 
-// NewWriter creates an encoder instance and returns its address.
+// NewEncoder creates an encoder instance and returns its address.
 // w will be used as inner writer and size is used as initial size for the inner buffer.
-func NewWriter(w io.Writer, size int) (p *encoder) {
+func NewEncoder(w io.Writer, size int) (p *encoder) {
 	p = new(encoder)
 	p.w = w
 	p.iBuf = make([]byte, size)

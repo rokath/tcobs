@@ -14,12 +14,12 @@ type decoder struct {
 	multi bool      // Read behavior selection
 }
 
-// NewReader creates a decoder instance and returns its address.
+// NewDecoder creates a decoder instance and returns its address.
 // r will be used as inner reader,
 // size is used as initial size for the inner buffers and
 // multi selects Read behavior.
 // When multi is false, max one decoded TCOBS package is returned by Read.
-func NewReader(r io.Reader, size int, multi bool) (p *decoder) {
+func NewDecoder(r io.Reader, size int, multi bool) (p *decoder) {
 	p = new(decoder)
 	p.r = r
 	p.iBuf = make([]byte, size)
