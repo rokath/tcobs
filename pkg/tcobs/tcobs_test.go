@@ -103,12 +103,3 @@ func TestCEncodeDecode256(t *testing.T) {
 		assert.Equal(t, dat, dec)
 	}
 }
-
-// PrintAsGoCode prints x for easy copy & paste into test table.
-func PrintAsGoCode(x []byte) {
-	fmt.Print("[]byte{")
-	for _, b := range x {
-		fmt.Printf("0x%02x, ", b)
-	}
-	fmt.Println("}")
-}

@@ -12,7 +12,10 @@
 * 4. [Getting Started](#GettingStarted)
 	* 4.1. [Prerequisites](#Prerequisites)
 	* 4.2. [Installation](#Installation)
-	* 4.3. [Roadmap](#Roadmap)
+	* 4.3. [Usage in Go](#UsageinGo)
+		* 4.3.1. [Decoding](#Decoding)
+		* 4.3.2. [Encoding](#Encoding)
+	* 4.4. [Roadmap](#Roadmap)
 * 5. [Contributing](#Contributing)
 * 6. [License](#License)
 * 7. [Contact](#Contact)
@@ -56,7 +59,7 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-###  4.1. <a name='Prerequisites'></a>Prer⁷equisites
+###  4.1. <a name='Prerequisites'></a>Prerequisites
 
 * Just a **C** compiler and, for testing, a **Go** installation.
 
@@ -68,12 +71,26 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+###  4.3. <a name='UsageinGo'></a>Usage in Go
+
+* For example usage check the tests.
+
+####  4.3.1. <a name='Decoding'></a>Decoding
+
+* The function `tcobs.Decode` is usable standalone.
+* Also it is possible to create a Decoder instance and use the `Read` method.
+
+####  4.3.2. <a name='Encoding'></a>Encoding
+
+* The function `tcobs.CEncode` is usable standalone.
+* Also it is possible to create an Encoder instance and use the `Write` method.
+
 <!-- ROADMAP -->
-###  4.3. <a name='Roadmap'></a>Roadmap
+###  4.4. <a name='Roadmap'></a>Roadmap
 
 * [x] Add Changelog
 * [x] Add back to top links
-* [ ] Add **Go** Reader & Writer interface
+* [x] Add **Go** Reader & Writer interface
 * [ ] Add Additional Templates w/ Examples
 
 See the [open issues](https://github.com/rokath/TCOBS/issues) for a full list of proposed features (and known issues).
