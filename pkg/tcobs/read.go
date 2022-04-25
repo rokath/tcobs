@@ -36,7 +36,7 @@ func (p *decoder) Read(buffer []byte) (n int, e error) {
 	}
 }
 
-// singleRead returns one decoded COBS package if available.
+// singleRead returns one decoded TCOBS package if available.
 func (p *decoder) singleRead(buffer []byte) (n int, e error) {
 	e = p.get()
 	if e != nil && e != io.EOF {
@@ -53,7 +53,7 @@ func (p *decoder) singleRead(buffer []byte) (n int, e error) {
 	return
 }
 
-// multiRead returns all decoded COBS package available as long no error occurs.
+// multiRead returns all decoded TCOBS package available as long no error occurs.
 func (p *decoder) multiRead(buffer []byte) (n int, e error) {
 	e = p.get()
 	if e != nil && e != io.EOF {
