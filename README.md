@@ -8,7 +8,7 @@
 <!-- vscode-markdown-toc -->
 * 1. [About The project](#AboutTheproject)
 * 2. [TCOBS Specification](#TCOBSSpecification)
-* 3. [TCOCS code](#TCOCScode)
+* 3. [TCOBS code](#TCOBScode)
 * 4. [Getting Started](#GettingStarted)
 	* 4.1. [Prerequisites](#Prerequisites)
 	* 4.2. [Installation](#Installation)
@@ -43,7 +43,7 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-##  3. <a name='TCOCScode'></a>TCOCS code
+##  3. <a name='TCOBScode'></a>TCOBS code
 
 * See [./pkg/tcobs/](./pkg/tcobs/) folder
 
