@@ -66,6 +66,7 @@ func Decode(d, in []byte) (n int, e error) {
 		next := in[len(in)-1] // get next sigil byte (starting from the end)
 		sigil, offset := sigilAndOffset(next)
 		if offset+1 > len(in) {
+                        n = 0
 			e = errors.New("sigil chain mismatch")
 			return
 		}
