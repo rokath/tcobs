@@ -102,6 +102,7 @@ func createEncodedStream() []byte {
 	return enc
 }
 
+// createDecodedStream concatenates all trestData dec sequences with 0-delimiters into one byte slice.
 func createDecodedStream() []byte {
 	dec := make([]byte, 0, testBufferSize)
 	for _, k := range testData {
