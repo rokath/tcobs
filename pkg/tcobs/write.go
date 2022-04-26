@@ -5,8 +5,6 @@ import (
 	"io"
 )
 
-// untested!!!
-
 type encoder struct {
 	w    io.Writer // inner writer
 	iBuf []byte    // input buffer
