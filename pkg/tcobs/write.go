@@ -20,20 +20,15 @@ func NewEncoder(w io.Writer, size int) (p *encoder) {
 	return
 }
 
-// Write encodes buffer and writes the encoded content. Return cases:
-// 0, errors.New("inner buffer not empty (needs Flush)"): nothing done
-// len(buffer), nil: all done
-// 0<n && n<len(buffer), nil: partially done (inner buffer size too small)
-// 0, !nil: inner reader issue, nothing done
-// 0<n && n<=len(buffer), errors.New("inner buffer not empty (needs Flush)"): partially or full done, needs Flush
+// Write encodes buffer and writes the encoded content.
 func (p *encoder) Write(buffer []byte) (n int, e error) {
 	if p.iCnt > 0 {
 		e = errors.New("inner buffer not empty (needs Flush)")
 		return
 	}
 	n = len(buffer)
-	for max := n + 1 + ((n + 1) >> 5); max > len(p.iBuf); { // worst case: no compression possible
-		n >>= 1
+	for max := n + 1 + ((n + 1) >> 5); max > len(p.iBuf); { // worst case
+		n >>= 1                                         // reduce amount
 	}
 	siz := CEncode(p.iBuf, buffer[:n])
 	enc := append(p.iBuf[:siz], 0) // 0-delimiter
