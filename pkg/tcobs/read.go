@@ -2,6 +2,7 @@ package tcobs
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 )
 
@@ -54,29 +55,35 @@ func (p *decoder) singleRead(buffer []byte) (n int, e error) {
 }
 
 // multiRead returns all decoded TCOBS package available as long no error occurs.
+// The decoded packages are placed into buffer, one after the other.
+// n contains the total length and e is nil if all eas fine.
 func (p *decoder) multiRead(buffer []byte) (n int, e error) {
 	e = p.get()
 	if e != nil && e != io.EOF {
 		return
 	}
 	input := bytes.Split(p.iBuf[:p.iCnt], []byte{0})
-	for _, x := range input {
+	var err error
+	for i, x := range input {
 		var cnt int
 		tmp := make([]byte, 4*len(x))
 		cnt, e = Decode(tmp, x)
-		// todo: ERROR handling
-		//  if e != nil {
-		//  	if i == len(input) { // last element is maybe an incomplete package
-		//  	p.rest = x // keep rest for the next Read
-		//  	return
-		//  	}else{ // probably a merge of 3 packets (data disruption)
-		//  		fmt.Printf( "%w, data disruption?\n", e)
-		//  	}
-		//  }
+		if e != nil {
+			if i == len(input)-1 { // last element is maybe an incomplete package
+				p.iBuf[0] = 0                    // write a starting 0
+				p.iCnt = 1 + copy(p.iBuf[1:], x) // keep rest for the next Read
+				return n, nil
+			} else { // probably a merge of 2 packets (data disruption)
+				fmt.Println(e, "- data disruption? Ignoring data:", x)
+				err = e // keep error
+				continue
+			}
+		}
 		decoded := tmp[len(tmp)-cnt:]
 		n += copy(buffer[n:], decoded)
 	}
 	p.iCnt = 0
+	e = err
 	return
 }
 
