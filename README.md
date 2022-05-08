@@ -41,12 +41,11 @@
 * TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) combined with real-time [RLE](https://en.wikipedia.org/wiki/Run-length_encoding) data compression especially for short messages containing integers.
 * The **consistent overhead** with TCOBS is 1 byte for each starting 31 bytes in the worst case, when no compression is possible. (*Example: A 1000 bytes buffer can be encoded with max 33 additional bytes.*) This is more compared to the original COBS with +1 byte for each starting 254 bytes but if the data contain integer numbers, as communication packets often do, the encoded data will be statistically shorter with TCOBS compared to the legacy COBS.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ##  2. <a name='TCOBSSpecification'></a>TCOBS Specification
 
 * See [./docs/TCOBSSpecification.md](./docs/TCOBSSpecification.md).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -82,19 +81,13 @@
   * Encoder and Decoder in other languages are easy to implement using the TCOBS specification and the given **C**- and **Go**-code.
 * Contributions are appreciated.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 ###  4.1. <a name='Prerequisites'></a>Prerequisites
 
 * Just a **C** compiler and, for testing, a **Go** installation.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 ###  4.2. <a name='Installation'></a>Installation
 
 * To use TCOBS with **Go** execute `go get github.com/rokath/tcobs`
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ###  4.3. <a name='UsageinGo'></a>Usage in Go
 
@@ -110,11 +103,7 @@
 * The function `tcobs.CEncode` is usable standalone.
 * Also it is possible to create an Encoder instance and use the `Write` method.
 
-
-
-
-
-
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ##  5. <a name='Roadmap'></a>Roadmap
@@ -156,8 +145,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle) - --> th@seerose.net
 Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
 ###  8.1. <a name='Acknowledgments'></a>Acknowledgments
