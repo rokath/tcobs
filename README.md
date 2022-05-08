@@ -15,11 +15,15 @@
 	* 4.3. [Usage in Go](#UsageinGo)
 		* 4.3.1. [Decoding](#Decoding)
 		* 4.3.2. [Encoding](#Encoding)
-	* 4.4. [Roadmap](#Roadmap)
-* 5. [Contributing](#Contributing)
-* 6. [License](#License)
-* 7. [Contact](#Contact)
-	* 7.1. [Acknowledgments](#Acknowledgments)
+* 5. [TCOBS Framing Encoder and Decoder](#TCOBSFramingEncoderandDecoder)
+	* 5.1. [TCOBS Encoding](#TCOBSEncoding)
+	* 5.2. [TCOBS Decoding](#TCOBSDecoding)
+	* 5.3. [TCOBS Testing](#TCOBSTesting)
+* 6. [Roadmap](#Roadmap)
+* 7. [Contributing](#Contributing)
+* 8. [License](#License)
+* 9. [Contact](#Contact)
+	* 9.1. [Acknowledgments](#Acknowledgments)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -85,8 +89,28 @@ TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_B
 * The function `tcobs.CEncode` is usable standalone.
 * Also it is possible to create an Encoder instance and use the `Write` method.
 
+##  5. <a name='TCOBSFramingEncoderandDecoder'></a>TCOBS Framing Encoder and Decoder
+
+- [ ] Encoder and Decoder in other languages are easy to implement using the TCOBS specification and the given **C**- and **Go**-code.
+
+###  5.1. <a name='TCOBSEncoding'></a>TCOBS Encoding
+
+- [x] `tcobs.h` and `tcobs.c` contain the encoder as **C**-code.
+- [x] The encoding in **Go** is possible with `tcobs.go` using `tcobs.c` with CGO.
+
+###  5.2. <a name='TCOBSDecoding'></a>TCOBS Decoding
+
+- [x] `tcobs.go` contains the decoder as **Go**-code.
+- [ ] The decoding in **C** is not implemented (yet).
+
+###  5.3. <a name='TCOBSTesting'></a>TCOBS Testing
+
+- [x] `tcobs_test.go` contains test code. CGO is not supported inside test files but usable through **Go** functions. 
+  - Testing: `go test ./...`: ![../../docs/ref/Test.PNG](../../docs/ref/Test.PNG)
+- The test execution can take several seconds. If your computer is slow you can reduce the loop count in the test functions `TestEncodeDecode*`.
+
 <!-- ROADMAP -->
-###  4.4. <a name='Roadmap'></a>Roadmap
+##  6. <a name='Roadmap'></a>Roadmap
 
 * [x] Add Changelog
 * [x] Add back to top links
@@ -98,7 +122,7 @@ See the [open issues](https://github.com/rokath/TCOBS/issues) for a full list of
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
-##  5. <a name='Contributing'></a>Contributing
+##  7. <a name='Contributing'></a>Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -114,14 +138,14 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
-##  6. <a name='License'></a>License
+##  8. <a name='License'></a>License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
-##  7. <a name='Contact'></a>Contact
+##  9. <a name='Contact'></a>Contact
 
 Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle) - --> th@seerose.net
 Project Link: [https://github.com/rokath/TCOBS](https://github.com/rokath/TCOBS)
@@ -129,7 +153,7 @@ Project Link: [https://github.com/rokath/TCOBS](https://github.com/rokath/TCOBS)
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
-###  7.1. <a name='Acknowledgments'></a>Acknowledgments
+###  9.1. <a name='Acknowledgments'></a>Acknowledgments
 
 * [COBS](https://pypi.org/project/cobs/)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
