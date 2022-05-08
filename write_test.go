@@ -2,9 +2,9 @@ package tcobs_test
 
 import (
 	"bytes"
-	"tcobs/pkg/tcobs"
 	"testing"
 
+	"github.com/rokath/tcobs"
 	"github.com/stretchr/testify/assert"
 )
 

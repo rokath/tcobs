@@ -5,9 +5,9 @@ import (
 	"bytes"
 	"fmt"
 	"math/rand"
-	"tcobs/pkg/tcobs"
 	"testing"
 
+	"github.com/rokath/tcobs"
 	"github.com/tj/assert"
 )
 

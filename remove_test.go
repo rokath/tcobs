@@ -1,9 +1,9 @@
 package tcobs_test
 
 import (
-	"tcobs/pkg/tcobs"
 	"testing"
 
+	"github.com/rokath/tcobs"
 	"github.com/tj/assert"
 )
 
