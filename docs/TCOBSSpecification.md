@@ -33,7 +33,7 @@
 * Use cases in mind are speed, limited bandwidth and long time data recording in the field.
 * TCOBS is a different kind of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) package framing, inspired by [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html) with focus on speed and minimizing size.
 * TCOBS uses various chained sigil bytes to achieve an additional lossless compression if possible.
-* Each encoded package ends with an additional sigil byte and has in the worst case 1 additional byte per 32 bytes, but usually the encoded data are smaller than the unencoded because of the compression.
+* Each encoded package ends with an additional sigil byte and has in the worst case 1 additional byte per 31 bytes, but usually the encoded data are smaller than the unencoded because of the compression.
   * TCOBS encoding is inspired also by [rCOBS](https://github.com/Dirbaio/rcobs) (the ending sigil byte). It allows a straight forward encoding avoiding lookahead and makes this way the embedded device code simpler.
 * `0` is used as delimiter byte between the packages containing no `0` anymore. It is up to the user to insert the **optional** delimiters for framing.
 
@@ -314,6 +314,7 @@ As said, these extended possibilities are currently **not implemented** and show
 | 2022-MAR-29 | 0.8.0 | Document slightly restructured, some comments added |
 | 2022-APR-01 | 0.8.1 | Document slightly restructured |
 | 2022-APR-02 | 0.8.2 | Preface reworked |
+| 2022-MAY-08 | 0.8.3 | Correction: in the worst case 1 additional byte per ~32~ 31 bytes |
 
 <!--
 | 2022-APR-   | 0.9.0 | |
