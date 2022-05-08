@@ -113,7 +113,7 @@
 * [x] Add **Go** Reader & Writer interface
 * [ ] Add Additional Templates w/ Examples
 
-See the [open issues](https://github.com/rokath/TCOBS/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -188,7 +188,7 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/rokath/TCOBS">
+  <a href="https://github.com/rokath/tcobs">
     <img src="docs/ref/COBSDataDisruption.svg" alt="Logo" width="800" height="80">
   </a>
 
@@ -197,13 +197,13 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
   <p align="center">
     Common Object Byte Stuffing with optimized Run-Length Encoding 
     <br />
-    <a href="https://github.com/rokath/TCOBS/blob/master/docs/TCOBSSpecification.md"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/rokath/tcobs/blob/master/docs/TCOBSSpecification.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/rokath/TCOBS/blob/master/pkg/tcobs">View Code</a>
+    <a href="https://github.com/rokath/tcobs/blob/master">View Code</a>
     ·
-    <a href="https://github.com/rokath/TCOBS/issues">Report Bug</a>
+    <a href="https://github.com/rokath/tcobs/issues">Report Bug</a>
     ·
-    <a href="https://github.com/rokath/TCOBS/issues">Request Feature</a>
+    <a href="https://github.com/rokath/tcobs/issues">Request Feature</a>
   </p>
 </div>
