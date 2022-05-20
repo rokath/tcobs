@@ -33,17 +33,20 @@
   </ol>
 </details>
 
+<!--
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rokath/tcobs/goreleaser)
-![GitHub issues](https://img.shields.io/github/issues/rokath/tcobs)
 ![GitHub All Releases](https://img.shields.io/github/downloads/rokath/tcobs/total)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rokath/tcobs)
-![GitHub watchers](https://img.shields.io/github/watchers/rokath/tcobs?label=watch)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/rokath/tcobs)
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/rokath/tcobs/latest)
-[![Go Report Card](https://goreportcard.com/badge/github.com/rokath/trice)](https://goreportcard.com/report/github.com/rokath/tcobs)
+-->
+
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rokath/tcobs)
+![GitHub watchers](https://img.shields.io/github/watchers/rokath/tcobs?label=watch)
+[![Go Report Card](https://goreportcard.com/badge/github.com/rokath/tcobs)](https://goreportcard.com/report/github.com/rokath/tcobs)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![test](https://github.com/shogo82148/actions-goveralls/workflows/test/badge.svg?branch=main)](https://coveralls.io/github/rokath/tcoba)
-[![Coverage Status](https://coveralls.io/repos/github/rokath/trice/badge.svg?branch=master)](https://coveralls.io/github/rokath/tcobs?branch=master)
+[![test](https://github.com/shogo82148/actions-goveralls/workflows/test/badge.svg?branch=main)](https://coveralls.io/github/rokath/tcobs)
+[![Coverage Status](https://coveralls.io/repos/github/rokath/tcobs/badge.svg?branch=master)](https://coveralls.io/github/rokath/tcobs?branch=master)
+![GitHub issues](https://img.shields.io/github/issues/rokath/tcobs)
 
 
 <!-- ABOUT THE PROJECT -->
