@@ -54,7 +54,7 @@
   * An additional CRC, like a simple XOR inside could be added but would not really help.
 * The receiver calls continuously a `Read()` function. The received buffer can contain 0-delimited COBS packages and the receiver assumes them all to be valid because there is no known significant time delay between package start and end.
 * If a package start was received and the next package end reception is more than ~100ms away, a data disruption is likely and the receiver should ignore these data.
-  * To minimise data loss, each *Trice* should get COBS encoded separately.
+  * To minimise data loss, each message should get COBS encoded separately.
 * Of course, when the receiver starts, the first buffer can contain broken COBS data, but we have to live with that on a PC. Anyway there is a reasonable likelihood that the COBS decoder will detect a data inconsistency.
 
 ##  3. <a name='TCOBSEncodingPrinciple'></a>TCOBS Encoding Principle
@@ -315,7 +315,7 @@ As said, these extended possibilities are currently **not implemented** and show
 | 2022-APR-01 | 0.8.1 | Document slightly restructured |
 | 2022-APR-02 | 0.8.2 | Preface reworked |
 | 2022-MAY-08 | 0.8.3 | Correction: in the worst case 1 additional byte per ~32~ 31 bytes |
-
+| 2022-MAY-22 | 0.8.4 | Correction: *Trice* \-> message in chapter 2 | 
 <!--
 | 2022-APR-   | 0.9.0 | |
 -->
