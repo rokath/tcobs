@@ -308,7 +308,7 @@ F4 is maybe not use that often and could be used in a completely different way. 
 | 2022-MAR-20 | 0.4.2 | Sigil corrected. Now the offset is the byte count between two sigil bytes.|
 | 2022-MAR-21 | 0.5.0 | R5 removed |
 | 2022-MAR-22 | 0.5.1 | Simple encoding example table extended. |
-| 2022-MAR-23 | 0.5.2 | Sigil bytes offset correction, [tcobs.h](../pkg/tcobs/tcobs.h) Link corrected. [tcobs.c](../pkg/tcobs/tcobs.c) Link added|
+| 2022-MAR-23 | 0.5.2 | Sigil bytes offset correction, [tcobs.h](../tcobs.h) Link corrected. [tcobs.c](../tcobs.c) Link added|
 | 2022-MAR-24 | 0.6.0 | Comment added to preface after talk with Sergii |
 | 2022-MAR-24 | 0.6.1 | Smaller corrections |
 | 2022-MAR-28 | 0.7.0 | Multiply sigil byte idea added |
