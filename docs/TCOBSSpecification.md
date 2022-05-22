@@ -292,6 +292,8 @@ As said, these extended possibilities are currently **not implemented** and show
 
 ###  5.2. <a name='OtherExample:Anyproposal'></a>Other Example: Any proposal?
 
+F4 is maybe not use that often and could be used in a completely different way. But this would lead to a different method.
+
 ##  6. <a name='Changelog'></a>Changelog
 
 | Date | Version | Comment |
@@ -315,7 +317,7 @@ As said, these extended possibilities are currently **not implemented** and show
 | 2022-APR-01 | 0.8.1 | Document slightly restructured |
 | 2022-APR-02 | 0.8.2 | Preface reworked |
 | 2022-MAY-08 | 0.8.3 | Correction: in the worst case 1 additional byte per ~32~ 31 bytes |
-| 2022-MAY-22 | 0.8.4 | Correction: *Trice* \-> message in chapter 2 and 3 | 
+| 2022-MAY-22 | 0.8.4 | F4 remark added. Correction: *Trice* \-> message in chapter 2 and 3. | 
 <!--
 | 2022-APR-   | 0.9.0 | |
 -->
