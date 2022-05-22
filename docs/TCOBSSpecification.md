@@ -61,8 +61,8 @@
 
 ###  3.1. <a name='Assumptions'></a>Assumptions
 
-* Most [*Trices*](https://github.com/rokath/trice) consist of 16 or less bytes.
-* Some *Trices* or user data are longer.
+* Most messages like [*Trices*](https://github.com/rokath/trice) consist of 16 or less bytes.
+* Some messages or user data are longer.
 * Several zeros in a row are a common pattern (example:`00 00 00 05`).
 * Several 0xFF in a row are a common pattern too (example -1 as 32 bit value).
 * Maybe some other bytes appear also in a row.
@@ -315,7 +315,7 @@ As said, these extended possibilities are currently **not implemented** and show
 | 2022-APR-01 | 0.8.1 | Document slightly restructured |
 | 2022-APR-02 | 0.8.2 | Preface reworked |
 | 2022-MAY-08 | 0.8.3 | Correction: in the worst case 1 additional byte per ~32~ 31 bytes |
-| 2022-MAY-22 | 0.8.4 | Correction: *Trice* \-> message in chapter 2 | 
+| 2022-MAY-22 | 0.8.4 | Correction: *Trice* \-> message in chapter 2 and 3 | 
 <!--
 | 2022-APR-   | 0.9.0 | |
 -->
