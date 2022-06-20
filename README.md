@@ -127,6 +127,7 @@
 * [x] Add Changelog
 * [x] Add back to top links
 * [x] Add **Go** Reader & Writer interface
+* [ ] Add decode function in **C**
 * [ ] Add Additional Templates w/ Examples
 
 See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of proposed features (and known issues).
