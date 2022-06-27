@@ -24,25 +24,26 @@
 
 ## Encoding principle
 
-* Any sequence of equal bytes is converted into a quaternary number following these rules:
-  * A 00-byte sequence is converted into Zn sigil bytes representing a cipher counted quaternary number plus 1. Examples:
-    * 00 -> 0T0 = S0 = Z0
-    * 00 00 00 00 00 00 = 6 times 00 = 0T02 = S0S2 = Z0Z2
-    * 20 times 00 = 0Q33 + 1 = 19 + 1 = S3S3 + 1 = Z3Z3
-    * 21 times 00 = 0Q000 + 1 = 20 + 1 = Z0Z0Z0
-  * A FF-byte sequence is converted into Fn sigil bytes representing a cipher counted quaternary number plus 1. Examples:
-    * FF -> 0Q0 + 1 = F0 = FF (FF represents F0)
-    * FF FF FF FF FF FF = 0Q02 + 1 = 5 + 1 = S0S2 + 1 = F0F2 = FFF2 (FF represents F0)
-    * 20 times FF = 0Q33 + 1 = 19 + 1 = S3S3 + 1 = F3F3
-    * 21 times FF = 0Q000 + 1 = 20 + 1 = S0S0S0 + 1 = F0F0F0
-  * A AA-byte sequence is converted into AA plus Rn sigil bytes representing a cipher counted quaternary number. Examples:
+* Any sequence of equal bytes is converted into a TCCQN following these rules:
+  * A 00-byte sequence is converted into a Zn sigil bytes sequence representing a TCCQN. Examples:
+    * 00 = 1 times 00 = 0T0 = S0 = Z0
+    * 00 00 00 00 00 00 = 6 times 00 = 0T01 = S0S1 = Z0Z1
+    * 20 times 00 = 0T33 = S3S3 = Z3Z3
+    * 21 times 00 = 0T000 = Z0Z0Z0
+  * A FF-byte sequence is converted into Fn sigil bytes representing a TCCQN. Examples:
+    * FF -> 0T0 = F0 = FF (FF represents F0)
+    * FF FF FF FF FF FF = 0T01 = S0S1 = F0F1 = FFF1 (FF represents F0)
+    * 20 times FF = 0T33 = S3S3 = F3F3
+    * 21 times FF = 0T000 = S0S0S0 = F0F0F0 = FFFFFF
+  * A AA-byte sequence is converted into AA plus Rn sigil bytes representing a TCCQN. Examples:
     * AA -> AA
-    * AA AA = AA + 1 times AA = AA 0Q0 = AA S0 = AA R0 = AAAA (The first AA tells AA and the 2nd AA represents R0)
-    * AA AA AA AA AA AA = AA + 5 times AA = AA 0Q01 = AAR0R1 = AAAAR1 (The first AA tells AA and the 2nd AA represents R0)
-    * 19 times AA = AA + 18 times AA = AA 0Q32 = AAR3R2
-    * 20 times AA = AA + 19 times AA = AA 0Q33 = AAR3R3
-    * 21 times AA = AA + 20 times AA = AA 0Q000 = AAR0R0R0 = AAAAAAAA (The first AA tells AA and the other AA represent R0)
-* Any cipher counted quaternary number 
+    * AA AA = AA + 1 times AA = AA 0T0 = AA S0 = AA R0 = AAAA (The first AA tells AA and the 2nd AA represents R0)
+    * AA AA AA AA AA AA = AA + 5 times AA = AA 0T00 = AAR0R0 = AAAAAA (The first AA tells AA and the next AA represent R0)
+    * 20 times AA = AA + 19 times AA = AA 0T32 = AAR3R2
+    * 21 times AA = AA + 20 times AA = AA 0T33 = AAR3R3
+    * 22 times AA = AA + 21 times AA = AA 0T000 = AAR0R0R0 = AAAAAAAA (The first AA tells AA and the other AA represent R0)
+* Any number >=1 can be coded as TCCQN
+* The encoding is doable without regard of the chaining, which is done secondary.
 
 
 ##  1.1. <a name='Symbols'></a>Symbols
@@ -61,11 +62,16 @@
 |    6      | `110ooooo` | Full   sigil    | **F1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
 |    7      | `1111oooo` | Full   sigil    | **F2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
 |    7      | `1110oooo` | Full   sigil    | **F3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0xFF count |
+|           | `11111111` | Full   sigil    | **F0**|                  |             |       | TCCQN cipher 0 |
+|           |not FF or 00| Repeat sigil    | **R0**|                  |             |       | TCCQN cipher 0 |
 
 ### Symbols assumptions
 
 * N, Z0, Z1, F1, R1 are a bit more often in use, therefore they can carry link offsets 0-31
 * Z2, Z3, F2, F3, R2, R3 are a bit less often in use, therefore they can carry link offsets 0-15(14)
+* F0 and R0 have no offset bits. Therefore their offset value is 0.
+* A sigil byte sequence concatenates its offset bits to one offset counting from the leftmost cipher.
+* If a package ends with yyzzAAAAAAFFFFFFFF, zz could be a single sigil or yyzz is a sigil sequence. 
 
 ## Syntax
 
