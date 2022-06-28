@@ -80,6 +80,9 @@
 * It would be possible to use AA as sigil byte with offset 0 but that needs more often to insert a **N** sigil byte.
 * With F0=FF this is not necessary because in does not need to be in the sigil bytes link chain.
 
+Non-Zero
+Length Encoding Bytes Stuffing
+TQ
 
 ##  1.1. <a name='Symbols'></a>Symbols Variant 4-
 
