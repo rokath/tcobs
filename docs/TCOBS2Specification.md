@@ -200,7 +200,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 ##  5. <a name='SigilBytes'></a>Sigil Bytes
 
-* Which pattern are used as sigil bytes is a optimizing question. The table seems to be reasonable concerning the assumption to have statistically more FF- and 00-bytes, especially also short rows of them, in the data stream to be encoded.
+* Which pattern are used as sigil bytes is an optimizing question. The table seems to be reasonable concerning the assumption to have statistically more FF- and 00-bytes, especially also short rows of them, in the data stream to be encoded.
 
 | value 7-5 | bits 7-0   | Byte Name       | sign  | offset bits      | offset value| usage | Remark |
 |    -      | -          | -               | -     | -                | -           | -     | - |
