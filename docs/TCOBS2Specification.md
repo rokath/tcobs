@@ -63,46 +63,51 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 ###  3.1. <a name='CipherCountedTernaryNotationCCTN'></a>Cipher Counted Ternary Notation (CCTN)
 
+* As quaternary notation 0t in front of the ciphers is used.
+* As CCTN notation a 0T in front of the ciphers is used: 0t12 != 0T12
+* Because the 0-value is never needed the CCTN numbers start with 1
+
+
 ####  3.1.1. <a name='OneCCTNCipher'></a>One CCTN Cipher
 
 `1 = 3^0`
 
-|index | decimal | CCQN       | remark |
+|index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
 |      | 0       | impossible |        |
-|  0   | 1       | 0Q0        | exactly 1 cipher allowed |
+|  0   | 1       | 0T0        | exactly 1 cipher allowed |
 | ...  | ...     | ...        | ...                      |
-|  2   | 3       | 0Q2        | exactly 1 cipher allowed |
+|  2   | 3       | 0T2        | exactly 1 cipher allowed |
 
 ####  3.1.2. <a name='TwoCCTNCiphers'></a>Two CCTN Ciphers
 
 `4 = 3^0 + 3^1`
 
-|index | decimal | CCQN       | remark |
+|index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
-| 0    | 4       | 0Q00       | exactly 2 ciphers allowed |
+| 0    | 4       | 0T00       | exactly 2 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 8    | 12      | 0Q33       | exactly 2 ciphers allowed |
+| 8    | 12      | 0T33       | exactly 2 ciphers allowed |
 
 ####  3.1.3. <a name='ThreeCCTNCiphers'></a>Three CCTN Ciphers
 
 `13 = 3^0 + 3^1 + 3^2`
 
-|index | decimal | CCQN       | remark |
+|index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
-| 0    | 13      | 0Q000      | exactly 3 ciphers allowed |
+| 0    | 13      | 0T000      | exactly 3 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 26   | 39      | 0Q333      | exactly 3 ciphers allowed |
+| 26   | 39      | 0T333      | exactly 3 ciphers allowed |
 
 ####  3.1.4. <a name='FourCCTNCiphers'></a>Four CCTN Ciphers
 
 `40 = 3^0 + 3^1 + 3^2 + 3^3`
 
-|index | decimal | CCQN       | remark |
+|index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
-| 0    | 40      | 0Q0000     | exactly 4 ciphers allowed |
+| 0    | 40      | 0T0000     | exactly 4 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 80   | 120     | 0Q3333     | exactly 4 ciphers allowed |
+| 80   | 120     | 0T3333     | exactly 4 ciphers allowed |
 
 ####  3.1.5. <a name='ManyCCTNCiphers'></a>Many CCTN Ciphers
 
