@@ -63,8 +63,8 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 ###  3.1. <a name='CipherCountedTernaryNotationCCTN'></a>Cipher Counted Ternary Notation (CCTN)
 
-* As ternary notation 0t in front of the ciphers is used.
-* As CCTN notation a 0T in front of the ciphers is used: 0t12 != 0T12
+* As ternary notation `0t` in front of the ciphers is used.
+* As CCTN notation `0T` in front of the ciphers is used.
 * Because the 0-value is never needed the CCTN numbers start with 1
 
 
@@ -123,7 +123,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 ###  3.2. <a name='CipherCountedQuaternaryNotationCCQN'></a>Cipher Counted Quaternary Notation (CCQN)
 
 * As quaternary notation `0q` in front of the ciphers is used.
-* As CCQN notation a `0Q` in front of the ciphers is used: `0q123 != 0Q123`
+* As CCQN notation `0Q` in front of the ciphers is used.
 * Because the 0-value is never needed the CCQN numbers start with 1
 
 ####  3.2.1. <a name='OneCCQNCipher'></a>One CCQN Cipher
