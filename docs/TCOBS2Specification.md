@@ -38,6 +38,9 @@
 
 ##  1. <a name='Preface'></a> Preface
 
+* T stands originally for **T**rice.
+  * T symbols also the joining of the 2 orthogonal tasks compression and framing.
+  * Additionally the usage of ternary and quaternary is reflected in the letter T.
 * TCOBS2 is a better approach for TCOBS, suited also when long sequences of equal characters occur in the data stream.
 * TCOBS2 is planned to replace TCOBS under the name TCOBS.
 * About the data is assumed, that 00-bytes and FF-bytes occur a bit more often than other bytes.
