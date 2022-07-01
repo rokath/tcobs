@@ -239,7 +239,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 ##  6. <a name='Algorithm'></a>Algorithm
 
 * Compute character count
-* Determine Sigil sequence as S1-S4 ciphers
+* Determine Sigil sequence as ciphers
 * Handle Offsets to build sigil chain
 * Mathematical prove? 
 
