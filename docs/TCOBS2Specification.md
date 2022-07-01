@@ -240,7 +240,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 * Compute character count
 * Determine Sigil sequence as ciphers
-* Handle Offsets to build sigil chain
+* Handle Offsets to build sigil chain (buffer ends with a sigil byte)
 * Mathematical prove? 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
