@@ -38,7 +38,7 @@
 
 ##  1. <a name='Preface'></a> Preface
 
-* T stands originally for **T**rice.
+* T stands originally for **T**rice because the initial idea to develop it came from thoughts how to reduce the binary [trice](https://github.com/rokath/trice) data together with framing.
   * T symbols also the joining of the 2 orthogonal tasks compression and framing.
   * Additionally the usage of ternary and quaternary is reflected in the letter T.
 * TCOBS2 is a better approach for TCOBS, suited also when long sequences of equal characters occur in the data stream.
