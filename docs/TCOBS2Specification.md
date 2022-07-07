@@ -45,6 +45,7 @@
 * TCOBS2 is a better approach for TCOBS, suited also when long sequences of equal characters occur in the data stream.
 * TCOBS2 is planned to replace TCOBS under the name TCOBS.
 * About the data is assumed, that 00-bytes and FF-bytes occur a bit more often than other bytes.
+* The aim concerning the compression is more to get a reasonable data reduction in a cheap way concerning minimal computing effort, than reducing to an absolute minimum. The method shown here simply counts repeated bytes and transforms them into shorter sequences. It works well also on very short messages, like 4 bytes and on very long buffers. The compressed buffer contains no 00-bytes anymore what is the aim of COBS. In the worst case, if no repeated bytes occur at all, the encoded data can be about 3% longer (1 byte per each 31 input bytes).
 * To understand the encoding principle the used numbers system is explained first.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -55,6 +56,7 @@
   * decimal numbers with 10 digits, `0123456789`, like `0d109 = 1 * 10^2 + 0 * 10^1 + 9 * 10^0 = 109`
   * hexadecimal numbers with 16 ciphers `0123456789abcdef`, like `0xc0de = 12 * 16^3 + 0 * 16^2 + 13 * 16^1 + 14 * 16^0 = 49374`
   * binary numbers with 2 ciphers `01`, like `0b101 = 1 * 2^2 + 0 * 2^1 + 1 * 2^0 = 5`
+  * octal numbers with 8 ciphers `01234567`, like `0o77 = 7 * 8^1 + 7 * 8^0 = 63`
 * Not so common numbers:
   * Ternary numbers with 3 digits `012`, like `0t201 = 2 * 3^2 + 0 * 3^1 + 1 * 3^0 = 19`
   * Quaternary numbers with 4 digits `0123`, like `0q123 = 1 * 4^2 + 2 * 4^1 + 1 * 4^0 = 25`
@@ -69,7 +71,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 * As ternary notation `0t` in front of the ciphers is used.
 * As CCTN notation `0T` in front of the ciphers is used.
-* Because the 0- and 1-values are never needed the CCTN numbers start with 2
+* Because the 0- and 1-values are never needed in TCOBS, the CCTN numbers start with 2
 
 ####  3.1.1. <a name='OneCCTNCipher'></a>One CCTN Cipher
 
@@ -148,6 +150,10 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 |index | decimal | CCQN       | remark |
 | -    | -       | -          | -      |
 | 0    | 5       | 0Q00       | exactly 2 ciphers allowed |
+| 1    | 6       | 0Q01       | ...                       |
+| 2    | 7       | 0Q02       | ...                       |
+| 3    | 8       | 0Q03       | ...                       |
+| 4    | 9       | 0Q10       | ...                       |
 | ...  | ...     | ...        | ...                       |
 | 15   | 20      | 0Q33       | exactly 2 ciphers allowed |
 
@@ -186,11 +192,15 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 ##  4. <a name='Encodingprinciple'></a>Encoding principle
 
+* Legend: 
+  * `xx` any byte different from its neighbor.
+  * `AA` any non FF- and non 00-byte, but AA==AA.
+
 * For count encoding different types of sigil bytes are used:
   * `Z0`, `Z1`, `Z2`, `Z3` for **1** to **n** 00-bytes in a row
   * `F0`, `F1`, `F2`, `F3` for **1** to **n** FF-bytes in a row
-  * `R0`, `R1`, `R2` for     **1** to **n** equal other bytes in a row
-* Z- and F- sigils are CCQN ciphers 0-3 and the R-sigils represent CCTN ciphers.
+  * `R0`, `R1`, `R2` for     **2** to **n** equal other bytes in a row
+* Z- and F- sigils are CCQN ciphers 0-3 and the R-sigils represent CCTN ciphers 0-2.
 * Examples:
 
 | decoded             | encoded         | number notation / remark |
@@ -199,7 +209,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 | xx `00 00 00 00` xx | xx `Z3` xx        | `0Q3` = 4 zeros |
 | xx `AA AA` xx       | xx `AA AA` xx     | 2 times AA stays the same. |
 | xx `AA AA AA` xx    | xx `AA R0` xx     | 3 times `AA` gets `AA` followed by 2 `AA` coded as `R0` |
-| xx `13 times AA` xx | xx `AA R3 R2` xx  | AA stands for itself and indicates what following R-sigils mean \- `0Q33` = R3 R3 stands for 12 following AA |
+| xx `13 times AA` xx | xx `AA R3 R2` xx  | AA stands for itself and indicates what following R-sigils mean \- `0Q32` = R3 R2 stands for 12 following AA |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -225,16 +235,23 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 ###  5.1. <a name='Symbolsassumptions'></a>Symbols assumptions
 
-* N, Z0, Z1, F1, R0 are a bit more often in use, therefore they can carry link offsets 0-31
-* Z2, Z3, F2, F3, R2, R3 are a bit less often in use, therefore they can carry link offsets 0-15(14)
+* N, Z0, Z1, F1, R0 are a bit more often in use, therefore they can carry link offsets 0-31 in 5 offset bits.
+* Z2, Z3, F2, F3, R2, R3 are a bit less often in use, therefore they can carry link offsets 0-15(14) in 4 offset bits.
 * F0 has no offset bits. Therefore its implicit offset value is 0, when used inside the sigil chain.
 * Concatenation of offset bits in neighbored sigil bytes is not used: makes is useless complicated or is maybe impossible.
 
-* R sigils are ternary ciphers
-* F & Z sigils are quaternary ciphers
-
 * It would be possible to use AA as sigil byte with offset 0 but that needs more often to insert a **N** sigil byte.
-* With F0=FF this is not necessary because in does not need to be in the sigil bytes link chain. That is possible by not allowing offset 15 in the F3-sigil.
+* With F0=FF this is not necessary because in does not need to be in the sigil bytes link chain. That is possible by not allowing offset 15 in the F3-sigil. A single `FF` inside the data stream is treatable this way as a normal single other byte. Even `FF` is de-facto a sigil byte in the encoded data stream, it needs not to be inside the sigil chain. Examples:
+
+| decoded             | encoded         | number notation / remark |
+| -                   | -               | -               |
+| xx `FF` xx          | xx `F0` xx      | `F0` == `FF` = 1 `FF`  |
+| xx `FF FF` xx       | xx `F1` xx      | `0Q1` = 2 times `FF` - `F1` is part of sigil chain |
+| xx `3 times FF` xx  | xx `F2` xx      | `0Q2` = 3 times `FF` - `F2` is part of sigil chain |
+| xx `4 times FF` xx  | xx `F3` xx      | `0Q3` = 4 times `FF` - `F3` is part of sigil chain |
+| xx `5 times FF` xx  | xx `F0 F0` xx   | `0Q00` = 5 times `FF` - not part of sigil chain |
+| xx `6 times FF` xx  | xx `F0 F1` xx   | `0Q01` = 6 times `FF` - `F1` is part of sigil chain |
+| xx `9 times FF` xx  | xx `F1 F0` xx   | `0Q00` = 9 times `FF` - `F1` is part of sigil chain, `F0` is allowed to be part of sigil chain |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -253,5 +270,6 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 | - | - | - |
 | 2022-JUN-00 | 0.0.0 | initial |
 | 2022-JUL-07 | 0.1.0 | CCTN start now with 2. |
+| 2022-JUL-07 | 0.1.1 | Explanation and samples added. |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
