@@ -24,6 +24,7 @@
 * 5. [Sigil Bytes](#SigilBytes)
 	* 5.1. [Symbols assumptions](#Symbolsassumptions)
 * 6. [Algorithm](#Algorithm)
+* 7. [Change Log](#ChangeLog)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -68,60 +69,60 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 * As ternary notation `0t` in front of the ciphers is used.
 * As CCTN notation `0T` in front of the ciphers is used.
-* Because the 0-value is never needed the CCTN numbers start with 1
-
+* Because the 0- and 1-values are never needed the CCTN numbers start with 2
 
 ####  3.1.1. <a name='OneCCTNCipher'></a>One CCTN Cipher
 
-`1 = 3^0`
+`2 = 1 + 3^0`
 
 |index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
 |      | 0       | impossible |        |
-|  0   | 1       | 0T0        | exactly 1 cipher allowed |
+|      | 1       | impossible |        |
+|  0   | 2       | 0T0        | exactly 1 cipher allowed |
 | ...  | ...     | ...        | ...                      |
-|  2   | 3       | 0T2        | exactly 1 cipher allowed |
+|  2   | 4       | 0T2        | exactly 1 cipher allowed |
 
 ####  3.1.2. <a name='TwoCCTNCiphers'></a>Two CCTN Ciphers
 
-`4 = 3^0 + 3^1`
+`5 = 1 + 3^0 + 3^1`
 
 |index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
-| 0    | 4       | 0T00       | exactly 2 ciphers allowed |
+| 0    | 5       | 0T00       | exactly 2 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 8    | 12      | 0T33       | exactly 2 ciphers allowed |
+| 8    | 13      | 0T33       | exactly 2 ciphers allowed |
 
 ####  3.1.3. <a name='ThreeCCTNCiphers'></a>Three CCTN Ciphers
 
-`13 = 3^0 + 3^1 + 3^2`
+`14 = 1 + 3^0 + 3^1 + 3^2`
 
 |index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
-| 0    | 13      | 0T000      | exactly 3 ciphers allowed |
+| 0    | 14      | 0T000      | exactly 3 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 26   | 39      | 0T333      | exactly 3 ciphers allowed |
+| 26   | 40      | 0T333      | exactly 3 ciphers allowed |
 
 ####  3.1.4. <a name='FourCCTNCiphers'></a>Four CCTN Ciphers
 
-`40 = 3^0 + 3^1 + 3^2 + 3^3`
+`41 = 1 + 3^0 + 3^1 + 3^2 + 3^3`
 
 |index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
-| 0    | 40      | 0T0000     | exactly 4 ciphers allowed |
+| 0    | 41      | 0T0000     | exactly 4 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 80   | 120     | 0T3333     | exactly 4 ciphers allowed |
+| 80   | 121     | 0T3333     | exactly 4 ciphers allowed |
 
 ####  3.1.5. <a name='ManyCCTNCiphers'></a>Many CCTN Ciphers
 
-| Cipher Count | generic start               | start | index range  | value range |
-| -            | -                           | -     | -            | - |
-| 1            | 3^0                         |    1  | 0-2          | 1-3 |
-| 2            | 3^0 + 3^1                   |    4  | 0-8          | 4-12 |
-| 3            | 3^0 + 3^1 + 3^2             |   13  | 0-26         | 13-39 |
-| 4            | 3^0 + 3^1 + 3^2 + 3^3       |   40  | 0-80         | 40-120 |
-| 5            | 3^0 + 3^1 + 3^2 + 3^3 + 3^4 |  121  | 0-242        | 121-363 |
-| ...          | ...                         |  ...  | ...          | ... |
+| Cipher Count | generic start                   | start | index range  | value range |
+| -            | -                               | -     | -            | - |
+| 1            | 1 + 3^0                         |    2  | 0-2          | 2-4 |
+| 2            | 1 + 3^0 + 3^1                   |    5  | 0-8          | 5-13 |
+| 3            | 1 + 3^0 + 3^1 + 3^2             |   14  | 0-26         | 14-40 |
+| 4            | 1 + 3^0 + 3^1 + 3^2 + 3^3       |   41  | 0-80         | 41-121 |
+| 5            | 1 + 3^0 + 3^1 + 3^2 + 3^3 + 3^4 |  122  | 0-242        | 122-364 |
+| ...          | ...                             |  ...  | ...          | ... |
 
 ###  3.2. <a name='CipherCountedQuaternaryNotationCCQN'></a>Cipher Counted Quaternary Notation (CCQN)
 
@@ -192,12 +193,13 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 * Z- and F- sigils are CCQN ciphers 0-3 and the R-sigils represent CCTN ciphers.
 * Examples:
 
-| decoded           | encoded         | number notation / remark |
-| -                 | -               | -               |
-| xx 00 xx          | xx Z0 xx        | `0Q0` = 1 zero  |
-| xx 00 00 00 00    | xx Z3 xx        | `0Q3` = 4 zeros |
-| xx 13 times AA xx | xx AA R3 R3 xx  | AA stands for itself and indicates what following R-sigils mean \- `0Q33` = R3 R3 stands for 12 following AA |
-
+| decoded             | encoded         | number notation / remark |
+| -                   | -               | -               |
+| xx `00` xx          | xx `Z0` xx        | `0Q0` = 1 zero  |
+| xx `00 00 00 00` xx | xx `Z3` xx        | `0Q3` = 4 zeros |
+| xx `AA AA` xx       | xx `AA AA` xx     | 2 times AA stays the same. |
+| xx `AA AA AA` xx    | xx `AA R0` xx     | 3 times `AA` gets `AA` followed by 2 `AA` coded as `R0` |
+| xx `13 times AA` xx | xx `AA R3 R2` xx  | AA stands for itself and indicates what following R-sigils mean \- `0Q33` = R3 R3 stands for 12 following AA |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -242,5 +244,14 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 * Determine Sigil sequence as ciphers
 * Handle Offsets to build sigil chain (buffer ends with a sigil byte)
 * Mathematical prove? 
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+##  7. <a name='ChangeLog'></a>Change Log
+
+| Date | Version | Comment |
+| - | - | - |
+| 2022-JUN-00 | 0.0.0 | initial |
+| 2022-JUL-07 | 0.1.0 | CCTN start now with 2. |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
