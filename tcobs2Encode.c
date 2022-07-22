@@ -186,7 +186,7 @@ static void writeLastSigil( uint8_t ** out, int * distance){
 
 static void writeZeroCount( uint8_t ** out, int * num, int * distance ){
     uint8_t ciphers[16];
-    int ciphersCount = ntoCCQNZ( num, &ciphers );
+    int ciphersCount = ntoCCQNZ( *num, &ciphers );
     for( int i = 0; i < ciphersCount; i++ ){
         switch( ciphers[i] ){
             case Z0:
@@ -221,7 +221,7 @@ static void writeZeroCount( uint8_t ** out, int * num, int * distance ){
 
 static void writeFullCount( uint8_t ** out, int * num, int * distance ){
     uint8_t ciphers[16];
-    int ciphersCount = ntoCCQNF( num, &ciphers );
+    int ciphersCount = ntoCCQNF( *num, &ciphers );
     for( int i = 0; i < ciphersCount; i++ ){
         switch( ciphers[i] ){
             case F0:
@@ -265,7 +265,7 @@ static void writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * dista
         *distance++;
     }else{
         uint8_t ciphers[16];
-        int ciphersCount = ntoCCQNR( num, &ciphers );
+        int ciphersCount = ntoCCQNR( *num, &ciphers );
         for( int i = 0; i < ciphersCount; i++ ){
             switch( ciphers[i] ){
                 case R0:
