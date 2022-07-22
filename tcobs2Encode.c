@@ -350,7 +350,7 @@ static unsigned ntoCCTNR( int num, uint8_t* buf ){
         static uint8_t* ciphers[4] = {
             R0, R1, R2 // 2, 3, 4
         };
-        *buf = ciphers[num-1];
+        *buf = ciphers[num-2];
         return 1;
     }
     if( num <= 13 ){
