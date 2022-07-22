@@ -1,8 +1,30 @@
 # TCOBS2 Specification (Ideas Draft)
 
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+
 <!-- vscode-markdown-toc -->
 * 1. [ Preface](#Preface)
-	* 1.1. [Symbols](#Symbols)
+* 2. [Ternary and Quaternary Numbers](#TernaryandQuaternaryNumbers)
+* 3. [Cipher Counted Notation](#CipherCountedNotation)
+	* 3.1. [Cipher Counted Ternary Notation (CCTN)](#CipherCountedTernaryNotationCCTN)
+		* 3.1.1. [One CCTN Cipher](#OneCCTNCipher)
+		* 3.1.2. [Two CCTN Ciphers](#TwoCCTNCiphers)
+		* 3.1.3. [Three CCTN Ciphers](#ThreeCCTNCiphers)
+		* 3.1.4. [Four CCTN Ciphers](#FourCCTNCiphers)
+		* 3.1.5. [Many CCTN Ciphers](#ManyCCTNCiphers)
+	* 3.2. [Cipher Counted Quaternary Notation (CCQN)](#CipherCountedQuaternaryNotationCCQN)
+		* 3.2.1. [One CCQN Cipher](#OneCCQNCipher)
+		* 3.2.2. [Two CCQN Ciphers](#TwoCCQNCiphers)
+		* 3.2.3. [Three CCQN Ciphers](#ThreeCCQNCiphers)
+		* 3.2.4. [Four CCQN Ciphers](#FourCCQNCiphers)
+		* 3.2.5. [Many CCQN Ciphers](#ManyCCQNCiphers)
+* 4. [Encoding principle](#Encodingprinciple)
+* 5. [Sigil Bytes](#SigilBytes)
+	* 5.1. [Symbols assumptions](#Symbolsassumptions)
+* 6. [Algorithm](#Algorithm)
+* 7. [Change Log](#ChangeLog)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -10,192 +32,244 @@
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
+<div id="top"></div>
+
+  </ol>
+</details>
+
 ##  1. <a name='Preface'></a> Preface
 
-* TCOBS2 is an alternative for TCOBS, especially when long sequences of equal characters occur in the data stream.
+* T stands originally for **T**rice because the initial idea to develop it came from thoughts how to reduce the binary [trice](https://github.com/rokath/trice) data together with framing.
+  * T symbols also the joining of the 2 orthogonal tasks compression and framing.
+  * Additionally the usage of ternary and quaternary numbers is reflected in the letter T.
+* TCOBS2 is a better approach for TCOBS, suited also when long sequences of equal characters occur in the data stream.
+* TCOBS2 is planned to replace TCOBS under the name TCOBS.
+* About the data is assumed, that 00-bytes and FF-bytes occur a bit more often than other bytes.
+* The aim concerning the compression is more to get a reasonable data reduction in a cheap way concerning minimal computing effort, than reducing to an absolute minimum. The method shown here simply counts repeated bytes and transforms them into shorter sequences. It works well also on very short messages, like 4 bytes and on very long buffers. The compressed buffer contains no 00-bytes anymore what is the aim of COBS. In the worst case, if no repeated bytes occur at all, the encoded data can be about 3% longer (1 byte per each 31 input bytes).
+* To understand the encoding principle the used numbers system is explained first.
 
-##  1.1. <a name='Symbols'></a>Symbols
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+##  2. <a name='TernaryandQuaternaryNumbers'></a>Ternary and Quaternary Numbers
+
+* Common numbers:
+  * decimal numbers with 10 digits, `0123456789`, like `0d109 = 1 * 10^2 + 0 * 10^1 + 9 * 10^0 = 109`
+  * hexadecimal numbers with 16 ciphers `0123456789abcdef`, like `0xc0de = 12 * 16^3 + 0 * 16^2 + 13 * 16^1 + 14 * 16^0 = 49374`
+  * binary numbers with 2 ciphers `01`, like `0b101 = 1 * 2^2 + 0 * 2^1 + 1 * 2^0 = 5`
+  * octal numbers with 8 ciphers `01234567`, like `0o77 = 7 * 8^1 + 7 * 8^0 = 63`
+* Not so common numbers:
+  * Ternary numbers with 3 digits `012`, like `0t201 = 2 * 3^2 + 0 * 3^1 + 1 * 3^0 = 19`
+  * Quaternary numbers with 4 digits `0123`, like `0q123 = 1 * 4^2 + 2 * 4^1 + 1 * 4^0 = 25`
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+##  3. <a name='CipherCountedNotation'></a>Cipher Counted Notation
+
+For the TCOBS encoding ternary and quaternary numbers are used in way, that the ciphers are counted too. That means for example, that cipher sequence `022` is not equal `22`.
+
+###  3.1. <a name='CipherCountedTernaryNotationCCTN'></a>Cipher Counted Ternary Notation (CCTN)
+
+* As ternary notation `0t` in front of the ciphers is used.
+* As CCTN notation `0T` in front of the ciphers is used.
+* Because the 0- and 1-values are never needed in TCOBS, the CCTN numbers start with 2
+
+####  3.1.1. <a name='OneCCTNCipher'></a>One CCTN Cipher
+
+`2 = 1 + 3^0`
+
+|index | decimal | CCTN       | remark |
+| -    | -       | -          | -      |
+|      | 0       | impossible |        |
+|      | 1       | impossible |        |
+|  0   | 2       | 0T0        | exactly 1 cipher allowed |
+| ...  | ...     | ...        | ...                      |
+|  2   | 4       | 0T2        | exactly 1 cipher allowed |
+
+####  3.1.2. <a name='TwoCCTNCiphers'></a>Two CCTN Ciphers
+
+`5 = 1 + 3^0 + 3^1`
+
+|index | decimal | CCTN       | remark |
+| -    | -       | -          | -      |
+| 0    | 5       | 0T00       | exactly 2 ciphers allowed |
+| ...  | ...     | ...        | ...                       |
+| 8    | 13      | 0T33       | exactly 2 ciphers allowed |
+
+####  3.1.3. <a name='ThreeCCTNCiphers'></a>Three CCTN Ciphers
+
+`14 = 1 + 3^0 + 3^1 + 3^2`
+
+|index | decimal | CCTN       | remark |
+| -    | -       | -          | -      |
+| 0    | 14      | 0T000      | exactly 3 ciphers allowed |
+| ...  | ...     | ...        | ...                       |
+| 26   | 40      | 0T333      | exactly 3 ciphers allowed |
+
+####  3.1.4. <a name='FourCCTNCiphers'></a>Four CCTN Ciphers
+
+`41 = 1 + 3^0 + 3^1 + 3^2 + 3^3`
+
+|index | decimal | CCTN       | remark |
+| -    | -       | -          | -      |
+| 0    | 41      | 0T0000     | exactly 4 ciphers allowed |
+| ...  | ...     | ...        | ...                       |
+| 80   | 121     | 0T3333     | exactly 4 ciphers allowed |
+
+####  3.1.5. <a name='ManyCCTNCiphers'></a>Many CCTN Ciphers
+
+| Cipher Count | generic start                   | start | index range  | value range |
+| -            | -                               | -     | -            | - |
+| 1            | 1 + 3^0                         |    2  | 0-2          | 2-4 |
+| 2            | 1 + 3^0 + 3^1                   |    5  | 0-8          | 5-13 |
+| 3            | 1 + 3^0 + 3^1 + 3^2             |   14  | 0-26         | 14-40 |
+| 4            | 1 + 3^0 + 3^1 + 3^2 + 3^3       |   41  | 0-80         | 41-121 |
+| 5            | 1 + 3^0 + 3^1 + 3^2 + 3^3 + 3^4 |  122  | 0-242        | 122-364 |
+| ...          | ...                             |  ...  | ...          | ... |
+
+###  3.2. <a name='CipherCountedQuaternaryNotationCCQN'></a>Cipher Counted Quaternary Notation (CCQN)
+
+* As quaternary notation `0q` in front of the ciphers is used.
+* As CCQN notation `0Q` in front of the ciphers is used.
+* Because the 0-value is never needed the CCQN numbers start with 1
+
+####  3.2.1. <a name='OneCCQNCipher'></a>One CCQN Cipher
+
+`1 = 4^0`
+
+|index | decimal | CCQN       | remark |
+| -    | -       | -          | -      |
+|      | 0       | impossible |        |
+|  0   | 1       | 0Q0        | exactly 1 cipher allowed |
+| ...  | ...     | ...        | ...                      |
+|  3   | 4       | 0Q3        | exactly 1 cipher allowed |
+
+####  3.2.2. <a name='TwoCCQNCiphers'></a>Two CCQN Ciphers
+
+`5 = 4^0 + 4^1`
+
+|index | decimal | CCQN       | remark |
+| -    | -       | -          | -      |
+| 0    | 5       | 0Q00       | exactly 2 ciphers allowed |
+| 1    | 6       | 0Q01       | ...                       |
+| 2    | 7       | 0Q02       | ...                       |
+| 3    | 8       | 0Q03       | ...                       |
+| 4    | 9       | 0Q10       | ...                       |
+| ...  | ...     | ...        | ...                       |
+| 15   | 20      | 0Q33       | exactly 2 ciphers allowed |
+
+####  3.2.3. <a name='ThreeCCQNCiphers'></a>Three CCQN Ciphers
+
+`21 = 4^0 + 4^1 + 4^2`
+
+|index | decimal | CCQN       | remark |
+| -    | -       | -          | -      |
+| 0    | 21      | 0Q000      | exactly 3 ciphers allowed |
+| ...  | ...     | ...        | ...                       |
+| 63   | 84      | 0Q333      | exactly 3 ciphers allowed |
+
+####  3.2.4. <a name='FourCCQNCiphers'></a>Four CCQN Ciphers
+
+`85 = 4^0 + 4^1 + 4^2 + 4^3`
+
+|index | decimal | CCQN       | remark |
+| -    | -       | -          | -      |
+| 0    | 85      | 0Q0000     | exactly 4 ciphers allowed |
+| ...  | ...     | ...        | ...                       |
+| 255  | 340     | 0Q3333     | exactly 4 ciphers allowed |
+
+####  3.2.5. <a name='ManyCCQNCiphers'></a>Many CCQN Ciphers
+
+| Cipher Count | generic start               | start | index range  | value range |
+| -            | -                           | -     | -            | - |
+| 1            | 4^0                         |    1  | 0-3          | 1-4 |
+| 2            | 4^0 + 4^1                   |    5  | 0-15         | 5-20 |
+| 3            | 4^0 + 4^1 + 4^2             |   21  | 0-63         | 21-84 |
+| 4            | 4^0 + 4^1 + 4^2 + 4^3       |   85  | 0-255        | 85-340 |
+| 5            | 4^0 + 4^1 + 4^2 + 4^3 + 4^4 |  341  | 0-1023       | 341-1364 |
+| ...          | ...                         |  ...  | ...          | ... |
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+##  4. <a name='Encodingprinciple'></a>Encoding principle
+
+* Legend: 
+  * `xx` any byte different from its neighbor.
+  * `AA` any non FF- and non 00-byte, but AA==AA.
+
+* For count encoding different types of sigil bytes are used:
+  * `Z0`, `Z1`, `Z2`, `Z3` for **1** to **n** 00-bytes in a row
+  * `F0`, `F1`, `F2`, `F3` for **1** to **n** FF-bytes in a row
+  * `R0`, `R1`, `R2` for     **2** to **n** equal other bytes in a row
+* Z- and F- sigils are CCQN ciphers 0-3 and the R-sigils represent CCTN ciphers 0-2.
+* Examples:
+
+| decoded             | encoded         | number notation / remark |
+| -                   | -               | -               |
+| xx `00` xx          | xx `Z0` xx        | `0Q0` = 1 zero  |
+| xx `00 00 00 00` xx | xx `Z3` xx        | `0Q3` = 4 zeros |
+| xx `AA AA` xx       | xx `AA AA` xx     | 2 times AA stays the same. |
+| xx `AA AA AA` xx    | xx `AA R0` xx     | 3 times `AA` gets `AA` followed by 2 `AA` coded as `R0` |
+| xx `13 times AA` xx | xx `AA R3 R2` xx  | AA stands for itself and indicates what following R-sigils mean \- `0Q32` = R3 R2 stands for 12 following AA |
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+##  5. <a name='SigilBytes'></a>Sigil Bytes
+
+* Which pattern are used as sigil bytes is an optimizing question. The table seems to be reasonable concerning the assumption to have statistically more FF- and 00-bytes, especially also short rows of them, in the data stream to be encoded.
 
 | value 7-5 | bits 7-0   | Byte Name       | sign  | offset bits      | offset value| usage | Remark |
 |    -      | -          | -               | -     | -                | -           | -     | - |
-|    0      | `00000000` | forbidden       |       |                  |             |       |used later as delimiter byte |
-|    0      | `0000oooo` | Repeat sigil    | **R4**|  `oooo` = 1-15   |  0-14       | less  | offset = `oooo` - 1 |
-|    0      | `0001oooo` | Zero   sigil    | **Z4**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0x00 count |
-|    1      | `001ooooo` | Zero   sigil    | **Z1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 0 for a 0x00 count |
-|    2      | `0100oooo` | Repeat sigil    | **R3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for an any count |
-|    2      | `0101oooo` | Zero   sigil    | **Z3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0x00 count |
-|    3      | `011ooooo` | Zero   sigil    | **Z2**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0x00 count |
-|    4      | `100ooooo` | Repeat sigil    | **R2**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for an any count |
+|    0      | `00000000` | forbidden       |       |                  |             |       | used later as delimiter byte |
+|    0      | `0000oooo` | Repeat sigil    | **R2**|  `oooo` = 1-15   |  0-14       | less  | ternary cipher 2 for an any count, offset = `oooo` - 1 |
+|    0      | `0001oooo` | Zero   sigil    | **Z3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0x00 count |
+|    1      | `001ooooo` | Zero   sigil    | **Z0**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 0 for a 0x00 count |
+|    2      | `0100oooo` | Repeat sigil    | **R1**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 1 for an any count |
+|    2      | `0101oooo` | Zero   sigil    | **Z2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0x00 count |
+|    3      | `011ooooo` | Zero   sigil    | **Z1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0x00 count |
+|    4      | `100ooooo` | Repeat sigil    | **R0**| `ooooo` = 0-31   |  0-31       | more  | ternary cipher 0 for an any count |
 |    5      | `101ooooo` | NOP    sigil    | **N** | `ooooo` = 0-31   |  0-31       | more  | no meaning, used for keeping the sigil chain linked |
-|    6      | `110ooooo` | Full   sigil    | **F2**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
-|    7      | `1111oooo` | Full   sigil    | **F3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
-|    7      | `1110oooo` | Full   sigil    | **F4**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0xFF count |
+|    6      | `110ooooo` | Full   sigil    | **F1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
+|    7      | `1110oooo` | Full   sigil    | **F2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
+|    7      | `1111oooo` | Full   sigil    | **F3**|  `oooo` = 0-14   |  0-14       | less  | quaternary cipher 3 for a 0xFF count, offset 15 forbidden to distinguish from F0=FF sigil byte |
+|           | `11111111` | Full   sigil    | **F0**|                  |  0          |       | CCQN cipher 0, needs not to be inside the sigil chain, but can. |
 
-### Symbols assumptions
+###  5.1. <a name='Symbolsassumptions'></a>Symbols assumptions
 
-* N, Z1, Z2, F2, R2 are a bit more often in use, therefore they can carry link offsets 0-31
-* Z3, Z4, F3, F4, R3, R4 are a bit less often in use, therefore they can carry link offsets 0-15(14)
+* N, Z0, Z1, F1, R0 are a bit more often in use, therefore they can carry link offsets 0-31 in 5 offset bits.
+* Z2, Z3, F2, F3, R2, R3 are a bit less often in use, therefore they can carry link offsets 0-15(14) in 4 offset bits.
+* F0 has no offset bits. Therefore its implicit offset value is 0, when used inside the sigil chain.
+* Concatenation of offset bits in neighbored sigil bytes is not used: makes is useless complicated or is maybe impossible.
 
-## Syntax
+* It would be possible to use AA as sigil byte with offset 0 but that needs more often to insert a **N** sigil byte.
+* With F0=FF this is not necessary because in does not need to be in the sigil bytes link chain. That is possible by not allowing offset 15 in the F3-sigil. A single `FF` inside the data stream is treatable this way as a normal single other byte. Even `FF` is de-facto a sigil byte in the encoded data stream, it needs not to be inside the sigil chain. Examples:
 
-* `0b01` is common for binary notation
-* `0o01234567` is common for octal notation
-* `0123456789` is common for decimal notation
-* `0x0123456789abcdef` is common for hexadecimal notation
-* `0q0123` is used here for [quaternary](https://en.wikipedia.org/wiki/Quaternary_numeral_system) notation
-* `0Q0123` is used here for cipher counted quaternary notation
+| decoded             | encoded         | number notation / remark |
+| -                   | -               | -               |
+| xx `FF` xx          | xx `F0` xx      | `F0` == `FF` = 1 `FF`  |
+| xx `FF FF` xx       | xx `F1` xx      | `0Q1` = 2 times `FF` - `F1` is part of sigil chain |
+| xx `3 times FF` xx  | xx `F2` xx      | `0Q2` = 3 times `FF` - `F2` is part of sigil chain |
+| xx `4 times FF` xx  | xx `F3` xx      | `0Q3` = 4 times `FF` - `F3` is part of sigil chain |
+| xx `5 times FF` xx  | xx `F0 F0` xx   | `0Q00` = 5 times `FF` - not part of sigil chain |
+| xx `6 times FF` xx  | xx `F0 F1` xx   | `0Q01` = 6 times `FF` - `F1` is part of sigil chain |
+| xx `9 times FF` xx  | xx `F1 F0` xx   | `0Q00` = 9 times `FF` - `F1` is part of sigil chain, `F0` is allowed to be part of sigil chain |
 
-## Cipher Counted Quaternary Notation
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-`0q123 != 0Q123` !
-
-### One Cipher
-
-| decimal | quaternary | remark |
-| -       | -          | -      |
-| 0       | 0Q0        | exactly 1 cipher allowed |
-| 1       | 0Q1        | exactly 1 cipher allowed |
-| 2       | 0Q2        | exactly 1 cipher allowed |
-| 3       | 0Q3        | exactly 1 cipher allowed |
-
-### Two Ciphers
-
-`0q33 = 15` 
-
-`4 = 4^1`
-
-| decimal | quaternary | remark |
-| -       | -          | -      |
-| 4       | 0Q00       | exactly 2 ciphers allowed |
-| 5       | 0Q01       | exactly 2 ciphers allowed |
-| ...     | ...        | ...                       |
-| 18      | 0Q32       | exactly 2 ciphers allowed |
-| 19      | 0Q33       | exactly 2 ciphers allowed |
-
-### Three Ciphers
-
-`20 = 4^1 + 4^2`
-
-| decimal | quaternary | remark |
-| -       | -          | -      |
-| 20      | 0Q000      | exactly 3 ciphers allowed |
-| 21      | 0Q001      | exactly 3 ciphers allowed |
-| ...     | ...        | ...                       |
-| 82      | 0Q332      | exactly 3 ciphers allowed |
-| 83      | 0Q333      | exactly 3 ciphers allowed |
-
-### Four Ciphers
-
-`84 = 4^1 + 4^2 + 4^3`
-
-|index | decimal | quaternary | remark |
-| -    | -       | -          | -      |
-| 0    | 84      | 0Q0000     | exactly 4 ciphers allowed |
-| 1    | 85      | 0Q0001     | exactly 4 ciphers allowed |
-| ...  | ...     | ...        | ...                       |
-| 254  | 338     | 0Q3332     | exactly 4 ciphers allowed |
-| 255  | 339     | 0Q3333     | exactly 4 ciphers allowed |
-
-### Many Ciphers
-
-| Cipher Count | generic start             | start | range  | value range |
-| 1            |                           |    0  | 0-3    | 0-3 |
-| 2            | 4^1                       |    4  | 0-15   | 4-19 |
-| 3            | 4^1 + 4^2                 |   20  | 0-63   | 20-83 |
-| 4            | 4^1 + 4^2 + 4^3           |   84  | 0-255  | 84-339 |
-| 5            | 4^1 + 4^2 + 4^3 + 4^4     |  340  | 0-1023 | 340-1363 |
-| ...          | ...                       |  ...  | ...    | ... |
-
-## Zeroes replacements with Z sigil bytes
-
-### One Cipher 
-
-|Z                 | Z1 | Z2 | Z3 | Z4 | remark |
-|-                 | -  | -  | -  | -  | - |
-|value count       |  1 |  2 |  3 |  4 | count = 0 + number |
-|quaternary number |  0 |  1 |  2 |  3 | [Quaternary_numeral_system](https://en.wikipedia.org/wiki/Quaternary_numeral_system)|
-|decimal    number |  0 |  1 |  2 |  3 | |
-
-### Two ciphers
-
-|Z                 |Z1Z1|Z1Z2|Z1Z3|Z1Z4|Z2Z1|Z2Z2|Z2Z3|Z2Z4|Z3Z1|Z3Z2|Z3Z3|Z3Z4|Z4Z1|Z4Z2|Z4Z3|Z4Z4| remark |
-|-                 | -  | -  | -  | -  | -  | -  | -  | -  | -  | -  | -  | -  | -  | -  | -  | -  | - |
-|value count       |  5 |  6 |  7 |  8 |  9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | count = 5 + number |
-|quaternary number | 00 | 01 | 02 | 03 | 10 | 11 | 12 | 13 | 20 | 21 | 22 | 23 | 30 | 31 | 32 | 33 | [Quaternary_numeral_system](https://en.wikipedia.org/wiki/Quaternary_numeral_system) |
-|decimal    number |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 10 | 11 | 12 | 13 | 14 | 15 |  |
-
-|Z                 |Z1Z1Z1|Z1Z1Z2|Z1Z1Z3|Z1Z1Z4|Z1Z2Z1|Z1Z2Z2|Z1Z2Z3|Z1Z2Z4|Z1Z3Z1|Z1Z3Z2|Z1Z3Z3|Z1Z3Z4|Z1Z4Z1|Z1Z4Z2|Z1Z4Z3|Z1Z4Z4| remark |
-|-                 |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  | - |
-|value count       |   21 |   22 |   23 |   24 |   25 |   26 |   27 |   28 |   29 |   30 |   31 |   32 |   33 |   34 |   35 |   36 | count = 21 + number |
-|quaternary number |  000 |  001 |  002 |  003 |  010 |  011 |  012 |  013 |  020 |  021 |  022 |  023 |  030 |  031 |  032 |  033 | [Quaternary_numeral_system](https://en.wikipedia.org/wiki/Quaternary_numeral_system) |
-|decimal    number |    0 |    1 |    2 |    3 |    4 |    5 |    6 |    7 |    8 |    9 |   10 |   11 |   12 |   13 |   14 |   15 |  |
-
-|Z                 |Z2Z1Z1|Z2Z1Z2|Z2Z1Z3|Z2Z1Z4|Z2Z2Z1|Z2Z2Z2|Z2Z2Z3|Z2Z2Z4|Z2Z3Z1|Z2Z3Z2|Z2Z3Z3|Z2Z3Z4|Z2Z4Z1|Z2Z4Z2|Z2Z4Z3|Z2Z4Z4| remark |
-|-                 |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  | - |
-|value count       |   37 |   38 |   39 |   40 |   41 |   42 |   43 |   44 |   45 |   46 |   47 |   48 |   49 |   50 |   51 |   52 | count = 21 + number |
-|quaternary number |  100 |  101 |  102 |  103 |  110 |  111 |  112 |  113 |  120 |  121 |  122 |  123 |  130 |  131 |  132 |  133 | [Quaternary_numeral_system](https://en.wikipedia.org/wiki/Quaternary_numeral_system) |
-|decimal    number |   16 |   17 |   18 |   19 |   20 |   21 |   22 |   23 |   24 |   25 |   26 |   27 |   28 |   29 |   30 |   31 |  |
-
-|Z                 |Z3Z1Z1|Z3Z1Z2|Z3Z1Z3|Z3Z1Z4|Z3Z2Z1|Z3Z2Z2|Z3Z2Z3|Z3Z2Z4|Z3Z3Z1|Z3Z3Z2|Z3Z3Z3|Z3Z3Z4|Z3Z4Z1|Z3Z4Z2|Z3Z4Z3|Z3Z4Z4| remark |
-|-                 |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  | - |
-|value count       |   53 |   54 |   55 |   56 |   57 |   58 |   59 |   60 |   61 |   62 |   63 |   64 |   65 |   66 |   67 |   68 | count = 21 + number |
-|quaternary number |  200 |  201 |  202 |  203 |  210 |  211 |  212 |  213 |  220 |  221 |  222 |  223 |  230 |  231 |  232 |  233 | [Quaternary_numeral_system](https://en.wikipedia.org/wiki/Quaternary_numeral_system) |
-|decimal    number |   32 |   33 |   34 |   35 |   36 |   37 |   38 |   39 |   40 |   41 |   42 |   43 |   44 |   45 |   46 |   47 |  |
-
-|Z                 |Z4Z1Z1|Z4Z1Z2|Z4Z1Z3|Z4Z1Z4|Z4Z2Z1|Z4Z2Z2|Z4Z2Z3|Z4Z2Z4|Z4Z3Z1|Z4Z3Z2|Z4Z3Z3|Z4Z3Z4|Z4Z4Z1|Z4Z4Z2|Z4Z4Z3|Z4Z4Z4| remark |
-|-                 |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  |   -  | - |
-|value count       |   69 |   70 |   71 |   72 |   73 |   74 |   75 |   76 |   77 |   78 |   79 |   80 |   81 |   82 |   83 |   84 | count = 21 + number |
-|quaternary number |  300 |  301 |  302 |  303 |  310 |  311 |  312 |  313 |  320 |  321 |  322 |  323 |  330 |  331 |  332 |  333 | [Quaternary_numeral_system](https://en.wikipedia.org/wiki/Quaternary_numeral_system) |
-|decimal    number |   48 |   49 |   50 |   51 |   52 |   53 |   54 |   55 |   56 |   57 |   58 |   59 |   60 |   61 |   62 |   63 |  |
-
-|Z                 |Z1Z4Z1Z1|Z1Z4Z1Z2|Z1Z4Z1Z3|Z1Z4Z1Z4|Z1Z4Z2Z1|Z1Z4Z2Z2|Z1Z4Z2Z3|Z1Z4Z2Z4|Z1Z4Z3Z1|Z1Z4Z3Z2|Z1Z4Z3Z3|Z1Z4Z3Z4|Z1Z4Z4Z1|Z1Z4Z4Z2|Z1Z4Z4Z3|Z1Z4Z4Z4| remark |
-|-                 |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    | - |
-|value count       |   85   |        |        |        |        |        |        |        |        |        |        |        |        |        |        |   100  | count = 85 + number |
-|quaternary number |  0000  |  0001  |  0002  |  0003  |  0010  |  0011  |  0012  |  0013  |  0020  |  0021  |  0022  |  0023  |  0030  |  0031  |  0032  |  0033  | [Quaternary_numeral_system](https://en.wikipedia.org/wiki/Quaternary_numeral_system) |
-|decimal    number |    0   |        |        |        |        |        |        |        |        |        |        |        |        |        |        |    15  |  |
-
-...
-
-|Z                 |Z4Z4Z1Z1|Z4Z4Z1Z2|Z4Z4Z1Z3|Z4Z4Z1Z4|Z4Z4Z2Z1|Z4Z4Z2Z2|Z4Z4Z2Z3|Z4Z4Z2Z4|Z4Z4Z3Z1|Z4Z4Z3Z2|Z4Z4Z3Z3|Z4Z4Z3Z4|Z4Z4Z4Z1|Z4Z4Z4Z2|Z4Z4Z4Z3|Z4Z4Z4Z4| remark |
-|-                 |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    |   -    | - |
-|value count       |   85   |        |        |        |        |        |        |        |        |        |        |        |        |        |        |   341  | count = 85 + number |
-|quaternary number |  3300  |  3301  |  3302  |  3303  |  3310  |  3311  |  3312  |  3313  |  3320  |  3321  |  3322  |  3323  |  3330  |  3331  |  3332  |  3333  | [Quaternary_numeral_system](https://en.wikipedia.org/wiki/Quaternary_numeral_system) |
-|decimal    number |   240  |        |        |        |        |        |        |        |        |        |        |        |        |        |        |   256  |  |
-
-* 5 = 4^0 + 4^1
-* 21 = 5 + 4^2 = 1 + 4^1 + 4^2
-* 85 = 21 + 4^3 = 4^0 + 4^1 + 4^2 + 4^3
-* 341 =  4^0 + 4^1 + 4^2 + 4^3 + 4^4
-* ...
-
-* [x] Same with F. 0xFF serves as F1.
-* [x] Same with R. 0xaa serves as R1.
-
-## Examples
-
-| decoded           | encoded        | remark |
-| -                 | -              | - |
-| xx 00 xx          | xx Z1 xx       | count = 1 + S1, S1 = 0*4^0 |
-| xx 00 00 00 00 xx | xx Z4 xx       | count = 1 + S4, S4 = 3*4^0 |
-| xx 00 * 5  xx     | xx Z1Z1 xx     | count = 1 + S1S1, S1S1 = 1\*4^1 + 1\*4^0 |
-| xx 00 * 20 xx     | xx Z4Z4 xx     | count = 1 + 0f3 + 0f33, Z4 = 3\*4^1 + 3\*4^0 |
-| xx FF xx          | xx FF xx       | count = 1 + S1, S1 = 0*4^0 |
-| xx FF FF FF FF xx | xx F4 xx       | count = 1 + S4, S4 = 3*4^0 |
-| xx FF * 5  xx     | xx FFFF xx     | count = 1 + S1S1, S1S1 = 1\*4^1 + 1\*4^0 |
-| xx FF * 20 xx     | xx F4F4 xx     | count = 1 + 0f3 + 0f33, Z4 = 3\*4^1 + 3\*4^0 |
-| xx AA xx          | xx AA xx       | count = 1 + S1, S1 = 0*4^0 |
-| xx AA AA AA AA xx | xx AA R3 xx    | count = 1 + S4, S4 = 3*4^0 |
-| xx AA * 5  xx     | xx AA AA xx    | count = 1 + S1S1, S1S1 = 1\*4^1 + 1\*4^0 |
-| xx AA * 5  xx     | xx AA R2 R2 xx | count = 1 + S2S2, S2S2 = 1\*4^1 + 1\*4^0 |
-| xx AA * 20 xx     | xx AA R4 R4 xx | count = 1 + 0f3 + 0f33, Z4 = 3\*4^1 + 3\*4^0 |
-
-
-
-xx aa aa
-xx aa aa aa  -> xx aa R2 -> so the aa before the first R is not counted inside the R-sequence. It stays for itself and serves then as R1.
-
-## Algorithm
+##  6. <a name='Algorithm'></a>Algorithm
 
 * Compute character count
-* Determine Sigil sequence as S1-S4 ciphers
-* Handle Offsets
+* Determine Sigil sequence as ciphers
+* Handle Offsets to build sigil chain (buffer ends with a sigil byte)
+* Mathematical prove? 
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+##  7. <a name='ChangeLog'></a>Change Log
+
+| Date | Version | Comment |
+| - | - | - |
+| 2022-JUN-00 | 0.0.0 | initial |
+| 2022-JUL-07 | 0.1.0 | CCTN start now with 2. |
+| 2022-JUL-07 | 0.1.1 | Explanation and samples added. |
+
+<p align="right">(<a href="#top">back to top</a>)</p>
