@@ -23,32 +23,119 @@
 //! ASSERT checks for a true condition, otherwise stop.
 #define ASSERT( condition ) do{ if( !(condition) ){ for(;;){} } }while(0);
 
-static uint8_t * o = output; //!< o is the write pointer.
+static uint8_t * o; //!< o is the output write pointer.
 static uint8_t distance = 0; //<! distance is the byte count to the next sigil in sigil chain.
 static uint32_t zeroCount; //!< zeroCount is the number of accumulated 00-bytes.
 static uint32_t fullCount; //!< fullCount is the number of accumulated FF-bytes.
 static uint32_t repeatCount; //!< repeatCount is the number of accumulated equal bytes.
-static uint8_t CCxN[100];
+//  #define MAX_CIPHERS 16
+//  static uint8_t ciphers[MAX_CIPHERS];
 
+//  //! firstQuaternaryCipher computes first quaternary cipher of *pNumber and reduces *pNumber accordingly.
+//  uint8_t firstQuaternaryCipher( int * pNumber ){
+//      int cipher = *pNumber;
+//      int power = 0;
+//      int part = 1;
+//      while( cipher > 3  ){
+//          cipher >>= 2; // /= 4
+//          power++;
+//          part <<= 2; // *= 4
+//      }
+//      *pNumber -= cipher * part; 
+//      return cipher;
+//  }
+//  
+//  //! ntoq converts num into a quaternary cipher sequence to buf and returns count of ciphers.
+//  unsigned ntoq( int num, uint8_t* buf ){
+//      // todo: more effective implementation
+//      int result = itoa( num, buf, MAX_CIPHERS, 4 );
+//      ASSERT( result == 0 )
+//      return strlen(buf);
+//  }
+//  
+//  //! ntot converts num into a ternary cipher sequence to buf and returns count of ciphers.
+//  unsigned ntot( int num, uint8_t* buf ){
+//      // todo: more effective implementation
+//      int result = itoa( num, buf, MAX_CIPHERS, 3 );
+//      ASSERT( result == 0 )
+//      return strlen(buf);
+//  }
 
-uint8_t* CCQN[] = {
-    Z0, Z1, Z2, Z3,
-    
-}
-
-
-static uint8_t* countToCCQN( uint32_t count ){
-    ASSERT( zeroCount > 0 )
-    switch( zeroCount ){
-        case 1: CCxN[0] = Z0; return 1; 
-        case 1: CCxN[0] = Z0; return 1; 
-        case 1: CCxN[0] = Z0; return 1; 
-        case 1: CCxN[0] = Z0; return 1; 
-        case 1: CCxN[0] = Z0; return 1; 
+//! ntoCCQNZ converts num into a CCQN cipher sequence coded as Z sigils to buf and returns count of ciphers.
+unsigned ntoCCQNZ( int num, uint8_t* buf ){
+    ASSERT( num > 0 )
+    if( num <= 4 ){
+        static uint8_t* ciphers[4] = {
+            Z0, Z1, Z2, Z3 // 1, 2, 3, 4
+        };
+        *buf = ciphers[num-1];
+        return 1;
     }
+    if( num <= 20){
+        static uint8_t* ciphers[16][2] = {
+            { Z0, Z0 }, { Z0, Z1 }, { Z0, Z2}, { Z0, Z3 }, //  5,  6,  7,  8,
+            { Z1, Z0 }, { Z1, Z1 }, { Z1, Z2}, { Z1, Z3 }, //  9, 10, 11, 12,
+            { Z2, Z0 }, { Z2, Z1 }, { Z2, Z2}, { Z2, Z3 }, // 13, 14, 15, 16,
+            { Z3, Z0 }, { Z3, Z1 }, { Z3, Z2}, { Z3, Z3 }  // 17, 18, 19, 20,
+        };
+        buf[0] = ciphers[num-5][0];
+        buf[1] = ciphers[num-5][1];
+        return 2;        
+    }
+    ASSERT( num < 21 ) // todo: generic solution
 }
+
+//! ntoCCQNF converts num into a CCQN cipher sequence coded as F sigils to buf and returns count of ciphers.
+unsigned ntoCCQNF( int num, uint8_t* buf ){
+    ASSERT( num > 0 )
+    if( num <= 4 ){
+        static uint8_t* ciphers[4] = {
+            F0, F1, F2, F3 // 1, 2, 3, 4
+        };
+        *buf = ciphers[num-1];
+        return 1;
+    }
+    if( num <= 20 ){
+        static uint8_t* ciphers[16][2] = {
+            { F0, F0 }, { F0, F1 }, { F0, F2}, { F0, F3 }, //  5,  6,  7,  8,
+            { F1, F0 }, { F1, F1 }, { F1, F2}, { F1, F3 }, //  9, 10, 11, 12,
+            { F2, F0 }, { F2, F1 }, { F2, F2}, { F2, F3 }, // 13, 14, 15, 16,
+            { F3, F0 }, { F3, F1 }, { F3, F2}, { F3, F3 }  // 17, 18, 19, 20,
+        };
+        buf[0] = ciphers[num-5][0];
+        buf[1] = ciphers[num-5][1];
+        return 2;        
+    }
+    ASSERT( num < 21 ) // todo: generic solution
+}
+
+
+//! ntoCCTNR converts num into a CCTN cipher sequence coded as R sigils to buf and returns count of ciphers.
+unsigned ntoCCTNR( int num, uint8_t* buf ){
+    ASSERT( num > 1 )
+    if( num <= 4 ){
+        static uint8_t* ciphers[4] = {
+            R0, R1, R2 // 2, 3, 4
+        };
+        *buf = ciphers[num-1];
+        return 1;
+    }
+    if( num <= 13 ){
+        static uint8_t* ciphers[16][2] = {
+            { R0, R0 }, { R0, R1 }, { R0, R2}, //  5,  6,  7,
+            { R1, R0 }, { R1, R1 }, { R1, R2}, //  8,  9, 10,
+            { R2, R0 }, { R2, R1 }, { R2, R2}, // 11, 12, 13,
+        };
+        buf[0] = ciphers[num-5][0];
+        buf[1] = ciphers[num-5][1];
+        return 2;        
+    }
+    ASSERT( num < 14 ) // todo: generic solution
+}
+
 
 static void writeZeroCount( void ){
+    
 
     zeroCount = 0;
 }
@@ -65,7 +152,6 @@ static void writeRepeatCount( uint8_t aa ){
 
 
 size_t TCOBSEncode( void * restrict output, const void * restrict input, size_t length){
-    uint8_t* out = output;
     uint8_t const * i = input; // read pointer
     uint8_t const * limit = input + length; // read limit
     uint8_t b_1; // previous byte
@@ -73,6 +159,7 @@ size_t TCOBSEncode( void * restrict output, const void * restrict input, size_t 
     zeroCount = 0;
     fullCount = 0;
     repeatCount = 0;
+    o = output;
 
     // comment syntax:
     //     Sigil bytes chaining is done with offset and not shown explicitly.
