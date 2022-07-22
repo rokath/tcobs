@@ -1,5 +1,10 @@
 # TCOBS
 
+ATTENTION! The current code is stable and ready to use but:
+
+The encoding will be changed in the future in favour to compress better especially long rows of equal bytes.
+ See [TCOBS2Specification](https://github.com/rokath/tcobs/blob/master/docs/TCOBS2Specification.md) for details. The now active and stable code will stay available in the future.
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
