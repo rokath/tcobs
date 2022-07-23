@@ -5,6 +5,10 @@
 #ifndef TCOBS_H_
 #define TCOBS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 
