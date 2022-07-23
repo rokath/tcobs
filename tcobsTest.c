@@ -2,26 +2,54 @@
 #include <stdint.h>
 #include <string.h>
 #include "tcobs.h"
+#include "tcobsInternal.h"
 
-//! ASSERT checks for a true condition, otherwise stop.
-#define ASSERT( condition ) do{ if( !(condition) ){ for(;;){} } }while(0);
+//! debugSet contains only representative data for debugging.
+//! The more intensive testing is done from Go using CGO.
+uint8_t debugSet[] = {
+  //len, data...
+      1, 0,
+      1, Z0,
+      
+      2, 0, 0,
+      1, Z1,
+      
+      3, 0, 0, 0,
+      1, Z2,
+      
+      4, 0, 0, 0, 0,
+      1, Z3,
+      
+      5, 0, 0, 0, 0, 0,
+      2, Z0, Z0,
+      
+      1, 0xaa,
+      2, 0xaa, N|1,
+      
+      2, 0xaa, 0xaa,
+      3, 0xaa, 0xaa, N|2,
+      
+      3, 0xaa, 0xaa, 0xaa,
+      2, 0xaa, R0|1,
+      
+      4, 0xaa, 0xaa, 0xaa, 0xaa,
+      2, 0xaa, R1|1,
+      
+      5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
+      2, 0xaa, R2|(1+1),
+      
+      6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
+      3, 0xaa, R0|1, R0,
 
-uint8_t testSet[] = {
-    //6, 0, 0, 0, 0, 0, 0xFF, 
-    //4, 0x60, 0x40, 0xFF, 0xA1,
-    
-    5, 0xFF, 0x02, 0x02, 0x00, 0xFF,
-    6, 0xFF, 0x02, 0x02, 0x23, 0xFF, 0xA1,
 };
-
-uint8_t* t = testSet;
-uint8_t* limit = testSet + sizeof(testSet);
 
 
 void TCOBSTest( void ){
+    uint8_t* t = debugSet;
+    uint8_t* limit = debugSet + sizeof(debugSet);
     unsigned ilen, olen;
     uint8_t* input;
-    static uint8_t output[100];
+    uint8_t output[40];
 
     while( t < limit ){
         ilen = *t++;
@@ -29,16 +57,16 @@ void TCOBSTest( void ){
         memset( output, 0x55, sizeof(output) );
         olen = TCOBSEncode( output, input, ilen);
         t += ilen;
-        ASSERT( olen == *t++ )
+        if( olen != *t++ ){ 
+            for(;;){} 
+        } 
         for( int i = 0; i < olen; i++ ){
-            ASSERT( output[i] == *t++ )
+            if( output[i] != *t++ ){ 
+                for(;;){} 
+            } 
         }
     }
 }
-        
-        
-
-
 
 
 /*

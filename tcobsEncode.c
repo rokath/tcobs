@@ -111,8 +111,16 @@ size_t TCOBSEncode( void * restrict output, const void * restrict input, size_t 
                     }
                     if( b == b_1 ){ // , zn AA AA.
                         ASSERT( (fullCount|zeroCount) == 0 );
-                        reptCount +=2; // , rn -- --.
+                        reptCount +=1; // , rn -- AA.
+                        *out++ = b; // AA, rn -- --.
+                        if( distance == 31 ){
+                            writeNoopSigil( &out, &distance);
+                        }
+                        distance++;
                         writeRepeatCount(&out, b, &reptCount, &distance);
+                        if( distance > 0 ){
+                            writeNoopSigil( &out, &distance);
+                        }
                         return out - (uint8_t*)output;
                     }                    
                 }else{ // , zn|fn|rn xx yy. (xx != yy)
@@ -174,8 +182,9 @@ lastByte: // , -- xx.
 
 static void writeNoopSigil( uint8_t ** out, int * distance){
     ASSERT( *distance <= 31 );
-    **out++ = N | *distance;
-    *distance = 0;          
+    **out = N | *distance;
+    *out += 1;
+    *distance = 0;
 }
 
 static void writeLastSigil( uint8_t ** out, int * distance){
@@ -191,26 +200,30 @@ static void writeZeroCount( uint8_t ** out, int * num, int * distance ){
         switch( ciphers[i] ){
             case Z0:
                 ASSERT( *distance <= 31 );
-                **out++ = Z0 | *distance;
+                **out = Z0 | *distance;
+                *out += 1;
                 *distance = 0;
                 continue;          
             case Z1:
                 ASSERT( *distance <= 31 );
-                **out++ = Z1 | *distance;
+                **out = Z1 | *distance;
+                *out += 1;
                 *distance = 0;
                 continue;
             case Z2:
                 if( *distance > 15 ){
                     writeNoopSigil( out, distance);
                 }
-                **out++ = Z2 | *distance;
+                **out = Z2 | *distance;
+                *out += 1;
                 *distance = 0;
                 continue;
             case Z3:
                 if( *distance > 15 ){
                     writeNoopSigil( out, distance);
                 }
-                **out++ = Z3 | *distance;
+                **out = Z3 | *distance;
+                *out += 1;
                 *distance = 0;
                 continue;
             default: ASSERT( 0 );
@@ -225,7 +238,8 @@ static void writeFullCount( uint8_t ** out, int * num, int * distance ){
     for( int i = 0; i < ciphersCount; i++ ){
         switch( ciphers[i] ){
             case F0:
-                **out++ = F0;
+                **out = F0;
+                *out += 1;
                 if( *distance == 31 ){
                     writeNoopSigil( out, distance);
                 }
@@ -233,21 +247,24 @@ static void writeFullCount( uint8_t ** out, int * num, int * distance ){
                 continue;
             case F1:
                 ASSERT( *distance <= 31 );
-                **out++ = F1 | *distance;
+                **out = F1 | *distance;
+                *out += 1;
                 *distance = 0;
                 continue;
             case F2:
                 if( *distance > 15 ){
                      writeNoopSigil( out, distance);
                 }
-                **out++ = F2 | *distance;
+                **out = F2 | *distance;
+                *out += 1;
                 *distance = 0;
                 continue;
             case F3:
                 if( *distance > 14 ){
                      writeNoopSigil( out, distance);
                 }
-                **out++ = F3 | *distance;
+                **out = F3 | *distance;
+                *out += 1;
                 *distance = 0;
                 continue;
             default: ASSERT( 0 );
@@ -258,7 +275,8 @@ static void writeFullCount( uint8_t ** out, int * num, int * distance ){
 
 static void writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * distance ){
     if( *num == 1 ){
-        **out++ = aa;
+        **out = aa;
+        *out += 1;
         if( *distance == 31 ){
             writeNoopSigil( out, distance);
         }
@@ -270,21 +288,24 @@ static void writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * dista
             switch( ciphers[i] ){
                 case R0:
                     ASSERT( *distance <= 31 );
-                    **out++ = R0 | *distance;
+                    **out = R0 | *distance;
+                    *out += 1;
                     *distance = 0;
                     continue;
                 case R1:
                     if( *distance > 15 ){
                         writeNoopSigil( out, distance);
                     }
-                    **out++ = R1 | *distance;
+                    **out = R1 | *distance;
+                    *out += 1;
                     *distance = 0;
                     continue;
                 case R2:
                     if( *distance > 14 ){
                         writeNoopSigil( out, distance);
                     }
-                    **out++ = R1 | (*distance + 1);
+                    **out = R2 | (*distance + 1);
+                    *out += 1;
                     *distance = 0;
                     continue;
                 default: ASSERT( 0 );
