@@ -1,4 +1,4 @@
-// Package tcobs2 implements ./docs/TCOBSSpecification.md.
+// Package tcobs implements ./docs/TCOBSSpecification.md.
 // For encoding create an Encoder and use the Write method as shown in TestWrite.
 // For decoding create a Decoder and use the Read method as shown in TestSingleRead and TestMultiRead.
 // It is possible to use only the functions tcobs.Decode or tcobs.CEncode.
