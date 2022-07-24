@@ -52,7 +52,7 @@
 
 ![COBSDataDisruption](./ref/COBSDataDisruption.svg)
 
-* For the COBS decoder it makes no difference if the COBS packages start or end with a sigil byte. In any case it will run into issues in such case.
+* For the COBS decoder it makes no difference if the COBS packages start or end with a sigil byte. In any case it will run into issues in such case with high probability. 
   * An additional CRC, like a simple XOR inside could be added but would not really help.
 * The receiver calls continuously a `Read()` function. The received buffer can contain 0-delimited COBS packages and the receiver assumes them all to be valid because there is no known significant time delay between package start and end.
 * If a package start was received and the next package end reception is more than ~100ms away, a data disruption is likely and the receiver should ignore these data.
