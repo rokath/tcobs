@@ -9,23 +9,23 @@ type testTable []struct {
 
 var testData = testTable{
 
-	//{[]byte{}, []byte{}},
+	{[]byte{}, []byte{}},
 	{[]byte{0}, []byte{0x20}},
-	//  {[]byte{0, 0}, []byte{0x60}},
-	//  {[]byte{0, 0, 0}, []byte{0x50}},
-	//  {[]byte{0, 0, 0, 0}, []byte{0x10}},
-	//  //{[]byte{0, 0, 0, 0, 0}, []byte{0x20, 0x20}},
-	//  {[]byte{9}, []byte{9, 0xA1}},
-	//  {[]byte{9, 9}, []byte{9, 9, 0xA2}},
-	//  {[]byte{9, 9, 9}, []byte{9, 0x81}},
-	//  {[]byte{9, 9, 9, 9}, []byte{9, 0x41}},
-	//  {[]byte{9, 9, 9, 9, 9}, []byte{9, 0x02}},
-	//  //{[]byte{9, 9, 9, 9, 9, 9}, []byte{9, 0x81, 0x80}},
-	//  //{[]byte{0xFF}, []byte{0xFF, 0xA1}}, // could be only FF
-	//  {[]byte{0xFF, 0xFF}, []byte{0xC0}},
-	//  {[]byte{0xFF, 0xFF, 0xFF}, []byte{0xE0}},
-	//  {[]byte{0xFF, 0xFF, 0xFF, 0xFF}, []byte{0xF0}},
-	//  //{[]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, []byte{0xFF, 0xFF}},
+	{[]byte{0, 0}, []byte{0x60}},
+	{[]byte{0, 0, 0}, []byte{0x50}},
+	{[]byte{0, 0, 0, 0}, []byte{0x10}},
+	//{[]byte{0, 0, 0, 0, 0}, []byte{0x20, 0x20}},
+	{[]byte{9}, []byte{9, 0xA1}},
+	{[]byte{9, 9}, []byte{9, 9, 0xA2}},
+	{[]byte{9, 9, 9}, []byte{9, 0x81}},
+	{[]byte{9, 9, 9, 9}, []byte{9, 0x41}},
+	{[]byte{9, 9, 9, 9, 9}, []byte{9, 0x02}},
+	//{[]byte{9, 9, 9, 9, 9, 9}, []byte{9, 0x81, 0x80}},
+	//{[]byte{0xFF}, []byte{0xFF, 0xA1}}, // could be only FF
+	{[]byte{0xFF, 0xFF}, []byte{0xC0}},
+	{[]byte{0xFF, 0xFF, 0xFF}, []byte{0xE0}},
+	{[]byte{0xFF, 0xFF, 0xFF, 0xFF}, []byte{0xF0}},
+	//{[]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, []byte{0xFF, 0xFF}},
 }
 
 // createEncodedStream concatenates all trestData enc sequences with 0-delimiters into one byte slice.

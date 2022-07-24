@@ -22,22 +22,22 @@ static uint8_t decodeDebugSet[] = {
       
       //  2, Z0, Z0,
       //  5, 0, 0, 0, 0, 0,
-      //  
-      //  2, 0xaa, N|1,
-      //  1, 0xaa,
-      //  
-      //  3, 0xaa, 0xaa, N|2,
-      //  2, 0xaa, 0xaa,
-      //  
-      //  2, 0xaa, R0|1,
-      //  3, 0xaa, 0xaa, 0xaa,
-      //  
-      //  2, 0xaa, R1|1,
-      //  4, 0xaa, 0xaa, 0xaa, 0xaa,
-      //  
-      //  2, 0xaa, R2|(1+1),
-      //  5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-      //  
+      
+      2, 0xaa, N|1,
+      1, 0xaa,
+      
+      3, 0xaa, 0xaa, N|2,
+      2, 0xaa, 0xaa,
+      
+      2, 0xaa, R0|1,
+      3, 0xaa, 0xaa, 0xaa,
+      
+      2, 0xaa, R1|1,
+      4, 0xaa, 0xaa, 0xaa, 0xaa,
+      
+      2, 0xaa, R2|(1+1),
+      5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
+      
       //  3, 0xaa, R0|1, R0,
       //  6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
 
@@ -48,18 +48,19 @@ void TCOBSDecodeTest( void ){
     uint8_t* limit = decodeDebugSet + sizeof(decodeDebugSet);
     unsigned ilen, olen;
     uint8_t* input;
-    uint8_t output[40];
+    const int omax = 10;
+    uint8_t output[omax];
 
     while( t < limit ){
         ilen = *t++;
         input = t;
         memset( output, 0x55, sizeof(output) );
-        olen = TCOBSDecode( output, 40, input, ilen);
+        olen = TCOBSDecode( output, omax, input, ilen);
         t += ilen;
         if( olen != *t++ ){ 
             for(;;){} 
         } 
-        for( int i = 0; i < olen; i++ ){
+        for( int i = omax - olen; i < omax; i++ ){
             if( output[i] != *t++ ){ 
                 for(;;){} 
             } 
