@@ -53,7 +53,7 @@
 ![COBSDataDisruption](./ref/COBSDataDisruption.svg)
 
 * For the COBS decoder it makes no difference if the COBS packages start or end with a sigil byte. In any case it will run into issues in such case with high probability. 
-  * An additional CRC, like a simple XOR inside could be added but would not really help.
+  * An additional package CRC before encoding could be added to decrease false match probability.
 * The receiver calls continuously a `Read()` function. The received buffer can contain 0-delimited COBS packages and the receiver assumes them all to be valid because there is no known significant time delay between package start and end.
 * If a package start was received and the next package end reception is more than ~100ms away, a data disruption is likely and the receiver should ignore these data.
   * To minimise data loss, each message should get COBS encoded separately.
@@ -319,7 +319,6 @@ F4 is maybe not use that often and could be used in a completely different way. 
 | 2022-APR-01 | 0.8.1 | Document slightly restructured |
 | 2022-APR-02 | 0.8.2 | Preface reworked |
 | 2022-MAY-08 | 0.8.3 | Correction: in the worst case 1 additional byte per ~32~ 31 bytes |
-| 2022-MAY-22 | 0.8.4 | F4 remark added. Correction: *Trice* \-> message in chapter 2 and 3. | 
-<!--
-| 2022-APR-   | 0.9.0 | |
--->
+| 2022-MAY-22 | 0.8.4 | F4 remark added. Correction: *Trice* \-> message in chapter 2 and 3. |
+| 2022-JUL-24 | 0.8.5 | Smaller wording improvements. |
+
