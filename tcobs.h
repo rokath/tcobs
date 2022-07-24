@@ -30,6 +30,9 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
 //! but data can get much longer. Remove the "restrict" qualifiers if compiling with a pre-C99 C dialect.
 int TCOBSDecode( void * restrict output, size_t max, const void * restrict input, size_t length );
 
+#define OUT_BUFFER_TOO_SMALL -1 //!< OUT_BUFFER_TOO_SMALL is TCOBSDecode return error code.
+#define INPUT_DATA_CORRUPTED -2 //!< INPUT_DATA_CORRUPTED is TCOBSDecode return error code.
+
 #ifdef __cplusplus
 }
 #endif
