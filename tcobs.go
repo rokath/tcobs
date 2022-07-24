@@ -33,6 +33,6 @@ func CDecode(o, i []byte) (n int) {
 	}
 	in := unsafe.Pointer(&i[0])
 	out := unsafe.Pointer(&o[0])
-	n = int(C.TCOBSDecode(out, C.size_t(len(o)), in))
+	n = int(C.TCOBSDecode(out, C.size_t(len(o)), in, C.size_t(len(i))))
 	return
 }

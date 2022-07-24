@@ -8,6 +8,6 @@
 #include "tcobs.h"
 #include "tcobsInternal.h"
 
-size_t TCOBSDecode( void * restrict output, size_t max, const void * restrict input ){
+int TCOBSDecode( void * restrict output, size_t max, const void * restrict input, size_t length ){
     return 0;
 }

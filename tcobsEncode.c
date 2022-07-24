@@ -19,7 +19,7 @@ static unsigned ntoCCQNZ( int num, uint8_t* buf );
 static unsigned ntoCCQNF( int num, uint8_t* buf );
 static unsigned ntoCCTNR( int num, uint8_t* buf );
 
-size_t TCOBSEncode( void * restrict output, const void * restrict input, size_t length){
+int TCOBSEncode( void * restrict output, const void * restrict input, size_t length){
     uint8_t const * i = input; // read pointer
     uint8_t const * limit = (uint8_t*)input + length; // read limit
     uint8_t b_1; // previous byte
