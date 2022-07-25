@@ -145,8 +145,8 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
                     if( reptCount ){ // AA, rn -- yy. (n>=1)
                         ASSERT( (fullCount|zeroCount) == 0 );
                         writeRepeatCount(&out, b_1, &reptCount, &distance); // AA, -- yy.
-                        goto lastByte;
                     }
+                    goto lastByte;
                 }
             }
         }
