@@ -8,6 +8,9 @@
 //! The more intensive testing is done from Go using CGO.
 static uint8_t encodeDebugSet[] = {
   //len, data...
+      2, 0xAA, 0x00, // {[]byte{0xAA, 0x00},
+      2, 0xAA, 0x21, //  []byte{0xAA, 0x21},},
+/*
       1, 0,
       1, Z0,
       
@@ -40,7 +43,7 @@ static uint8_t encodeDebugSet[] = {
       
       6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
       3, 0xaa, R0|1, R0,
-
+*/
 };
 
 
