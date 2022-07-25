@@ -20,15 +20,26 @@
 //! COPY_BYTES transfers distance bytes backwards from the input buffer end to the output buffer end.
 #define COPY_BYTES while( distance--){ *--o = *--i; }
 
+#define MAX_CIPHERS 24 //!< MAX_CIPHERS is max expected sigil bytes of one kind in a row.
+
+static void writeZn( uint8_t ** out, uint8_t* ss, int ciphersCount);
+static void writeFn( uint8_t ** out, uint8_t* ss, int ciphersCount);
+static void writeRn( uint8_t ** out, uint8_t* ss, int ciphersCount);
+
 int TCOBSDecode( void * restrict output, size_t max, const void * restrict input, size_t length ){
     if( length == 0 ){
         return 0;
     }else{
+        uint8_t sigilSequence[MAX_CIPHERS];
+        uint8_t * ss = sigilSequence + MAX_CIPHERS;
         uint8_t sigil;
         uint8_t * o = (uint8_t*)output + max; // output write pointer behind next value
         int distance;
         uint8_t const * i = (uint8_t*)input + length; // input read pointer behind next value
         uint8_t repeatByte;
+        int zCnt = 0; // Z sigils in a row
+        int fCnt = 0; // F sigils in a row
+        int rCnt = 0; // R Z sigils in a row
         for(;;){
             if( i == input ){ // done
                 return (uint8_t*)output + max - o;
@@ -96,10 +107,30 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 }
             }
             Z0sigil:
-                if( distance > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 1 )
-                    *--o = 0;
-                    COPY_BYTES
+            // At this point fCnt could be >0. That means a few FF bytes are to be written.
+            // Example:  
+            // 22 33 Z0|2 Z0 77 88 99 Z0|3 F3
+            // 22 33 Z0|2 Z0 77 88 99 Z0|3 # ss = F3
+                if( fCnt ){
+                    ASSERT( fCnt == sigilSequence + MAX_CIPHERS - ss )
+                    writeFn( &o, ss, fCnt );
+                    fCnt = 0;
+                }
+                if( rCnt ){
+                    ASSERT( rCnt == sigilSequence + MAX_CIPHERS - ss )
+                    writeRn( &o, ss, rCnt );
+                    rCnt = 0;
+                }
+                *--ss = Z0;
+                zCnt++;
+                if( distance == 0 && i > (uint8_t*)input ){ // a neighbor sigil in front
+                    continue;
+                }else{ // if( distance > 0 || i == input ){ // no neighbor sigil or done
+                    writeZn( &o, ss, zCnt );
+                    zCnt = 0;
+                    //CHECK_SPACE( 1 )
+                    //*--o = 0;
+                    //COPY_BYTES
                     continue;
                 }
                 return INPUT_DATA_CORRUPTED; // todo
@@ -215,4 +246,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 return INPUT_DATA_CORRUPTED; // todo
         }
     }
+}
+
+static void writeZn( uint8_t ** out, uint8_t* ss, int ciphersCount){
+}
+static void writeFn( uint8_t ** out, uint8_t* ss, int ciphersCount){
+}
+static void writeRn( uint8_t ** out, uint8_t* ss, int ciphersCount){
 }
