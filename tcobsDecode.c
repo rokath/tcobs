@@ -33,7 +33,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
             if( i == input ){ // done
                 return (uint8_t*)output + max - o;
             }
-            /*uint8_t*/ sigil = *--i; // 0x20 =      00100000
+            sigil = *--i;
             if( sigil >> 7 ==  0 ){               // 0xxxxxxx    // 00 | R2 | Z3 | Z0 | R1 | Z2 | Z1
                 if( sigil >> 6 ==  0 ){           // 00xxxxxx    // 00 | R2 | Z3 | Z0
                     if( sigil >> 5 ==  0 ){       // 000xxxxx    // 00 | R2 | Z3 
