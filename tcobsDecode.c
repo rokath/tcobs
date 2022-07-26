@@ -22,9 +22,9 @@
 
 #define MAX_CIPHERS 24 //!< MAX_CIPHERS is max expected sigil bytes of one kind in a row.
 
-static void writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
-static void writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
-static void writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t repeatByte);
+static int writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
+static int writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
+static int writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t repeatByte);
 
 static int CCQNZtoN( uint8_t* ciphers, int count );
 static int CCQNFtoN( uint8_t* ciphers, int count );
@@ -47,6 +47,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
         int fc = 0; // F sigils in a row
         int rc = 0; // R Z sigils in a row
         uint8_t repeatByte;
+        int err;
         for(;;){
             if( i == input ){ // done
                 ASSERT( zc|fc|rc|dc == 0 )
@@ -141,16 +142,27 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( fc ){
                     ASSERT( rc == 0 )
                     ASSERT( fc == cc + MAX_CIPHERS - ss )
-                    writeFn( &o, &ss, &fc );
+                    err = writeFn( &o, &ss, &fc );
+                    if( err ){
+                        return err;
+                    }
                 }
                 if( rc ){
                     ASSERT( fc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    writeRn( &o, &ss, &rc, repeatByte );
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
                 }
                 *--ss = Z0;
                 zc++;
-                writeZn( &o, &ss, &zc );
+                err = writeZn( &o, &ss, &zc );
+                if( err ){
+                    return err;
+                }
                 COPY_BYTES
                 continue;
             Z1sigil:
@@ -162,16 +174,27 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( fc ){
                     ASSERT( rc == 0 )
                     ASSERT( fc == cc + MAX_CIPHERS - ss )
-                    writeFn( &o, &ss, &fc );
+                    err = writeFn( &o, &ss, &fc );
+                    if( err ){
+                        return err;
+                    }
                 }
                 if( rc ){
                     ASSERT( fc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    writeRn( &o, &ss, &rc, repeatByte );
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
                 }
                 *--ss = Z1;
                 zc++;
-                writeZn( &o, &ss, &zc );
+                err = writeZn( &o, &ss, &zc );
+                if( err ){
+                    return err;
+                }
                 COPY_BYTES
                 continue;
             Z2sigil:
@@ -183,16 +206,27 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( fc ){
                     ASSERT( rc == 0 )
                     ASSERT( fc == cc + MAX_CIPHERS - ss )
-                    writeFn( &o, &ss, &fc );
+                    err = writeFn( &o, &ss, &fc );
+                    if( err ){
+                        return err;
+                    }
                 }
                 if( rc ){
                     ASSERT( fc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    writeRn( &o, &ss, &rc, repeatByte );
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
                 }
                 *--ss = Z2;
                 zc++;
-                writeZn( &o, &ss, &zc );
+                err = writeZn( &o, &ss, &zc );
+                if( err ){
+                    return err;
+                }
                 COPY_BYTES
                 continue;
             Z3sigil:
@@ -204,16 +238,27 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( fc ){
                     ASSERT( rc == 0 )
                     ASSERT( fc == cc + MAX_CIPHERS - ss )
-                    writeFn( &o, &ss, &fc );
+                    err = writeFn( &o, &ss, &fc );
+                    if( err ){
+                        return err;
+                    }
                 }
                 if( rc ){
                     ASSERT( fc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    writeRn( &o, &ss, &rc, repeatByte );
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
                 }
                 *--ss = Z3;
                 zc++;
-                writeZn( &o, &ss, &zc );
+                err = writeZn( &o, &ss, &zc );
+                if( err ){
+                    return err;
+                }
                 COPY_BYTES
                 continue;
             F0sigil:
@@ -225,16 +270,27 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( zc ){
                     ASSERT( rc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
-                    writeZn( &o, &ss, &zc );
+                    err = writeZn( &o, &ss, &zc );
+                    if( err ){
+                        return err;
+                    }
                 }
                 if( rc ){
                     ASSERT( zc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    writeRn( &o, &ss, &rc, repeatByte );
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
                 }
                 *--ss = F0;
                 fc++;
-                writeFn( &o, &ss, &fc );
+                err = writeFn( &o, &ss, &fc );
+                if( err ){
+                    return err;
+                }
                 COPY_BYTES
                 continue;
             F1sigil:
@@ -246,16 +302,27 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( zc ){
                     ASSERT( rc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
-                    writeZn( &o, &ss, &zc );
+                    err = writeZn( &o, &ss, &zc );
+                    if( err ){
+                        return err;
+                    }
                 }
                 if( rc ){
                     ASSERT( zc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    writeRn( &o, &ss, &rc, repeatByte );
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
                 }
                 *--ss = F1;
                 fc++;
-                writeFn( &o, &ss, &fc );
+                err = writeFn( &o, &ss, &fc );
+                if( err ){
+                    return err;
+                }
                 COPY_BYTES
                 continue;
             F2sigil:
@@ -267,16 +334,27 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( zc ){
                     ASSERT( rc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
-                    writeZn( &o, &ss, &zc );
+                    err = writeZn( &o, &ss, &zc );
+                    if( err ){
+                        return err;
+                    }
                 }
                 if( rc ){
                     ASSERT( zc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    writeRn( &o, &ss, &rc, repeatByte );
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
                 }
                 *--ss = F2;
                 fc++;
-                writeFn( &o, &ss, &fc );
+                err = writeFn( &o, &ss, &fc );
+                if( err ){
+                    return err;
+                }
                 COPY_BYTES
                 continue;
             F3sigil:
@@ -288,16 +366,27 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( zc ){
                     ASSERT( rc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
-                    writeZn( &o, &ss, &zc );
+                    err = writeZn( &o, &ss, &zc );
+                    if( err ){
+                        return err;
+                    }
                 }
                 if( rc ){
                     ASSERT( zc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    writeRn( &o, &ss, &rc, repeatByte );
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
                 }
                 *--ss = F3;
                 fc++;
-                writeFn( &o, &ss, &fc );
+                err = writeFn( &o, &ss, &fc );
+                if( err ){
+                    return err;
+                }
                 COPY_BYTES
                 continue;
             R0sigil:
@@ -306,121 +395,283 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     rc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 2 )
-                    repeatByte = *--i;
-                    i++;
-                    *--o = repeatByte;
-                    *--o = repeatByte;
-                    COPY_BYTES
-                    continue;
+                if( zc ){
+                    ASSERT( fc == 0 )
+                    ASSERT( zc == cc + MAX_CIPHERS - ss )
+                    err = writeZn( &o, &ss, &zc );
+                    if( err ){
+                        return err;
+                    }
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( fc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    err = writeFn( &o, &ss, &rc );
+                    if( err ){
+                        return err;
+                    }
+                }
+                *--ss = R0;
+                rc++;
+                repeatByte = *--i;
+                i++;
+                err = writeRn( &o, &ss, &rc, repeatByte );
+                if( err ){
+                    return err;
+                }
+                COPY_BYTES
+                continue;
             R1sigil:
                 if( (zc|fc|dc) == 0 && i != input ){
                     *--ss = R1;
                     rc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 3 )
-                    repeatByte = *--i;
-                    i++;
-                    *--o = repeatByte;
-                    *--o = repeatByte;
-                    *--o = repeatByte;
-                    COPY_BYTES
-                    continue;
+                if( zc ){
+                    ASSERT( fc == 0 )
+                    ASSERT( zc == cc + MAX_CIPHERS - ss )
+                    err = writeZn( &o, &ss, &zc );
+                    if( err ){
+                        return err;
+                    }
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( fc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    err = writeFn( &o, &ss, &rc );
+                    if( err ){
+                        return err;
+                    }
+                }
+                *--ss = R1;
+                rc++;
+                repeatByte = *--i;
+                i++;
+                err = writeRn( &o, &ss, &rc, repeatByte );
+                if( err ){
+                    return err;
+                }
+                COPY_BYTES
+                continue;
             R2sigil:
                 if( (zc|fc|dc) == 0 && i != input ){
                     *--ss = R2;
                     rc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 4 )
-                    repeatByte = *--i;
-                    i++;
-                    *--o = repeatByte;
-                    *--o = repeatByte;
-                    *--o = repeatByte;
-                    *--o = repeatByte;
-                    COPY_BYTES
-                    continue;
+                if( zc ){
+                    ASSERT( fc == 0 )
+                    ASSERT( zc == cc + MAX_CIPHERS - ss )
+                    err = writeZn( &o, &ss, &zc );
+                    if( err ){
+                        return err;
+                    }
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( fc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    err = writeFn( &o, &ss, &rc );
+                    if( err ){
+                        return err;
+                    }
+                }
+                *--ss = R2;
+                rc++;
+                repeatByte = *--i;
+                i++;
+                err = writeRn( &o, &ss, &rc, repeatByte );
+                if( err ){
+                    return err;
+                }
+                COPY_BYTES
+                continue;
             Nsigil:
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 0 )
-                    COPY_BYTES
-                    continue;
-                }
-                return INPUT_DATA_CORRUPTED; // todo
+                ASSERT( dc != 0 )
+                CHECK_SPACE( 0 )
+                COPY_BYTES
+                continue;
         }
     }
 }
 
 
-static void writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
+static int writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
     int n = CCQNZtoN( *ss, *ciphersCount );
+    if( n < 0 ){
+        return n;
+    }
     while( n-- ){
         *out -= 1;
         **out = 0;
     }
     *ss += *ciphersCount;
     *ciphersCount = 0;
+    return 0;
 }
 
-static void writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
+static int writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
     int n = CCQNFtoN( *ss, *ciphersCount );
+    if( n < 0 ){
+        return n;
+    }
     while( n-- ){
         *out -= 1;
         **out = 0xFF;
     }
     *ss += *ciphersCount;
     *ciphersCount = 0;
+    return 0;
 }
 
-static void writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t repeatByte ){
+static int writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t repeatByte ){
     int n = CCTNRtoN( *ss, *ciphersCount );
+    if( n < 0 ){
+        return n;
+    }
     while( n-- ){
         *out -= 1;
         **out = repeatByte;
     }
     *ss += *ciphersCount;
     *ciphersCount = 0;
+    return 0;
 }
 
 static int CCQNZtoN( uint8_t* ciphers, int count ){
-    ASSERT( count == 1 ) // todo
-    switch( *ciphers ){
-        case Z0: return 1;
-        case Z1: return 2;
-        case Z2: return 3;
-        case Z3: return 4;
-        default: for(;;);
+    if( count == 1 ){
+        switch( *ciphers ){
+            case Z0: return 1;
+            case Z1: return 2;
+            case Z2: return 3;
+            case Z3: return 4;
+            default: return -__LINE__;
+        }
     }
+    if( count == 2 ){
+        switch( ciphers[0] ){
+            case Z0: 
+                switch( ciphers[1] ){
+                    case Z0: return 5;
+                    case Z1: return 6;
+                    case Z2: return 7;
+                    case Z3: return 8;
+                    default: return -__LINE__;
+                }
+            case Z1: 
+                switch( ciphers[1] ){
+                    case Z0: return 9;
+                    case Z1: return 10;
+                    case Z2: return 11;
+                    case Z3: return 12;
+                    default: return -__LINE__;
+                }
+            case Z2: 
+                switch( ciphers[1] ){
+                    case Z0: return 13;
+                    case Z1: return 14;
+                    case Z2: return 15;
+                    case Z3: return 16;
+                    default: return -__LINE__;
+                }
+            case Z3: 
+                switch( ciphers[1] ){
+                    case Z0: return 17;
+                    case Z1: return 18;
+                    case Z2: return 19;
+                    case Z3: return 20;
+                    default: return -__LINE__;
+                }
+            default: return -__LINE__;
+        }
+    }
+    return -__LINE__; // todo
 }
 
 static int CCQNFtoN( uint8_t* ciphers, int count ){
-    ASSERT( count == 1 ) // todo
-    switch( *ciphers ){
-        case F0: return 1;
-        case F1: return 2;
-        case F2: return 3;
-        case F3: return 4;
-        default: for(;;);
+    if( count == 1 ){
+        switch( *ciphers ){
+            case F0: return 1;
+            case F1: return 2;
+            case F2: return 3;
+            case F3: return 4;
+            default: return -__LINE__;
+        }
     }
+    if( count == 2 ){
+        switch( ciphers[0] ){
+            case F0: 
+                switch( ciphers[1] ){
+                    case F0: return 5;
+                    case F1: return 6;
+                    case F2: return 7;
+                    case F3: return 8;
+                    default: return -__LINE__;
+                }
+            case F1: 
+                switch( ciphers[1] ){
+                    case F0: return 9;
+                    case F1: return 10;
+                    case F2: return 11;
+                    case F3: return 12;
+                    default: return -__LINE__;
+                }
+            case F2: 
+                switch( ciphers[1] ){
+                    case F0: return 13;
+                    case F1: return 14;
+                    case F2: return 15;
+                    case F3: return 16;
+                    default: return -__LINE__;
+                }
+            case F3: 
+                switch( ciphers[1] ){
+                    case F0: return 17;
+                    case F1: return 18;
+                    case F2: return 19;
+                    case F3: return 20;
+                    default: return -__LINE__;
+                }
+            default: return -__LINE__;
+        }
+    }
+    return -__LINE__; // todo
 }
 
 static int CCTNRtoN( uint8_t* ciphers, int count ){
+    if( count == 1 ){
     ASSERT( count == 1 ) // todo
-    switch( *ciphers ){
-        case R0: return 2;
-        case R1: return 3;
-        case R2: return 4;
-        default: for(;;);
+        switch( *ciphers ){
+            case R0: return 2;
+            case R1: return 3;
+            case R2: return 4;
+            default: return -__LINE__;
+        }
     }
+    if( count == 2 ){
+        switch( ciphers[0] ){
+            case R0: 
+                switch( ciphers[1] ){
+                    case R0: return 5;
+                    case R1: return 6;
+                    case R2: return 7;
+                    default: return -__LINE__;
+                }
+            case R1: 
+                switch( ciphers[1] ){
+                    case R0: return 8;
+                    case R1: return 9;
+                    case R2: return 10;
+                    default: return -__LINE__;
+                }
+            case R2: 
+                switch( ciphers[1] ){
+                    case R0: return 11;
+                    case R1: return 12;
+                    case R2: return 13;
+                    default: return -__LINE__;
+                }
+            default: return -__LINE__;
+        }
+    }
+    return -__LINE__; // todo
 }
