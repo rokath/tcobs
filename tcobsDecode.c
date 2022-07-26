@@ -50,7 +50,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
         int err;
         for(;;){
             if( i == input ){ // done
-                ASSERT( zc|fc|rc|dc == 0 )
+                ASSERT( (zc|fc|rc|dc) == 0 )
                 return (uint8_t*)output + max - o;
             }
             ASSERT(zc<MAX_CIPHERS)
