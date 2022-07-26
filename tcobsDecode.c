@@ -26,14 +26,21 @@ static void writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
 static void writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
 static void writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t repeatByte);
 
+static int CCQNZtoN( uint8_t* ciphers, int count );
+static int CCQNFtoN( uint8_t* ciphers, int count );
+static int CCTNRtoN( uint8_t* ciphers, int count );
+
+        uint8_t cc[MAX_CIPHERS];
+        uint8_t * ss = cc + MAX_CIPHERS; // sigilSequence (without distance bits) = counted ciphers
+
 int TCOBSDecode( void * restrict output, size_t max, const void * restrict input, size_t length ){
     if( length == 0 ){
         return 0;
     }else{
         uint8_t sigil;
         int dc; // distance;
-        uint8_t cc[MAX_CIPHERS];
-        uint8_t * ss = cc + MAX_CIPHERS; // sigilSequence (without distance bits) = counted ciphers
+        //uint8_t cc[MAX_CIPHERS];
+        //uint8_t * ss = cc + MAX_CIPHERS; // sigilSequence (without distance bits) = counted ciphers
         uint8_t * o = (uint8_t*)output + max; // output write pointer behind next value
         uint8_t const * i = (uint8_t*)input + length; // input read pointer behind next value
         int zc = 0; // Z sigils in a row
@@ -126,7 +133,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
             // |     0  0  0  0 # 22 33                          # 22 33 00 00 00 00 00 77 88 99 00 FF FF FF FF # i == input -> done
 
             Z0sigil:
-                if( fc|rc|dc == 0 && i != input ){
+                if( (fc|rc|dc) == 0 && i != input ){
                     *--ss = Z0;
                     zc++;
                     continue;
@@ -147,109 +154,154 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             Z1sigil:
-                if( fc|rc|dc == 0){
+                if( (fc|rc|dc) == 0 && i != input ){
                     *--ss = Z1;
                     zc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 2 )
-                    *--o = 0;
-                    *--o = 0;
-                    COPY_BYTES
-                    continue;
+                if( fc ){
+                    ASSERT( rc == 0 )
+                    ASSERT( fc == cc + MAX_CIPHERS - ss )
+                    writeFn( &o, &ss, &fc );
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( rc ){
+                    ASSERT( fc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    writeRn( &o, &ss, &rc, repeatByte );
+                }
+                *--ss = Z1;
+                zc++;
+                writeZn( &o, &ss, &zc );
+                COPY_BYTES
+                continue;
             Z2sigil:
-                if( fc|rc|dc == 0){
+                if( (fc|rc|dc) == 0 && i != input ){
                     *--ss = Z2;
                     zc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 3 )
-                    *--o = 0;
-                    *--o = 0;
-                    *--o = 0;
-                    COPY_BYTES
-                    continue;
+                if( fc ){
+                    ASSERT( rc == 0 )
+                    ASSERT( fc == cc + MAX_CIPHERS - ss )
+                    writeFn( &o, &ss, &fc );
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( rc ){
+                    ASSERT( fc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    writeRn( &o, &ss, &rc, repeatByte );
+                }
+                *--ss = Z2;
+                zc++;
+                writeZn( &o, &ss, &zc );
+                COPY_BYTES
+                continue;
             Z3sigil:
-                if( fc|rc|dc == 0){
+                if( (fc|rc|dc) == 0 && i != input ){
                     *--ss = Z3;
                     zc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 4 )
-                    *--o = 0;
-                    *--o = 0;
-                    *--o = 0;
-                    *--o = 0;
-                    COPY_BYTES
-                    continue;
+                if( fc ){
+                    ASSERT( rc == 0 )
+                    ASSERT( fc == cc + MAX_CIPHERS - ss )
+                    writeFn( &o, &ss, &fc );
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( rc ){
+                    ASSERT( fc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    writeRn( &o, &ss, &rc, repeatByte );
+                }
+                *--ss = Z3;
+                zc++;
+                writeZn( &o, &ss, &zc );
+                COPY_BYTES
+                continue;
             F0sigil:
-                if( zc|rc|dc == 0){
+                if( (zc|rc|dc) == 0 && i != input ){
                     *--ss = F0;
                     fc++;
                     continue;
                 }
-                if( i == input ){ // done
-                    CHECK_SPACE( 1 );
-                    *--o = 0xFF;
-                    continue;
+                if( zc ){
+                    ASSERT( rc == 0 )
+                    ASSERT( zc == cc + MAX_CIPHERS - ss )
+                    writeZn( &o, &ss, &zc );
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( rc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    writeRn( &o, &ss, &rc, repeatByte );
+                }
+                *--ss = F0;
+                fc++;
+                writeFn( &o, &ss, &fc );
+                COPY_BYTES
+                continue;
             F1sigil:
-                if( zc|rc|dc == 0){
+                if( (zc|rc|dc) == 0 && i != input ){
                     *--ss = F1;
                     fc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 2 )
-                    *--o = 0xFF;
-                    *--o = 0xFF;
-                    COPY_BYTES
-                    continue;
+                if( zc ){
+                    ASSERT( rc == 0 )
+                    ASSERT( zc == cc + MAX_CIPHERS - ss )
+                    writeZn( &o, &ss, &zc );
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( rc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    writeRn( &o, &ss, &rc, repeatByte );
+                }
+                *--ss = F1;
+                fc++;
+                writeFn( &o, &ss, &fc );
+                COPY_BYTES
+                continue;
             F2sigil:
-                if( zc|rc|dc == 0){
+                if( (zc|rc|dc) == 0 && i != input ){
                     *--ss = F2;
                     fc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 3 )
-                    *--o = 0xFF;
-                    *--o = 0xFF;
-                    *--o = 0xFF;
-                    COPY_BYTES
-                    continue;
+                if( zc ){
+                    ASSERT( rc == 0 )
+                    ASSERT( zc == cc + MAX_CIPHERS - ss )
+                    writeZn( &o, &ss, &zc );
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( rc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    writeRn( &o, &ss, &rc, repeatByte );
+                }
+                *--ss = F2;
+                fc++;
+                writeFn( &o, &ss, &fc );
+                COPY_BYTES
+                continue;
             F3sigil:
-                if( zc|rc|dc == 0){
+                if( (zc|rc|dc) == 0 && i != input ){
                     *--ss = F3;
                     fc++;
                     continue;
                 }
-                if( dc > 0 || i == input ){ // no neighbor sigil or done
-                    CHECK_SPACE( 4 )
-                    *--o = 0xFF;
-                    *--o = 0xFF;
-                    *--o = 0xFF;
-                    *--o = 0xFF;
-                    COPY_BYTES
-                    continue;
+                if( zc ){
+                    ASSERT( rc == 0 )
+                    ASSERT( zc == cc + MAX_CIPHERS - ss )
+                    writeZn( &o, &ss, &zc );
                 }
-                return INPUT_DATA_CORRUPTED; // todo
+                if( rc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    writeRn( &o, &ss, &rc, repeatByte );
+                }
+                *--ss = F3;
+                fc++;
+                writeFn( &o, &ss, &fc );
+                COPY_BYTES
+                continue;
             R0sigil:
-                if( zc|fc|dc == 0){
+                if( (zc|fc|dc) == 0 && i != input ){
                     *--ss = R0;
                     rc++;
                     continue;
@@ -265,7 +317,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 }
                 return INPUT_DATA_CORRUPTED; // todo
             R1sigil:
-                if( zc|fc|dc == 0){
+                if( (zc|fc|dc) == 0 && i != input ){
                     *--ss = R1;
                     rc++;
                     continue;
@@ -282,7 +334,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 }
                 return INPUT_DATA_CORRUPTED; // todo
             R2sigil:
-                if( zc|fc|dc == 0){
+                if( (zc|fc|dc) == 0 && i != input ){
                     *--ss = R2;
                     rc++;
                     continue;
@@ -310,26 +362,65 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
     }
 }
 
+
 static void writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
-    ASSERT( *ciphersCount == 1 ) // todo
-    *out -= 1;
-    **out = 0;
+    int n = CCQNZtoN( *ss, *ciphersCount );
+    while( n-- ){
+        *out -= 1;
+        **out = 0;
+    }
     *ss += *ciphersCount;
     *ciphersCount = 0;
 }
 
 static void writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
-    ASSERT( *ciphersCount == 1 ) // todo
-    *out -= 1;
-    **out = 0xFF;
+    int n = CCQNFtoN( *ss, *ciphersCount );
+    while( n-- ){
+        *out -= 1;
+        **out = 0xFF;
+    }
     *ss += *ciphersCount;
     *ciphersCount = 0;
 }
 
 static void writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t repeatByte ){
-    ASSERT( *ciphersCount == 1 ) // todo
-    *out -= 1;
-    **out = repeatByte;
+    int n = CCTNRtoN( *ss, *ciphersCount );
+    while( n-- ){
+        *out -= 1;
+        **out = repeatByte;
+    }
     *ss += *ciphersCount;
     *ciphersCount = 0;
+}
+
+static int CCQNZtoN( uint8_t* ciphers, int count ){
+    ASSERT( count == 1 ) // todo
+    switch( *ciphers ){
+        case Z0: return 1;
+        case Z1: return 2;
+        case Z2: return 3;
+        case Z3: return 4;
+        default: for(;;);
+    }
+}
+
+static int CCQNFtoN( uint8_t* ciphers, int count ){
+    ASSERT( count == 1 ) // todo
+    switch( *ciphers ){
+        case F0: return 1;
+        case F1: return 2;
+        case F2: return 3;
+        case F3: return 4;
+        default: for(;;);
+    }
+}
+
+static int CCTNRtoN( uint8_t* ciphers, int count ){
+    ASSERT( count == 1 ) // todo
+    switch( *ciphers ){
+        case R0: return 2;
+        case R1: return 3;
+        case R2: return 4;
+        default: for(;;);
+    }
 }
