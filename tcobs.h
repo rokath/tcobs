@@ -33,6 +33,9 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
 #define OUT_BUFFER_TOO_SMALL -1 //!< OUT_BUFFER_TOO_SMALL is TCOBSDecode return error code.
 #define INPUT_DATA_CORRUPTED -2 //!< INPUT_DATA_CORRUPTED is TCOBSDecode return error code.
 
+void TCOBSEncodeTest( void );
+void TCOBSDecodeTest( void );
+
 #ifdef __cplusplus
 }
 #endif
