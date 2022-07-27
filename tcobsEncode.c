@@ -181,7 +181,7 @@ lastByte: // , -- xx.
 }
 
 static void writeNoopSigil( uint8_t ** out, int * distance){
-    ASSERT( *distance <= 31 );
+    ASSERT( 0 < *distance && *distance < 32 );
     **out = N | *distance;
     *out += 1;
     *distance = 0;
@@ -307,10 +307,10 @@ static void writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * dista
                     *distance = 0;
                     continue;
                 case R2:
-                    if( *distance > 14 ){
+                    if( *distance > 15 ){
                         writeNoopSigil( out, distance);
                     }
-                    **out = R2 | (*distance + 1);
+                    **out = R2 | *distance ;
                     *out += 1;
                     *distance = 0;
                     continue;

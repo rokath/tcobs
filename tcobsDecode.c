@@ -57,57 +57,52 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
             ASSERT(fc<MAX_CIPHERS)
             ASSERT(rc<MAX_CIPHERS)
             sigil = *--i;
-            if( sigil >> 7 ==  0 ){               // 0xxxxxxx    // 00 | R2 | Z3 | Z0 | R1 | Z2 | Z1
-                if( sigil >> 6 ==  0 ){           // 00xxxxxx    // 00 | R2 | Z3 | Z0
-                    if( sigil >> 5 ==  0 ){       // 000xxxxx    // 00 | R2 | Z3 
-                        if( sigil >> 4 ==  0 ){   // 0000xxxx    // 00 | R2
-                            if( sigil == 0 ){     // 00000000    // 00
-                                return -1;                       // forbidden
-                            }else{                // 0000nnnn    //      R2
-                                dc = (sigil & 0x0F) - 1;
-                                goto R2sigil;
-                            }
-                        }else{                    // 0001dddd    //           Z3
-                            dc = sigil & 0x0F;
-                            goto Z3sigil;
-                        } 
-                    }else{                        // 001ddddd    //                Z0
-                        dc = sigil & 0x1F;
+            if( sigil >> 7 ==  0 ){               // 0xxxxxxx    //  N | Z0 | Z1 | Z2 | R1
+                if( sigil >> 6 ==  0 ){           // 00xddddd    //  N | Z0
+                    dc = sigil & 0x1F;
+                    if( sigil >> 5 ==  0 ){       // 000ddddd    //  N |
+                        goto Nsigil;
+                    }else{                        // 001ddddd    //      Z0
                         goto Z0sigil;
                     }
-                }else{                            // 01xxxxxx    //                     R1 | Z2 | Z1
-                    if( sigil >> 5 == 2 ){        // 010xxxxx    //                     R1 | Z2
+                }else{                            // 01xxxxxx    //           Z1 | Z2 | R1
+                    if( sigil >> 5 == 2 ){        // 010xxxxx    //              | Z2 | R1
                         if( sigil >> 4 == 4 ){    // 0100dddd    //                     R1
                             dc = sigil & 0xF;
                             goto R1sigil;
-                        }else{                    // 0101dddd    //                          Z2
+                        }else{                    // 0101dddd    //                Z2
                             dc = sigil & 0xF;
                             goto Z2sigil;
                         }
-                    }else{                        // 011ddddd    //                               Z1
+                    }else{                        // 011ddddd    //           Z1
                         dc = sigil & 0x1F;
                         goto Z1sigil;
                     }
                 }
-            }else{                                // 1xxxxxxx    // R0 | N | F1 | F2 | F3 | F0
-                if( sigil >> 6 ==  2 ){           // 10xxxxxx    // R0 | N
-                    if( sigil >> 5 ==  4 ){       // 100ddddd    // R0
+            }else{                                // 1xxxxxxx    // Z3 | F0 |F1 | F2 | F3 | R0 | R2
+                if( sigil >> 6 ==  2 ){           // 10xxxxxx    // Z3                    | R0 | R2
+                    if( sigil >> 5 ==  4 ){       // 100ddddd    //                         R0
                         dc = sigil & 0x1F;
                         goto R0sigil;
-                    }else{                        // 101ddddd    //      N
-                        dc = sigil & 0x1F;
-                        goto Nsigil;
-                     }   
-                }else{                            // 11xxxxxx    //          F1 | F2 | F3 | F0
-                    if( sigil >> 5 ==  6 ){       // 110ddddd    //          F1
+                    }else{                        // 101xdddd    // Z3                         | R2
+                        dc = sigil & 0xF;
+                        if( sigil >> 4 == 0xA ){  // 1010dddd    //                              R2
+                        dc = sigil & 0xF;
+                            goto R2sigil;
+                        }else{                    // 1011dddd    // Z3
+                        dc = sigil & 0xF;
+                            goto Z3sigil;
+                        }                     }   
+                }else{                            // 11xxxxxx    //      F0 | F1 | F2 | F3
+                    if( sigil >> 5 ==  6 ){       // 110ddddd    //           F1
                         dc = sigil & 0x1F;
                         goto F1sigil;
                     }else{                        // 111xxxxx    //               F2 | F3 | F0
                         if( sigil >> 4 ==  0xE ){ // 1110dddd    //               F2 
                             dc = sigil & 0xF;
                             goto F2sigil;
-                        }else{                    // 1111xxxx    //                    F3 | F0
-                            if( sigil == 0xFF ){  // 11111111    //                         F0
+                        }else{                    // 1111xxxx    //      F0 |          F3
+                            if( sigil == 0xFF ){  // 11111111    //      F0
                                 dc = 0;
                                 goto F0sigil;
                             }else{                // 1111dddd    //                    F3

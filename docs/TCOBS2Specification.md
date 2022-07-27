@@ -1,4 +1,4 @@
-# TCOBS2 Specification (Ideas Draft)
+# TCOBS v2 Specification
 
 <details>
   <summary>Table of Contents</summary>
@@ -42,8 +42,9 @@
 * T stands originally for **T**rice because the initial idea to develop it came from thoughts how to reduce the binary [trice](https://github.com/rokath/trice) data together with framing.
   * T symbols also the joining of the 2 orthogonal tasks compression and framing.
   * Additionally the usage of ternary and quaternary numbers is reflected in the letter T.
-* TCOBS2 is a better approach for TCOBS, suited also when long sequences of equal characters occur in the data stream.
-* TCOBS2 is planned to replace TCOBS under the name TCOBS.
+* TCOBS v2 is a better approach for TCOBS v1, suited also when long sequences of equal characters occur in the data stream.
+* TCOBS v2 is planned to replace TCOBS v1 under the name TCOBS.
+  * TCOBS v1 stays available: The code is simpler and therefore smaller. The compression is probably a bit better with TCOBS v2. 
 * About the data is assumed, that 00-bytes and FF-bytes occur a bit more often than other bytes.
 * The aim concerning the compression is more to get a reasonable data reduction in a cheap way concerning minimal computing effort, than reducing to an absolute minimum. The method shown here simply counts repeated bytes and transforms them into shorter sequences. It works well also on very short messages, like 4 bytes and on very long buffers. The compressed buffer contains no 00-bytes anymore what is the aim of COBS. In the worst case, if no repeated bytes occur at all, the encoded data can be about 3% longer (1 byte per each 31 input bytes).
 * To understand the encoding principle the used numbers system is explained first.
@@ -193,8 +194,8 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 ##  4. <a name='Encodingprinciple'></a>Encoding principle
 
 * Legend: 
-  * `xx` any byte different from its neighbor.
-  * `AA` any non FF- and non 00-byte, but AA==AA.
+  *  **xx** stays for any byte different from its neighbor.
+  * `AA` represents any non FF- and non 00-byte, but AA==AA.
 
 * For count encoding different types of sigil bytes are used:
   * `Z0`, `Z1`, `Z2`, `Z3` for **1** to **n** 00-bytes in a row
@@ -203,81 +204,82 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 * Z- and F- sigils are CCQN ciphers 0-3 and the R-sigils represent CCTN ciphers 0-2.
 * Examples:
 
-| decoded             | encoded         | number notation / remark |
-| -                   | -               | -               |
+| decoded             | encoded           | number notation / remark |
+| -                   | -                 | -               |
 | xx `00` xx          | xx `Z0` xx        | `0Q0` = 1 zero  |
 | xx `00 00 00 00` xx | xx `Z3` xx        | `0Q3` = 4 zeros |
+| xx `17 times FF` xx | xx `F3 F0` xx     | `0Q30` = 17. |
 | xx `AA AA` xx       | xx `AA AA` xx     | 2 times AA stays the same. |
 | xx `AA AA AA` xx    | xx `AA R0` xx     | 3 times `AA` gets `AA` followed by 2 `AA` coded as `R0` |
-| xx `13 times AA` xx | xx `AA R3 R2` xx  | AA stands for itself and indicates what following R-sigils mean \- `0Q32` = R3 R2 stands for 12 following AA |
+| xx `13 times AA` xx | xx `AA R3 R2` xx  | `AA` stands for itself and indicates what following R-sigils mean \- `0Q32` = R3 R2 stands for 12 following AA |
+
+* When it comes to integer examples:
+
+| decoded                   | encoded           | number notation / remark |
+| -                         | -                 | -               |
+| `11 00`                   | `11 Z0`           | 17 as 16-bit little-endian integer |
+| `FF FF`                   | `F1`              | -1 as 16-bit little-endian integer |
+| `11 00 00 00`             | `11 Z2`           | 17 as 32-bit little-endian integer |
+| `FF FF FF FF`             | `F3`              | -1 as 32-bit little-endian integer |
+| `11 00 00 00 00 00 00 00` | `11 Z0 Z2`        | 17 as 64-bit little-endian integer |
+| `FF FF FF FF FF FF FF FF` | `F0 F3`           | -1 as 64-bit little-endian integer |
+
+This frees the developer to plan in advance the integer transmit bit size of its values, when bandwidth or storage is limited. 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ##  5. <a name='SigilBytes'></a>Sigil Bytes
 
-* Which pattern are used as sigil bytes is an optimizing question. The table seems to be reasonable concerning the assumption to have statistically more FF- and 00-bytes, especially also short rows of them, in the data stream to be encoded.
+* Which pattern are used as sigil bytes is an optimizing question. The table seems to be reasonable concerning the assumption to have statistically more FF- and 00-bytes in the data stream, especially also short rows of them. Any equal bytes in a row are covered as well.
 
-| value 7-5 | bits 7-0   | hex | Byte Name       | sign  | offset bits      | offset value| usage | Remark |
-|    -      | -          | -   | -               | -     | -                | -           | -     | - |
-|    0      | `00000000` |     | forbidden       |       |                  |             |       | used later as delimiter byte |
-|    0      | `0000oooo` |  00 | Repeat sigil    | **R2**|  `oooo` = 1-15   |  0-14       | less  | ternary cipher 2 for an any count, offset = `oooo` - 1 |
-|    0      | `0001oooo` |  10 | Zero   sigil    | **Z3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0x00 count |
-|    1      | `001ooooo` |  20 | Zero   sigil    | **Z0**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 0 for a 0x00 count |
-|    2      | `0100oooo` |  40 | Repeat sigil    | **R1**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 1 for an any count |
-|    2      | `0101oooo` |  50 | Zero   sigil    | **Z2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0x00 count |
-|    3      | `011ooooo` |  60 | Zero   sigil    | **Z1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0x00 count |
-|    4      | `100ooooo` |  80 | Repeat sigil    | **R0**| `ooooo` = 0-31   |  0-31       | more  | ternary cipher 0 for an any count |
-|    5      | `101ooooo` |  A0 | NOP    sigil    | **N** | `ooooo` = 0-31   |  0-31       | more  | no meaning, used for keeping the sigil chain linked |
-|    6      | `110ooooo` |  C0 | Full   sigil    | **F1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
-|    7      | `1110oooo` |  E0 | Full   sigil    | **F2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
-|    7      | `1111oooo` |  F0 | Full   sigil    | **F3**|  `oooo` = 0-14   |  0-14       | less  | quaternary cipher 3 for a 0xFF count, offset 15 forbidden to distinguish from F0=FF sigil byte |
-|           | `11111111` |  FF | Full   sigil    | **F0**|                  |  0          |       | CCQN cipher 0, needs not to be inside the sigil chain, but can. |
+| value 7-5 | bits 7-0   | hex range| Byte Name       | sign  | offset bits      | offset value| usage | Remark |
+|    -      | -          | -        | -               | -     | -                | -           | -     | - |
+|    0      | `00000000` |  00      | forbidden       |       |                  |             |       | used later as delimiter byte |
+|    0      | `000ooooo` |  01...1F | NOP      sigil  | **N** | `ooooo` = 1-31   |  1-31       | more  | no meaning, used for keeping the sigil chain linked, offset 0 not needed |
+|    1      | `001ooooo` |  20...3F | Zero   0 sigil  | **Z0**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 0 for a 0x00 count |
+|    2      | `0100oooo` |  40...4F | Repeat 1 sigil  | **R1**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 1 for an any count |
+|    2      | `0101oooo` |  50...5F | Zero   2 sigil  | **Z2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0x00 count |
+|    3      | `011ooooo` |  60...7F | Zero   1 sigil  | **Z1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0x00 count |
+|    4      | `100ooooo` |  80...9F | Repeat 0 sigil  | **R0**| `ooooo` = 0-31   |  0-31       | more  | ternary cipher 0 for an any count |
+|    5      | `1010oooo` |  A0...AF | Repeat 2 sigil  | **R2**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 2 for an any count |
+|    5      | `1011oooo` |  B0...BF | Zero   3 sigil  | **Z3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0x00 count |
+|    6      | `110ooooo` |  C0...DF | Full   1 sigil  | **F1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
+|    7      | `1110oooo` |  E0...EF | Full   2 sigil  | **F2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
+|    7      | `1111oooo` |  F0...FE | Full   3 sigil  | **F3**|  `oooo` = 0-14   |  0-14       | less  | quaternary cipher 3 for a 0xFF count, offset 15 forbidden to distinguish from F0=FF sigil byte |
+|           | `11111111` |       FF | Full   4 sigil  | **F0**|                  |  0          |       | CCQN cipher 0, needs not to be inside the sigil chain, but can |
 
-<!-- next variant: R2 <-> N
-| value 7-5 | bits 7-0   | hex | Byte Name       | sign  | offset bits      | offset value| usage | Remark |
-|    -      | -          | -   | -               | -     | -                | -           | -     | - |
-|    0      | `00000000` |     | forbidden       |       |                  |             |       | used later as delimiter byte |
-|    0      | `000ooooo` |  00 | NOP    sigil    | **N** | `ooooo` = 1-31   |  1-31       | more  | no meaning, used for keeping the sigil chain linked |
-|    0      | `0001oooo` |  10 | Zero   sigil    | **Z3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0x00 count |
-|    1      | `001ooooo` |  20 | Zero   sigil    | **Z0**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 0 for a 0x00 count |
-|    2      | `0100oooo` |  40 | Repeat sigil    | **R1**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 1 for an any count |
-|    2      | `0101oooo` |  50 | Zero   sigil    | **Z2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0x00 count |
-|    3      | `011ooooo` |  60 | Zero   sigil    | **Z1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0x00 count |
-|    4      | `100ooooo` |  80 | Repeat sigil    | **R0**| `ooooo` = 0-31   |  0-31       | more  | ternary cipher 0 for an any count |
-|    5      | `1010oooo` |  A0 | Repeat sigil    | **R2**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 2 for an any count |
-|    6      | `110ooooo` |  C0 | Full   sigil    | **F1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
-|    7      | `1110oooo` |  E0 | Full   sigil    | **F2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
-|    7      | `1111oooo` |  F0 | Full   sigil    | **F3**|  `oooo` = 0-14   |  0-14       | less  | quaternary cipher 3 for a 0xFF count, offset 15 forbidden to distinguish from F0=FF sigil byte |
-|           | `11111111` |  FF | Full   sigil    | **F0**|                  |  0          |       | CCQN cipher 0, needs not to be inside the sigil chain, but can. |
--->
 ###  5.1. <a name='Symbolsassumptions'></a>Symbols assumptions
 
+* N gets the code 0, because its offset is never 0 and the 00-byte is forbidden inside the TCOBS encoded data.
 * N, Z0, Z1, F1, R0 are a bit more often in use, therefore they can carry link offsets 0-31 in 5 offset bits.
-* Z2, Z3, F2, F3, R2, R3 are a bit less often in use, therefore they can carry link offsets 0-15(14) in 4 offset bits.
-* F0 has no offset bits. Therefore its implicit offset value is 0, when used inside the sigil chain.
-* Concatenation of offset bits in neighbored sigil bytes is not used: makes is useless complicated or is maybe impossible.
+* F0 is also a bit more often used but cannot carry offset bits. Therefore its implicit offset value is 0, when used inside the sigil chain.
+* A single F0 can be treated as ordinary byte, because it has code FF and translates to FF.
+* When F0 is followed by an F-sigil, it needs a N sigil in front to carry offset bits, if offset > 0 at this point.
+  * An possible improvement could be to delegate the offset carrying to the next neighbored sigil able to hold it but would make code complicated and has only a very small effect.
+  * Concatenation of offset bits in neighbored sigil bytes is _not_ used: makes code complicated and has only little effect.
+* Z2, Z3, F2, F3, R2, R3 are a bit less often in use, therefore they can carry link offsets 0-15 in 4 offset bits.
 
-* It would be possible to use AA as sigil byte with offset 0 but that needs more often to insert a **N** sigil byte.
-* With F0=FF this is not necessary because in does not need to be in the sigil bytes link chain. That is possible by not allowing offset 15 in the F3-sigil. A single `FF` inside the data stream is treatable this way as a normal single other byte. Even `FF` is de-facto a sigil byte in the encoded data stream, it needs not to be inside the sigil chain. Examples:
+* Even `FF` is de-facto a sigil byte in the encoded data stream, it needs not to be inside the sigil chain, when not in a row with other F-sigils. Examples:
 
 | decoded             | encoded         | number notation / remark |
 | -                   | -               | -               |
-| xx `FF` xx          | xx `F0` xx      | `F0` == `FF` = 1 `FF`  |
-| xx `FF FF` xx       | xx `F1` xx      | `0Q1` = 2 times `FF` - `F1` is part of sigil chain |
-| xx `3 times FF` xx  | xx `F2` xx      | `0Q2` = 3 times `FF` - `F2` is part of sigil chain |
-| xx `4 times FF` xx  | xx `F3` xx      | `0Q3` = 4 times `FF` - `F3` is part of sigil chain |
-| xx `5 times FF` xx  | xx `F0 F0` xx   | `0Q00` = 5 times `FF` - not part of sigil chain |
-| xx `6 times FF` xx  | xx `F0 F1` xx   | `0Q01` = 6 times `FF` - `F1` is part of sigil chain |
-| xx `9 times FF` xx  | xx `F1 F0` xx   | `0Q00` = 9 times `FF` - `F1` is part of sigil chain, `F0` is allowed to be part of sigil chain |
+| xx `FF` xx          | xx `F0` xx      | `F0` == `FF` = 1 time `FF`. `F0` needs not to be part of sigil chain, when xx no F-sigils. |
+| xx `FF FF` xx       | xx `F1` xx      | `0Q1` = 2 times `FF`. `F1` is part of sigil chain. |
+| xx `3 times FF` xx  | xx `F2` xx      | `0Q2` = 3 times `FF`. `F2` is part of sigil chain. |
+| xx `4 times FF` xx  | xx `F3` xx      | `0Q3` = 4 times `FF`. `F3` is part of sigil chain. |
+| xx `5 times FF` xx  | xx `F0 F0` xx   | `0Q00` = 5 times `FF`. Both `F0` needs to be part of sigil chain. |
+| xx `6 times FF` xx  | xx `F0 F1` xx   | `0Q01` = 6 times `FF`. `F0 F1` both part of sigil chain. |
+| xx `9 times FF` xx  | xx `F1 F0` xx   | `0Q00` = 9 times `FF`. `F1 F0` both part of sigil chain. |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ##  6. <a name='Algorithm'></a>Algorithm
 
-* Compute character count
-* Determine Sigil sequence as ciphers
-* Handle Offsets to build sigil chain (buffer ends with a sigil byte)
-* Mathematical prove? 
+* Count equal bytes in a row.
+* Convert number into ternary or quaternary cipher counted number.
+* Convert cipher sequence into same-sigil-type sequence.
+* Handle Offsets to build sigil chain (buffer ends with a sigil byte).
+* Mathematical prove?
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -288,5 +290,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 | 2022-JUN-00 | 0.0.0 | initial |
 | 2022-JUL-07 | 0.1.0 | CCTN start now with 2. |
 | 2022-JUL-07 | 0.1.1 | Explanation and samples added. |
+| 2022-JUL-27 | 0.2.0 | Sigil code exchange R2 <-> N. Symbol assumptions reworked. |
+| 2022-JUL-27 | 0.2.1 | Integer number examples added. |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
