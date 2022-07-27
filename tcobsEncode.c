@@ -168,7 +168,7 @@ lastByte: // , -- xx.
     if( b == 0xFF ){ // , -- FF.
         fullCount++; // , fn -- --. (n=1)
         writeFullCount(&out, &fullCount, &distance); // could be F0 F0 F0 F0 F0 F0 ...
-        writeLastSigil(&out, &distance);             // therefore this is needed
+        //  writeLastSigil(&out, &distance);             // therefore this is needed
         return out - (uint8_t*)output;
     }
     *out++ = b;
@@ -240,10 +240,16 @@ static void writeFullCount( uint8_t ** out, int * num, int * distance ){
             case F0:
                 **out = F0;
                 *out += 1;
-                if( *distance == 31 ){
-                    writeNoopSigil( out, distance);
+                if( ciphersCount == 1 ){ // a single F0 (==FF) can be treated as orinary byte
+                    if( *distance == 31 ){
+                        writeNoopSigil( out, distance);
+                    }
+                    *distance += 1;
+                }else if( ciphersCount > 1 && i == 0 ){ // a first F0 cannot carry a distance
+                    if( *distance > 0 ){
+                        writeNoopSigil( out, distance);
+                    }
                 }
-                *distance +=1; // maybe not needed in sigil byte neighborhood?
                 continue;
             case F1:
                 ASSERT( *distance <= 31 );

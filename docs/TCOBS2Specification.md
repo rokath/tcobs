@@ -217,22 +217,39 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 
 * Which pattern are used as sigil bytes is an optimizing question. The table seems to be reasonable concerning the assumption to have statistically more FF- and 00-bytes, especially also short rows of them, in the data stream to be encoded.
 
-| value 7-5 | bits 7-0   | Byte Name       | sign  | offset bits      | offset value| usage | Remark |
-|    -      | -          | -               | -     | -                | -           | -     | - |
-|    0      | `00000000` | forbidden       |       |                  |             |       | used later as delimiter byte |
-|    0      | `0000oooo` | Repeat sigil    | **R2**|  `oooo` = 1-15   |  0-14       | less  | ternary cipher 2 for an any count, offset = `oooo` - 1 |
-|    0      | `0001oooo` | Zero   sigil    | **Z3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0x00 count |
-|    1      | `001ooooo` | Zero   sigil    | **Z0**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 0 for a 0x00 count |
-|    2      | `0100oooo` | Repeat sigil    | **R1**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 1 for an any count |
-|    2      | `0101oooo` | Zero   sigil    | **Z2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0x00 count |
-|    3      | `011ooooo` | Zero   sigil    | **Z1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0x00 count |
-|    4      | `100ooooo` | Repeat sigil    | **R0**| `ooooo` = 0-31   |  0-31       | more  | ternary cipher 0 for an any count |
-|    5      | `101ooooo` | NOP    sigil    | **N** | `ooooo` = 0-31   |  0-31       | more  | no meaning, used for keeping the sigil chain linked |
-|    6      | `110ooooo` | Full   sigil    | **F1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
-|    7      | `1110oooo` | Full   sigil    | **F2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
-|    7      | `1111oooo` | Full   sigil    | **F3**|  `oooo` = 0-14   |  0-14       | less  | quaternary cipher 3 for a 0xFF count, offset 15 forbidden to distinguish from F0=FF sigil byte |
-|           | `11111111` | Full   sigil    | **F0**|                  |  0          |       | CCQN cipher 0, needs not to be inside the sigil chain, but can. |
+| value 7-5 | bits 7-0   | hex | Byte Name       | sign  | offset bits      | offset value| usage | Remark |
+|    -      | -          | -   | -               | -     | -                | -           | -     | - |
+|    0      | `00000000` |     | forbidden       |       |                  |             |       | used later as delimiter byte |
+|    0      | `0000oooo` |  00 | Repeat sigil    | **R2**|  `oooo` = 1-15   |  0-14       | less  | ternary cipher 2 for an any count, offset = `oooo` - 1 |
+|    0      | `0001oooo` |  10 | Zero   sigil    | **Z3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0x00 count |
+|    1      | `001ooooo` |  20 | Zero   sigil    | **Z0**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 0 for a 0x00 count |
+|    2      | `0100oooo` |  40 | Repeat sigil    | **R1**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 1 for an any count |
+|    2      | `0101oooo` |  50 | Zero   sigil    | **Z2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0x00 count |
+|    3      | `011ooooo` |  60 | Zero   sigil    | **Z1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0x00 count |
+|    4      | `100ooooo` |  80 | Repeat sigil    | **R0**| `ooooo` = 0-31   |  0-31       | more  | ternary cipher 0 for an any count |
+|    5      | `101ooooo` |  A0 | NOP    sigil    | **N** | `ooooo` = 0-31   |  0-31       | more  | no meaning, used for keeping the sigil chain linked |
+|    6      | `110ooooo` |  C0 | Full   sigil    | **F1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
+|    7      | `1110oooo` |  E0 | Full   sigil    | **F2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
+|    7      | `1111oooo` |  F0 | Full   sigil    | **F3**|  `oooo` = 0-14   |  0-14       | less  | quaternary cipher 3 for a 0xFF count, offset 15 forbidden to distinguish from F0=FF sigil byte |
+|           | `11111111` |  FF | Full   sigil    | **F0**|                  |  0          |       | CCQN cipher 0, needs not to be inside the sigil chain, but can. |
 
+<!-- next variant: R2 <-> N
+| value 7-5 | bits 7-0   | hex | Byte Name       | sign  | offset bits      | offset value| usage | Remark |
+|    -      | -          | -   | -               | -     | -                | -           | -     | - |
+|    0      | `00000000` |     | forbidden       |       |                  |             |       | used later as delimiter byte |
+|    0      | `000ooooo` |  00 | NOP    sigil    | **N** | `ooooo` = 1-31   |  1-31       | more  | no meaning, used for keeping the sigil chain linked |
+|    0      | `0001oooo` |  10 | Zero   sigil    | **Z3**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 3 for a 0x00 count |
+|    1      | `001ooooo` |  20 | Zero   sigil    | **Z0**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 0 for a 0x00 count |
+|    2      | `0100oooo` |  40 | Repeat sigil    | **R1**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 1 for an any count |
+|    2      | `0101oooo` |  50 | Zero   sigil    | **Z2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0x00 count |
+|    3      | `011ooooo` |  60 | Zero   sigil    | **Z1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0x00 count |
+|    4      | `100ooooo` |  80 | Repeat sigil    | **R0**| `ooooo` = 0-31   |  0-31       | more  | ternary cipher 0 for an any count |
+|    5      | `1010oooo` |  A0 | Repeat sigil    | **R2**|  `oooo` = 0-15   |  0-15       | less  | ternary cipher 2 for an any count |
+|    6      | `110ooooo` |  C0 | Full   sigil    | **F1**| `ooooo` = 0-31   |  0-31       | more  | quaternary cipher 1 for a 0xFF count |
+|    7      | `1110oooo` |  E0 | Full   sigil    | **F2**|  `oooo` = 0-15   |  0-15       | less  | quaternary cipher 2 for a 0xFF count |
+|    7      | `1111oooo` |  F0 | Full   sigil    | **F3**|  `oooo` = 0-14   |  0-14       | less  | quaternary cipher 3 for a 0xFF count, offset 15 forbidden to distinguish from F0=FF sigil byte |
+|           | `11111111` |  FF | Full   sigil    | **F0**|                  |  0          |       | CCQN cipher 0, needs not to be inside the sigil chain, but can. |
+-->
 ###  5.1. <a name='Symbolsassumptions'></a>Symbols assumptions
 
 * N, Z0, Z1, F1, R0 are a bit more often in use, therefore they can carry link offsets 0-31 in 5 offset bits.

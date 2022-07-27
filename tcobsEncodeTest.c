@@ -4,13 +4,26 @@
 #include "tcobs.h"
 #include "tcobsInternal.h"
 
-//! debugSet contains only representative data for debugging.
+//! encodeDebugSet contains only representative data for debugging.
 //! The more intensive testing is done from Go using CGO.
 static uint8_t encodeDebugSet[] = {
   //len, data...
+    
+    // {[]byte{0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, []byte{0xFF, 0xa0, 0xFF}},
+      5, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+      2, 0xFF, 0xFF, 
+
+    //{[]byte{0xFF, 0x00}, []byte{0xFF, 0x20}},
+     2, 0xFF, 0x00,
+     2, 0xFF, 0x21,
+
+    //{[]byte{0xFF}, []byte{0xFF}}, // decode ok
+      1, 0xFF,
+      1, 0xFF,
+    
       2, 0xAA, 0x00, // {[]byte{0xAA, 0x00},
       2, 0xAA, 0x21, //  []byte{0xAA, 0x21},},
-/*
+
       1, 0,
       1, Z0,
       
@@ -43,7 +56,7 @@ static uint8_t encodeDebugSet[] = {
       
       6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
       3, 0xaa, R0|1, R0,
-*/
+
 };
 
 

@@ -134,11 +134,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
             // |     0  0  0  0 # 22 33                          # 22 33 00 00 00 00 00 77 88 99 00 FF FF FF FF # i == input -> done
 
             Z0sigil:
-                if( (fc|rc|dc) == 0 && i != input ){
-                    *--ss = Z0;
-                    zc++;
-                    continue;
-                }
                 if( fc ){
                     ASSERT( rc == 0 )
                     ASSERT( fc == cc + MAX_CIPHERS - ss )
@@ -156,6 +151,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( dc == 0 && i != input ){
+                    *--ss = Z0;
+                    zc++;
+                    continue;
                 }
                 *--ss = Z0;
                 zc++;
@@ -166,11 +166,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             Z1sigil:
-                if( (fc|rc|dc) == 0 && i != input ){
-                    *--ss = Z1;
-                    zc++;
-                    continue;
-                }
                 if( fc ){
                     ASSERT( rc == 0 )
                     ASSERT( fc == cc + MAX_CIPHERS - ss )
@@ -188,6 +183,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( dc == 0 && i != input ){
+                    *--ss = Z1;
+                    zc++;
+                    continue;
                 }
                 *--ss = Z1;
                 zc++;
@@ -198,11 +198,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             Z2sigil:
-                if( (fc|rc|dc) == 0 && i != input ){
-                    *--ss = Z2;
-                    zc++;
-                    continue;
-                }
                 if( fc ){
                     ASSERT( rc == 0 )
                     ASSERT( fc == cc + MAX_CIPHERS - ss )
@@ -220,6 +215,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( dc == 0 && i != input ){
+                    *--ss = Z2;
+                    zc++;
+                    continue;
                 }
                 *--ss = Z2;
                 zc++;
@@ -230,11 +230,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             Z3sigil:
-                if( (fc|rc|dc) == 0 && i != input ){
-                    *--ss = Z3;
-                    zc++;
-                    continue;
-                }
                 if( fc ){
                     ASSERT( rc == 0 )
                     ASSERT( fc == cc + MAX_CIPHERS - ss )
@@ -253,6 +248,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                         return err;
                     }
                 }
+                if( dc == 0 && i != input ){
+                    *--ss = Z3;
+                    zc++;
+                    continue;
+                }
                 *--ss = Z3;
                 zc++;
                 err = writeZn( &o, &ss, &zc );
@@ -261,12 +261,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 }
                 COPY_BYTES
                 continue;
-            F0sigil:
-                if( (zc|rc|dc) == 0 && i != input ){
-                    *--ss = F0;
-                    fc++;
-                    continue;
-                }
+            F0sigil: // This could be a single F0, but it is inside the sigil chain.
                 if( zc ){
                     ASSERT( rc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
@@ -284,6 +279,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( /*dc == 0 &&*/ i != input ){ // F0 means dc == 0.
+                    *--ss = F0; 
+                    fc++;
+                    continue;
                 }
                 *--ss = F0;
                 fc++;
@@ -294,11 +294,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             F1sigil:
-                if( (zc|rc|dc) == 0 && i != input ){
-                    *--ss = F1;
-                    fc++;
-                    continue;
-                }
                 if( zc ){
                     ASSERT( rc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
@@ -316,6 +311,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( dc == 0 && i != input ){
+                    *--ss = F1;
+                    fc++;
+                    continue;
                 }
                 *--ss = F1;
                 fc++;
@@ -326,11 +326,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             F2sigil:
-                if( (zc|rc|dc) == 0 && i != input ){
-                    *--ss = F2;
-                    fc++;
-                    continue;
-                }
                 if( zc ){
                     ASSERT( rc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
@@ -348,6 +343,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( dc == 0 && i != input ){
+                    *--ss = F2;
+                    fc++;
+                    continue;
                 }
                 *--ss = F2;
                 fc++;
@@ -358,11 +358,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             F3sigil:
-                if( (zc|rc|dc) == 0 && i != input ){
-                    *--ss = F3;
-                    fc++;
-                    continue;
-                }
                 if( zc ){
                     ASSERT( rc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
@@ -381,6 +376,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                         return err;
                     }
                 }
+                if( dc == 0 && i != input ){
+                    *--ss = F3;
+                    fc++;
+                    continue;
+                }
                 *--ss = F3;
                 fc++;
                 err = writeFn( &o, &ss, &fc );
@@ -390,11 +390,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             R0sigil:
-                if( (zc|fc|dc) == 0 && i != input ){
-                    *--ss = R0;
-                    rc++;
-                    continue;
-                }
                 if( zc ){
                     ASSERT( fc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
@@ -410,6 +405,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( dc == 0 && i != input ){
+                    *--ss = R0;
+                    rc++;
+                    continue;
                 }
                 *--ss = R0;
                 rc++;
@@ -422,11 +422,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             R1sigil:
-                if( (zc|fc|dc) == 0 && i != input ){
-                    *--ss = R1;
-                    rc++;
-                    continue;
-                }
                 if( zc ){
                     ASSERT( fc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
@@ -442,6 +437,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( dc == 0 && i != input ){
+                    *--ss = R1;
+                    rc++;
+                    continue;
                 }
                 *--ss = R1;
                 rc++;
@@ -454,11 +454,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 COPY_BYTES
                 continue;
             R2sigil:
-                if( (zc|fc|dc) == 0 && i != input ){
-                    *--ss = R2;
-                    rc++;
-                    continue;
-                }
                 if( zc ){
                     ASSERT( fc == 0 )
                     ASSERT( zc == cc + MAX_CIPHERS - ss )
@@ -474,6 +469,11 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     if( err ){
                         return err;
                     }
+                }
+                if( dc == 0 && i != input ){
+                    *--ss = R2;
+                    rc++;
+                    continue;
                 }
                 *--ss = R2;
                 rc++;
