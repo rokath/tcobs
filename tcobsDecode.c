@@ -9,10 +9,10 @@
 #include "tcobsInternal.h"
 
 //! CHECK_OUTPUT_SPACE checks for n plus distance output space.
-#define CHECK_OUTPUT_SPACE(n) // if( (uint8_t*)output - o < n + dc ){ return OUT_BUFFER_TOO_SMALL; }
+#define CHECK_OUTPUT_SPACE(n) if( (uint8_t*)output - o + n + dc > 0 ){ return OUT_BUFFER_TOO_SMALL - __LINE__; }
 
 //! CHECK_INPUT_SPACE checks for distance input space.
-#define CHECK_INPUT_SPACE  if( (uint8_t*)input > i - dc ){ return INPUT_DATA_CORRUPTED; }
+#define CHECK_INPUT_SPACE  if( (uint8_t*)input > i - dc ){ return INPUT_DATA_CORRUPTED - __LINE__; }
 
 //! CHECK_SPACE checks for sufficient input and output space.
 #define CHECK_SPACE( sigilDecodedCount) CHECK_INPUT_SPACE CHECK_OUTPUT_SPACE(sigilDecodedCount)
@@ -30,17 +30,14 @@ static int CCQNZtoN( uint8_t* ciphers, int count );
 static int CCQNFtoN( uint8_t* ciphers, int count );
 static int CCTNRtoN( uint8_t* ciphers, int count );
 
-        uint8_t cc[MAX_CIPHERS];
-        uint8_t * ss = cc + MAX_CIPHERS; // sigilSequence (without distance bits) = counted ciphers
-
 int TCOBSDecode( void * restrict output, size_t max, const void * restrict input, size_t length ){
     if( length == 0 ){
         return 0;
     }else{
         uint8_t sigil;
         int dc; // distance;
-        //uint8_t cc[MAX_CIPHERS];
-        //uint8_t * ss = cc + MAX_CIPHERS; // sigilSequence (without distance bits) = counted ciphers
+        uint8_t cc[MAX_CIPHERS];
+        uint8_t * ss = cc + MAX_CIPHERS; // sigilSequence (without distance bits) = counted ciphers
         uint8_t * o = (uint8_t*)output + max; // output write pointer behind next value
         uint8_t const * i = (uint8_t*)input + length; // input read pointer behind next value
         int zc = 0; // Z sigils in a row
@@ -396,7 +393,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( fc ){
                     ASSERT( zc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    err = writeFn( &o, &ss, &rc );
+                    err = writeFn( &o, &ss, &fc );
                     if( err ){
                         return err;
                     }
@@ -428,7 +425,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( fc ){
                     ASSERT( zc == 0 )
                     ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    err = writeFn( &o, &ss, &rc );
+                    err = writeFn( &o, &ss, &fc );
                     if( err ){
                         return err;
                     }
@@ -459,8 +456,8 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 }
                 if( fc ){
                     ASSERT( zc == 0 )
-                    ASSERT( rc == cc + MAX_CIPHERS - ss )
-                    err = writeFn( &o, &ss, &rc );
+                    ASSERT( fc == cc + MAX_CIPHERS - ss )
+                    err = writeFn( &o, &ss, &fc );
                     if( err ){
                         return err;
                     }
@@ -482,7 +479,32 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 continue;
             Nsigil:
                 ASSERT( dc != 0 )
-                CHECK_SPACE( 0 )
+                if( zc ){
+                    ASSERT( fc == 0 )
+                    ASSERT( zc == cc + MAX_CIPHERS - ss )
+                    err = writeZn( &o, &ss, &zc );
+                    if( err ){
+                        return err;
+                    }
+                }
+                if( fc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( fc == cc + MAX_CIPHERS - ss )
+                    err = writeFn( &o, &ss, &fc );
+                    if( err ){
+                        return err;
+                    }
+                }
+                if( rc ){
+                    ASSERT( zc == 0 )
+                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    repeatByte = *--i;
+                    i++;
+                    err = writeRn( &o, &ss, &rc, repeatByte );
+                    if( err ){
+                        return err;
+                    }
+                }
                 COPY_BYTES
                 continue;
         }

@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -826,14 +826,9 @@
               <FilePath>..\..\..\..\tcobs\tcobsDecode.c</FilePath>
             </File>
             <File>
-              <FileName>tcobsDecodeTest.c</FileName>
+              <FileName>tcobsTest.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\tcobs\tcobsDecodeTest.c</FilePath>
-            </File>
-            <File>
-              <FileName>tcobsEncodeTest.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\tcobs\tcobsEncodeTest.c</FilePath>
+              <FilePath>..\..\..\tcobsTest.c</FilePath>
             </File>
           </Files>
         </Group>
