@@ -67,7 +67,7 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
                         fullCount++; // , fn -- FF. zz ... 
                         continue; 
                     }
-                    if( b == b_1 ){
+                    if( b == b_1 ){ // ???????????????????????????????????????
                         ASSERT( (fullCount|zeroCount) == 0 );
                         reptCount++; // , rn -- AA. zz ... 
                         continue; 
@@ -86,13 +86,13 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
                         continue;
                     }
                     // , rn AA yy. zz ...
-                    *out++ = b_1; // AA, rn -- yy. zz ...
                     if( distance == 31 ){
                         err = writeNoopSigil( &out, &distance);
                         if( err ){
                             return err;
                         }
                     }
+                    *out++ = b_1; // AA, rn -- yy. zz ...
                     distance++;
                     if( reptCount ){ // AA, rn -- yy. zz ... (n>=1)
                         ASSERT( (fullCount|zeroCount) == 0 );
@@ -121,16 +121,16 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
                         }
                         return out - (uint8_t*)output;
                     }
-                    if( b == b_1 ){ // , zn AA AA.
+                    if( b == b_1 ){ // , zn AA AA. // ?????????????????????????????????????????????????????????
                         ASSERT( (fullCount|zeroCount) == 0 );
                         reptCount +=1; // , rn -- AA.
-                        *out++ = b; // AA, rn -- --.
                         if( distance == 31 ){
                             err = writeNoopSigil( &out, &distance);
                             if( err ){
                                 return err;
                             }
                         }
+                        *out++ = b; // AA, rn -- --.
                         distance++;
                         err = writeRepeatCount(&out, b, &reptCount, &distance);
                         if( err ){
@@ -158,13 +158,13 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
                         goto lastByte;
                     }
                     // , rn AA yy.
-                    *out++ = b_1; // AA, rn -- yy.
                     if( distance == 31 ){
                         err = writeNoopSigil( &out, &distance);
                         if( err ){
                             return err;
                         }
                     }
+                    *out++ = b_1; // AA, rn -- yy.
                     distance++;
                     if( reptCount ){ // AA, rn -- yy. (n>=1)
                         ASSERT( (fullCount|zeroCount) == 0 );
@@ -209,13 +209,13 @@ lastByte: // , -- xx.
         }
         return out - (uint8_t*)output;
     }
-    *out++ = b;
     if( distance == 31 ){
         err = writeNoopSigil( &out, &distance);
         if( err ){
             return err;
         }
     }
+    *out++ = b;
     distance++;
     err = writeLastSigil(&out, &distance);
     if( err ){
@@ -305,11 +305,11 @@ static int writeFullCount( uint8_t ** out, int * num, int * distance ){
         switch( ciphers[i] ){
             case F0:
                 if( ciphersCount == 1 ){ // a single F0 (==FF) can be treated as orinary byte
-                    **out = F0;
-                    *out += 1;
                     if( *distance == 31 ){
                         err = writeNoopSigil( out, distance);
                     }
+                    **out = F0;
+                    *out += 1;
                     *distance += 1;
                 }else if( ciphersCount > 1 ){
                     if( i == 0 ){ // a first F0 cannot carry a distance
@@ -353,14 +353,14 @@ static int writeFullCount( uint8_t ** out, int * num, int * distance ){
 static int writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * distance ){
     int err = 0;
     if( *num == 1 ){
-        **out = aa;
-        *out += 1;
         if( *distance == 31 ){
             err = writeNoopSigil( out, distance);
             if( err ){
                 return err;
             }
         }
+        **out = aa;
+        *out += 1;
         *distance += 1;
     }else{
         uint8_t ciphers[16];

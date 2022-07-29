@@ -9,16 +9,16 @@
 #include "tcobsInternal.h"
 
 //! CHECK_OUTPUT_SPACE checks for n plus distance output space.
-#define CHECK_OUTPUT_SPACE(n) if( (uint8_t*)output - o + n + dc > 0 ){ return OUT_BUFFER_TOO_SMALL - __LINE__; }
+//#define CHECK_OUTPUT_SPACE(n) if( (uint8_t*)output - o + n + dc > 0 ){ return OUT_BUFFER_TOO_SMALL - __LINE__; }
 
 //! CHECK_INPUT_SPACE checks for distance input space.
-#define CHECK_INPUT_SPACE  if( (uint8_t*)input > i - dc ){ return INPUT_DATA_CORRUPTED - __LINE__; }
+//#define CHECK_INPUT_SPACE  if( (uint8_t*)input > i - dc ){ return INPUT_DATA_CORRUPTED - __LINE__; }
 
 //! CHECK_SPACE checks for sufficient input and output space.
-#define CHECK_SPACE( sigilDecodedCount) CHECK_INPUT_SPACE CHECK_OUTPUT_SPACE(sigilDecodedCount)
+//#define CHECK_SPACE( sigilDecodedCount) CHECK_INPUT_SPACE CHECK_OUTPUT_SPACE(sigilDecodedCount)
 
 //! COPY_BYTES transfers distance bytes backwards from the input buffer end to the output buffer end.
-#define COPY_BYTES do{ CHECK_SPACE(0) while( dc--){ *--o = *--i; } dc = 0; } while( 0 );
+//#define COPY_BYTES // do{ /* CHECK_SPACE(0) */ while( dc--){ *--o = *--i; } dc = 0; } while( 0 );
 
 #define MAX_CIPHERS 24 //!< MAX_CIPHERS is max expected sigil bytes of one kind in a row.
 
@@ -35,7 +35,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
         return 0;
     }else{
         uint8_t sigil;
-        int dc; // distance;
+        int dc = 0; // distance;
         uint8_t cc[MAX_CIPHERS];
         uint8_t * ss = cc + MAX_CIPHERS; // sigilSequence (without distance bits) = counted ciphers
         uint8_t * o = (uint8_t*)output + max; // output write pointer behind next value
@@ -155,7 +155,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             Z1sigil:
                 if( fc ){
@@ -187,7 +197,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             Z2sigil:
                 if( fc ){
@@ -219,7 +239,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             Z3sigil:
                 if( fc ){
@@ -251,7 +281,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             F0sigil: // This could be a single F0, but it is inside the sigil chain.
                 if( zc ){
@@ -283,7 +323,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             F1sigil:
                 if( zc ){
@@ -315,7 +365,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             F2sigil:
                 if( zc ){
@@ -347,7 +407,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             F3sigil:
                 if( zc ){
@@ -379,7 +449,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             R0sigil:
                 if( zc ){
@@ -411,7 +491,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             R1sigil:
                 if( zc ){
@@ -443,7 +533,16 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                //COPY_BYTES
                 continue;
             R2sigil:
                 if( zc ){
@@ -475,7 +574,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 if( err ){
                     return err;
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
             Nsigil:
                 ASSERT( dc != 0 )
@@ -505,7 +614,17 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                         return err;
                     }
                 }
-                COPY_BYTES
+                if( (uint8_t*)input > i - dc ){
+                    return INPUT_DATA_CORRUPTED - __LINE__;
+                }
+                if( (uint8_t*)output + dc > o ){ 
+                    return OUT_BUFFER_TOO_SMALL - __LINE__;
+                }
+                while( dc-- ){ 
+                    *--o = *--i; 
+                } 
+                dc = 0;
+                //COPY_BYTES
                 continue;
         }
     }
