@@ -128,10 +128,10 @@ void TCOBSEncodeTest( void ){
     int olen, dlen, elen;
     do{
         dlen = *dec++;
-        olen = TCOBSEncode( obuf, dec, dlen );
-
         enc  = dec + dlen;
         elen = *enc++;
+        olen = TCOBSEncode( obuf, dec, dlen );
+        
         if( olen != elen ){
             for(;;);
         }
@@ -155,12 +155,12 @@ void TCOBSDecodeTest( void ){
         elen = *enc++;
         olen = TCOBSDecode( obuf, OMAX, enc, elen );
         
-        if( olen != elen ){ 
+        if( olen != dlen ){ 
             for(;;){} 
         }
         out = obuf + OMAX - olen;
         for( int i = 0; i < olen; i++ ){
-            if( out[i] != enc[i] ){ 
+            if( out[i] != dec[i] ){ 
                 for(;;){} 
             } 
         }
