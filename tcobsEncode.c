@@ -311,9 +311,11 @@ static int writeFullCount( uint8_t ** out, int * num, int * distance ){
                         err = writeNoopSigil( out, distance);
                     }
                     *distance += 1;
-                }else if( ciphersCount > 1 && i == 0 ){ // a first F0 cannot carry a distance
-                    if( *distance > 0 ){
-                        err = writeNoopSigil( out, distance);
+                }else if( ciphersCount > 1 ){
+                    if( i == 0 ){ // a first F0 cannot carry a distance
+                        if( *distance > 0 ){
+                            err = writeNoopSigil( out, distance);
+                        }
                     }
                     **out = F0;
                     *out += 1;

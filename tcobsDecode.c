@@ -392,7 +392,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 }
                 if( fc ){
                     ASSERT( zc == 0 )
-                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    ASSERT( fc == cc + MAX_CIPHERS - ss )
                     err = writeFn( &o, &ss, &fc );
                     if( err ){
                         return err;
@@ -424,7 +424,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 }
                 if( fc ){
                     ASSERT( zc == 0 )
-                    ASSERT( rc == cc + MAX_CIPHERS - ss )
+                    ASSERT( fc == cc + MAX_CIPHERS - ss )
                     err = writeFn( &o, &ss, &fc );
                     if( err ){
                         return err;
