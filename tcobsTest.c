@@ -127,10 +127,9 @@ void TCOBSEncodeTest( void ){
     uint8_t *dec = dataSet, *enc;
     int dlen;
     int olen, elen;
-
     do{
         dlen = *dec++;
-        olen = TCOBSEncode( obuf, dec, dlen);
+        olen = TCOBSEncode( obuf, dec, dlen );
 
         enc  = dec + dlen;
         elen = *enc++;
@@ -143,30 +142,29 @@ void TCOBSEncodeTest( void ){
             }
         }
         dec  = enc + elen;  
-    }while( dec + dlen < limit );
+    }while( dec < limit );
 }
 
 void TCOBSDecodeTest( void ){
     uint8_t *limit = dataSet + sizeof(dataSet);
     uint8_t *output, *enc, *dec = dataSet;
-    int dlen = 0;
+    int dlen;
     int olen, elen;
-
-
     do{
+        dlen = *dec++;
         enc  = dec + dlen;
         elen = *enc++;
-        dec  = enc + elen;
-        dlen = *dec++;
-        olen = TCOBSDecode( obuf, OMAX, enc, elen);
-        output = obuf + OMAX - olen;
+        olen = TCOBSDecode( obuf, OMAX, enc, elen );
+        
         if( olen != elen ){ 
             for(;;){} 
-        } 
+        }
+        output = obuf + OMAX - olen;
         for( int i = 0; i < olen; i++ ){
             if( output[i] != enc[i] ){ 
                 for(;;){} 
             } 
         }
-    }while( dec + dlen < limit );
+        dec  = enc + elen;
+    }while( dec < limit );
 }
