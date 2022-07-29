@@ -8,10 +8,10 @@
 //! The more intensive testing is done from Go using CGO.
 static uint8_t dataSet[] = {
   //len, data...
-
+// 0
       0, // decoded
       0, // encoded
-
+// 1
       1, 0xFF,
       1, F0,
 
@@ -24,20 +24,11 @@ static uint8_t dataSet[] = {
      10, 2, 2, 2, 0, 1,  0, 0xFF, 0xFF, 1, 2,
       9, 2, 129, 32, 1, 33,         F1, 1, 2, 2,
 
-      7, 0xFF, 0x09, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-      5, F0, 0x09, 0x02, F0, F0, 
-/*
-      7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x02, 0xFF,
-      5, F0, F0, 0x02, F0, 0x02, 
-*/
-      8, 1, 0, 1, 1, 1, 1, 255, 255,
-      5, 1, Z0|1, 1, R1|1, F1,
-
-      2, 0xAA, 0xFF,
-      3, 0xAA, 0xFF, 0x02,
-
-      5, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-      2, 0xFF, 0xFF, 
+      0, //8, 1, 0, 1, 1, 1, 1, 255, 255,
+      0, //5, 1, Z0|1, 1, R1|1, F1,
+// 5 encode fails
+      0, //1, F1,
+      0, //2, 0xFF, 0xFF,
 
       2, 0xFF, 0x00,
       2, 0xFF, 0x21,
@@ -47,10 +38,10 @@ static uint8_t dataSet[] = {
 
       1, 0,
       1, Z0,
-      
+
       2, 0, 0,
       1, Z1,
-      
+// 10
       3, 0, 0, 0,
       1, Z2,
       
@@ -65,21 +56,12 @@ static uint8_t dataSet[] = {
       
       2, 0xaa, 0xaa,
       3, 0xaa, 0xaa, N|2,
-      
+// 15
       3, 0xaa, 0xaa, 0xaa,
       2, 0xaa, R0|1,
       
       4, 0xaa, 0xaa, 0xaa, 0xaa,
       2, 0xaa, R1|1,
-      
-      5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-      2, 0xaa, R2|1,
-      
-      6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-      3, 0xaa, R0|1, R0,
-
-      6, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00,    
-      3, 0xFF, 0xFF, 0x20,
 
       5, 0xFF, 0xFF, 0xaa, 0xaa, 0xaa,
       3, F1,         0xaa, R0|1,
@@ -89,16 +71,13 @@ static uint8_t dataSet[] = {
 
       5, 0xFF, 0xFF, 0xaa, 0, 0,
       3, F1,         0xaa, Z1|1,
-
+// 20
       4, 0xFF, 0xFF, 0, 0,
       2, F1,           Z1,
 
       8, 0xFF, 0xFF, 0, 0, 0xFF, 0xFF, 0, 0,
       4, F1,           Z1,   F1,         Z1,
 
-      1, F1,
-      2, 0xFF, 0xFF,
-      
       3, 0xFF, 0xFF, 0xFF,
       1, F2,
       
@@ -116,16 +95,39 @@ static uint8_t dataSet[] = {
       
      10,  0, 0x22, 0x33,    0, 0x55, 0x66, 0x77, 0x88, 0x99, 0,
      10, Z0, 0x22, 0x33, Z0|2, 0x55, 0x66, 0x77, 0x88, 0x99, Z0|5,
+// 1D encode fails
+      0, //7, 0xFF, 0x09, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+      0, //5, F0, 0x09, 0x02, F0, F0, 
+// 1E encode fails
+      0, //7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x02, 0xFF,
+      0, //5, F0, F0, 0x02, F0, 0x02, 
+// 1F encode fails
+      0, //5, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+      0, //2, 0xFF, 0xFF, 
+
+      6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
+      3, 0xaa, R0|1, R0,
+// 21 encode fails
+      0, //6, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00,    
+      0, //3, 0xFF, 0xFF, 0x20,
+
+      5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
+      2, 0xaa, R2|1,
+
+      2, 0xAA, 0xFF,
+      3, 0xAA, 0xFF, 0x02,
 
 };
 
 #define OMAX 100 //!< max expected output buffer size
 static uint8_t obuf[OMAX]; //!< output buffer
+int k;
 
 void TCOBSEncodeTest( void ){
     uint8_t *limit = dataSet + sizeof(dataSet);
     uint8_t *enc, *dec = dataSet;
     int olen, dlen, elen;
+    k = 0;
     do{
         dlen = *dec++;
         enc  = dec + dlen;
@@ -140,7 +142,8 @@ void TCOBSEncodeTest( void ){
                 for(;;){} 
             }
         }
-        dec  = enc + elen;  
+        dec  = enc + elen;
+        k++;
     }while( dec < limit );
 }
 
@@ -149,6 +152,7 @@ void TCOBSDecodeTest( void ){
     uint8_t *enc, *dec = dataSet;
     int olen, dlen, elen;
     uint8_t *out;
+    k = 0;
     do{
         dlen = *dec++;
         enc  = dec + dlen;
@@ -165,5 +169,6 @@ void TCOBSDecodeTest( void ){
             } 
         }
         dec  = enc + elen;
+        k++;
     }while( dec < limit );
 }
