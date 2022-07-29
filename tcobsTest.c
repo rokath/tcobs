@@ -124,9 +124,8 @@ static uint8_t obuf[OMAX]; //!< output buffer
 
 void TCOBSEncodeTest( void ){
     uint8_t *limit = dataSet + sizeof(dataSet);
-    uint8_t *dec = dataSet, *enc;
-    int dlen;
-    int olen, elen;
+    uint8_t *enc, *dec = dataSet;
+    int olen, dlen, elen;
     do{
         dlen = *dec++;
         olen = TCOBSEncode( obuf, dec, dlen );
@@ -147,9 +146,9 @@ void TCOBSEncodeTest( void ){
 
 void TCOBSDecodeTest( void ){
     uint8_t *limit = dataSet + sizeof(dataSet);
-    uint8_t *output, *enc, *dec = dataSet;
-    int dlen;
-    int olen, elen;
+    uint8_t *enc, *dec = dataSet;
+    int olen, dlen, elen;
+    uint8_t *out;
     do{
         dlen = *dec++;
         enc  = dec + dlen;
@@ -159,9 +158,9 @@ void TCOBSDecodeTest( void ){
         if( olen != elen ){ 
             for(;;){} 
         }
-        output = obuf + OMAX - olen;
+        out = obuf + OMAX - olen;
         for( int i = 0; i < olen; i++ ){
-            if( output[i] != enc[i] ){ 
+            if( out[i] != enc[i] ){ 
                 for(;;){} 
             } 
         }
