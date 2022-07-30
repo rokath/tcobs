@@ -1,0 +1,19 @@
+--cpu Cortex-M0
+"mdk-arm_stm32f030r8\startup_stm32f030x8.o"
+"mdk-arm_stm32f030r8\main.o"
+"mdk-arm_stm32f030r8\stm32f0xx_it.o"
+"mdk-arm_stm32f030r8\stm32f0xx_ll_gpio.o"
+"mdk-arm_stm32f030r8\stm32f0xx_ll_pwr.o"
+"mdk-arm_stm32f030r8\stm32f0xx_ll_exti.o"
+"mdk-arm_stm32f030r8\stm32f0xx_ll_usart.o"
+"mdk-arm_stm32f030r8\stm32f0xx_ll_rcc.o"
+"mdk-arm_stm32f030r8\stm32f0xx_ll_dma.o"
+"mdk-arm_stm32f030r8\stm32f0xx_ll_utils.o"
+"mdk-arm_stm32f030r8\system_stm32f0xx.o"
+"mdk-arm_stm32f030r8\tcobsencode.o"
+"mdk-arm_stm32f030r8\tcobsdecode.o"
+"mdk-arm_stm32f030r8\tcobstest.o"
+--strict --scatter "MDK-ARM_STM32F030R8\MDK-ARM_STM32F030R8.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "MDK-ARM_STM32F030R8.map" -o MDK-ARM_STM32F030R8\MDK-ARM_STM32F030R8.axf
