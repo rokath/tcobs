@@ -83,7 +83,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 |      | 0       | impossible |        |
 |      | 1       | impossible |        |
 |  0   | 2       | 0T0        | exactly 1 cipher allowed |
-| ...  | ...     | ...        | ...                      |
+|  1   | 3       | 0T0        | exactly 1 cipher allowed |
 |  2   | 4       | 0T2        | exactly 1 cipher allowed |
 
 ####  3.1.2. <a name='TwoCCTNCiphers'></a>Two CCTN Ciphers
