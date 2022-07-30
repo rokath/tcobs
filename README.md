@@ -14,21 +14,12 @@
 * 5. [TCOBS Specification](#TCOBSSpecification)
 	* 5.1. [TCOBSv1 Specification](#TCOBSv1Specification)
 	* 5.2. [TCOBSv2 Specification](#TCOBSv2Specification)
-* 6. [TCOBS Framing Encoder and Decoder](#TCOBSFramingEncoderandDecoder)
-	* 6.1. [TCOBS Encoding](#TCOBSEncoding)
-	* 6.2. [TCOBS Decoding](#TCOBSDecoding)
-	* 6.3. [TCOBS Testing](#TCOBSTesting)
-* 7. [Getting Started](#GettingStarted)
-	* 7.1. [Prerequisites](#Prerequisites)
-	* 7.2. [Installation](#Installation)
-	* 7.3. [Usage in Go](#UsageinGo)
-		* 7.3.1. [Decoding](#Decoding)
-		* 7.3.2. [Encoding](#Encoding)
-* 8. [Roadmap](#Roadmap)
-* 9. [Contributing](#Contributing)
-* 10. [License](#License)
-* 11. [Contact](#Contact)
-	* 11.1. [Acknowledgments](#Acknowledgments)
+* 6. [Getting Started](#GettingStarted)
+* 7. [Roadmap](#Roadmap)
+* 8. [Contributing](#Contributing)
+* 9. [License](#License)
+* 10. [Contact](#Contact)
+	* 10.1. [Acknowledgments](#Acknowledgments)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -56,9 +47,16 @@
 
 ##  1. <a name='ATTENTION'></a>ATTENTION
 
-* The current v1 code is stable and ready to use.
-* The current v2 code is stable and ready to use for packages not containing 14 or more equal bytes in a row.
-  * This will change very soon.
+* The current TCOBSv1 code is stable and ready to use without limitations, but:
+  * Encoding in **C** (for the embedded device).
+  * Decoding in **Go** (for the PC side).
+  * Further TCOBSv1 development is not planned. 
+* The current TCOBSv2 code is stable and ready to use with limitations (for now):
+  * Not more than 20 00-bytes in a row.
+  * Not more than 20 FF-bytes in a row.
+  * Not more than 40 equal other bytes in a row.
+  * If such input buffer occurs, the encoder returns with an error.
+
 
 <!-- ABOUT THE PROJECT -->
 ##  2. <a name='AboutTheproject'></a>About The project
@@ -74,18 +72,17 @@
 
 * TCOBS was originally developed as an optional [*Trice*](https://github.com/rokath/trice) part and that's the **T** is standing for. It aims to reduce the binary [trice](https://github.com/rokath/trice) data together with framing in one step.
   * T symbols also the joining of the 2 orthogonal tasks compression and framing.
-  * Additionally the usage of ternary and quaternary numbers is reflected in the letter T.
+  * Additionally, the usage of ternary and quaternary numbers is reflected in the letter T.
 * TCOBSv2 is a better approach for TCOBSv1, suited also when long sequences of equal characters occur in the data stream.
-  * The TCOBSv1 code is simpler and therefore smaller. The compression is probably not that good as with TCOBS v2.
+  * The TCOBSv1 compression is expected to be not that good as with TCOBS v2.
 * About the data is assumed, that 00-bytes and FF-bytes occur a bit more often than other bytes.
-* The aim concerning the compression is more to get a reasonable data reduction in a cheap way concerning minimal computing effort, than reducing to an absolute minimum. The method shown here simply counts repeated bytes and transforms them into shorter sequences. It works well also on very short messages, like 4 bytes and on very long buffers. The compressed buffer contains no 00-bytes anymore what is the aim of COBS. <!-- In the worst case, if no repeated bytes occur at all, the encoded data can be about 3% longer (1 byte per each 31 input bytes). -->
+* The compression aim is more to get a reasonable data reduction with minimal computing effort, than reducing to an absolute minimum. The method shown here simply counts repeated bytes and transforms them into shorter sequences. It works well also on very short messages, like 2 or 4 bytes and on very long buffers. The compressed buffer contains no 00-bytes anymore what is the aim of COBS. <!-- In the worst case, if no repeated bytes occur at all, the encoded data can be about 3% longer (1 byte per each 31 input bytes). -->
 * **TCOBS is stand-alone usable in any project for package framing with data minimizing.**
 * Use cases in mind are speed, limited bandwidth and long time data recording in the field.
-* TCOBS is a different kind of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) package framing, inspired by [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html) with focus on speed and minimizing size.
+* TCOBS is inspired by [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html). The ending sigil byte idea comes from [rCOBS](https://github.com/Dirbaio/rcobs). It allows a straight forward encoding avoiding lookahead and makes this way the embedded device code simpler.
 * TCOBS uses various chained sigil bytes to achieve an additional lossless compression if possible.
-* Each encoded package ends with an additional sigil byte. <!-- and has in the worst case 1 additional byte per 31 bytes, but usually the encoded data are smaller than the unencoded because of the compression.-->
-  * TCOBS encoding is inspired also by [rCOBS](https://github.com/Dirbaio/rcobs) (the ending sigil byte). It allows a straight forward encoding avoiding lookahead and makes this way the embedded device code simpler.
-* `0` is used as delimiter byte between the packages containing no `0` anymore. It is up to the user to insert the **optional** delimiters for framing.
+* Each encoded package ends with an additional sigil byte.
+* `0` is usable as delimiter byte between the packages containing no `0` anymore. It is up to the user to insert the **optional** delimiters for framing after each or several packages.
 
 ###  3.1. <a name='Whynotin2steps'></a> Why not in 2 steps?
 
@@ -98,7 +95,9 @@
   
 * In case of data disruption, the receiver will wait for the next 0-delimiter byte. As a result it will get a packet start and end of 2 different packages A and Z.
 
-<!-- ![COBSDataDisruption](./ref/COBSDataDisruption.svg) -->
+  <a href="https://github.com/rokath/tcobs">
+    <img src="TCOBSv1/docs/ref/COBSDataDisruption.svg" alt="Logo" width="1200" height="120">
+  </a>
 
 * For the COBS decoder it makes no difference if the COBS packages start or end with a sigil byte. In any case it will run into issues in such case with high probability. 
   * An additional package CRC before encoding could be added to decrease false match probability.
@@ -119,76 +118,21 @@
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- 
-##  6. <a name='TCOBSFramingEncoderandDecoder'></a>TCOBS Framing Encoder and Decoder
-
-###  6.1. <a name='TCOBSEncoding'></a>TCOBS Encoding
-
-* [x] `tcobs.h` and `tcobs.c` contain the encoder as **C**-code.
-* [x] The encoding in **Go** is possible with `tcobs.go` using `tcobs.c` with CGO.
-* [x] The **Go** idiomatic usage is to use a `NewEncoder(w io.Writer, size int) (p *encoder)` and its *Reader* interface (see `read.go`)
-
-###  6.2. <a name='TCOBSDecoding'></a>TCOBS Decoding
-
-* [x] `tcobs.go` contains the decoder as **Go**-code.
-* [ ] The decoding in **C** is not implemented (yet).
-* [x] The **Go** idiomatic usage is to use a `NewDecoder(r io.Reader, size int, multi bool) (p *decoder)` and its *Writer* interface (see `write.go`)
-
-###  6.3. <a name='TCOBSTesting'></a>TCOBS Testing
-
-- [x] `tcobs_test.go` contains test code. CGO is not supported inside test files but usable through **Go** functions. 
-  - Testing: `go test ./...`: ![./docs/ref/Test.PNG](./docs/ref/Test.PNG)
-- The test execution can take several seconds. If your computer is slow you can reduce the loop count in the test functions `TestEncodeDecode*`.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
--->
 <!-- GETTING STARTED -->
 
-##  7. <a name='GettingStarted'></a>Getting Started
+##  6. <a name='GettingStarted'></a>Getting Started
 
 * See README.md in TCOBSv1 or TCOBSv2.
 
-<!--
-* Add [./tcobs.c](./tcobs.c) to your embedded project and use function `TCOBSEncode` to convert a buffer into TCOBS format.
-* After transmitting one (or more) TCOBS package(s) transmit a 0-delimiter byte.
-* Decoding is currently implemented in **Go**.
-  * Encoder and Decoder in other languages are easy to implement using the TCOBS specification and the given **C**- and **Go**-code.
-* Contributions are appreciated.
-
-###  7.1. <a name='Prerequisites'></a>Prerequisites
-
-* Just a **C** compiler and, for testing, a **Go** installation.
-
-###  7.2. <a name='Installation'></a>Installation
-
-* To use TCOBS with **Go** execute `go get github.com/rokath/tcobs`
-
-###  7.3. <a name='UsageinGo'></a>Usage in Go
-
-* For example usage check the tests.
-
-####  7.3.1. <a name='Decoding'></a>Decoding
-
-* The function `tcobs.Decode` is usable standalone.
-* Also it is possible to create a Decoder instance and use the `Read` method.
-
-####  7.3.2. <a name='Encoding'></a>Encoding
-
-* The function `tcobs.CEncode` is usable standalone.
-* Also it is possible to create an Encoder instance and use the `Write` method.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
--->
-
 <!-- ROADMAP -->
-##  8. <a name='Roadmap'></a>Roadmap
+##  7. <a name='Roadmap'></a>Roadmap
 
 * [x] Add Changelog
 * [x] Add back to top links
 * [x] Add **Go** Reader & Writer interface
-* [ ] Add decode function in **C** in TCOBSv1
+* [ ] Add generic CCTN & CCQN conversions to remove TCOBSv2 limitations.
+* [ ] Improve testing with groups of equal bytes.
+* [ ] Compare efficiency TCOBSv2 with TCOBSv1.
 * [ ] Add Additional Templates w/ Examples
 
 See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of proposed features (and known issues).
@@ -196,7 +140,7 @@ See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
-##  9. <a name='Contributing'></a>Contributing
+##  8. <a name='Contributing'></a>Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -214,20 +158,20 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
-##  10. <a name='License'></a>License
+##  9. <a name='License'></a>License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
-##  11. <a name='Contact'></a>Contact
+##  10. <a name='Contact'></a>Contact
 
 Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle) - --> th@seerose.net
 Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 
 <!-- ACKNOWLEDGMENTS -->
-###  11.1. <a name='Acknowledgments'></a>Acknowledgments
+###  10.1. <a name='Acknowledgments'></a>Acknowledgments
 
 * [COBS](https://pypi.org/project/cobs/)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
@@ -269,7 +213,7 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
 <br />
 <div align="center">
   <a href="https://github.com/rokath/tcobs">
-    <img src="docs/ref/COBSDataDisruption.svg" alt="Logo" width="800" height="80">
+    <img src="TCOBSv1/docs/ref/COBSDataDisruption.svg" alt="Logo" width="800" height="80">
   </a>
 
 <h3 align="center">TCOBS</h3>
@@ -277,7 +221,7 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
   <p align="center">
     Common Object Byte Stuffing with optimized Run-Length Encoding 
     <br />
-    <a href="https://github.com/rokath/tcobs/blob/master/docs/TCOBSSpecification.md"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/rokath/tcobs/blob/master/TCOBSv2/docs/TCOBSv2Specification.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/rokath/tcobs/blob/master">View Code</a>
