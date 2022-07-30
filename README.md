@@ -78,12 +78,12 @@
 * TCOBSv2 is a better approach for TCOBSv1, suited also when long sequences of equal characters occur in the data stream.
   * The TCOBSv1 code is simpler and therefore smaller. The compression is probably not that good as with TCOBS v2.
 * About the data is assumed, that 00-bytes and FF-bytes occur a bit more often than other bytes.
-* The aim concerning the compression is more to get a reasonable data reduction in a cheap way concerning minimal computing effort, than reducing to an absolute minimum. The method shown here simply counts repeated bytes and transforms them into shorter sequences. It works well also on very short messages, like 4 bytes and on very long buffers. The compressed buffer contains no 00-bytes anymore what is the aim of COBS. In the worst case, if no repeated bytes occur at all, the encoded data can be about 3% longer (1 byte per each 31 input bytes).
+* The aim concerning the compression is more to get a reasonable data reduction in a cheap way concerning minimal computing effort, than reducing to an absolute minimum. The method shown here simply counts repeated bytes and transforms them into shorter sequences. It works well also on very short messages, like 4 bytes and on very long buffers. The compressed buffer contains no 00-bytes anymore what is the aim of COBS. <!-- In the worst case, if no repeated bytes occur at all, the encoded data can be about 3% longer (1 byte per each 31 input bytes). -->
 * **TCOBS is stand-alone usable in any project for package framing with data minimizing.**
 * Use cases in mind are speed, limited bandwidth and long time data recording in the field.
 * TCOBS is a different kind of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) package framing, inspired by [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html) with focus on speed and minimizing size.
 * TCOBS uses various chained sigil bytes to achieve an additional lossless compression if possible.
-* Each encoded package ends with an additional sigil byte and has in the worst case 1 additional byte per 31 bytes, but usually the encoded data are smaller than the unencoded because of the compression.
+* Each encoded package ends with an additional sigil byte. <!-- and has in the worst case 1 additional byte per 31 bytes, but usually the encoded data are smaller than the unencoded because of the compression.-->
   * TCOBS encoding is inspired also by [rCOBS](https://github.com/Dirbaio/rcobs) (the ending sigil byte). It allows a straight forward encoding avoiding lookahead and makes this way the embedded device code simpler.
 * `0` is used as delimiter byte between the packages containing no `0` anymore. It is up to the user to insert the **optional** delimiters for framing.
 
