@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	maxLength int = 2000 // 32768
-	rounds        = 10000
+	maxLength int = 65536
+	rounds        = 20000
 )
 
 // TestCEncodeDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.

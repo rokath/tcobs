@@ -473,7 +473,26 @@ static int ntoCCTNR( int num, uint8_t* buf ){
         buf[1] = ciphers[num-5][1];
         return 2;        
     }
-    ASSERT( num < 14 ) // todo: generic solution
+    if( num <= 40 ){
+        static uint8_t ciphers[27][3] = {
+            {R0, R0, R0}, {R0, R0, R1}, {R0, R0, R2}, //  14 +   0,  1,  2
+            {R0, R1, R0}, {R0, R1, R1}, {R0, R1, R2}, //  14 +   3,  4,  5
+            {R0, R2, R0}, {R0, R2, R1}, {R0, R2, R2}, //  14 +   6,  7,  8
+
+            {R1, R0, R0}, {R1, R0, R1}, {R1, R0, R2}, //  14 +   9, 10, 11
+            {R1, R1, R0}, {R1, R1, R1}, {R1, R1, R2}, //  14 +  12, 13, 14
+            {R1, R2, R0}, {R1, R2, R1}, {R1, R2, R2}, //  14 +  15, 16, 17
+
+            {R2, R0, R0}, {R2, R0, R1}, {R2, R0, R2}, //  14 +  18, 19, 20
+            {R2, R1, R0}, {R2, R1, R1}, {R2, R1, R2}, //  14 +  21, 22, 23
+            {R2, R2, R0}, {R2, R2, R1}, {R2, R2, R2}, //  14 +  24, 25, 26
+        };
+        buf[0] = ciphers[num-14][0];
+        buf[1] = ciphers[num-14][1];
+        buf[2] = ciphers[num-14][2];
+        return 3;        
+    }
+    ASSERT( num < 41 ) // todo: generic solution
     return 0;
 }
 
