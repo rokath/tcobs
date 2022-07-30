@@ -698,7 +698,7 @@ static int CCQNZtoN( uint8_t* ciphers, int count ){
             default: return -__LINE__;
         }
     }
-    return -__LINE__; // todo
+    return -__LINE__; // todo: generic solution
 }
 
 static int CCQNFtoN( uint8_t* ciphers, int count ){
@@ -748,12 +748,11 @@ static int CCQNFtoN( uint8_t* ciphers, int count ){
             default: return -__LINE__;
         }
     }
-    return -__LINE__; // todo
+    return -__LINE__; // todo: generic solution
 }
 
 static int CCTNRtoN( uint8_t* ciphers, int count ){
     if( count == 1 ){
-    ASSERT( count == 1 ) // todo
         switch( *ciphers ){
             case R0: return 2;
             case R1: return 3;
@@ -787,5 +786,86 @@ static int CCTNRtoN( uint8_t* ciphers, int count ){
             default: return -__LINE__;
         }
     }
-    return -__LINE__; // todo
+    if( count == 3 ){
+        switch( ciphers[0] ){
+            case R0: 
+                switch( ciphers[1] ){
+                    case R0: 
+                        switch( ciphers[2] ){
+                            case R0: return 14;
+                            case R1: return 15;
+                            case R2: return 16;
+                            default: return -__LINE__;
+                        }
+                    case R1:
+                        switch( ciphers[2] ){
+                            case R0: return 17;
+                            case R1: return 18;
+                            case R2: return 19;
+                            default: return -__LINE__;
+                        }
+                    case R2:
+                        switch( ciphers[2] ){
+                            case R0: return 20;
+                            case R1: return 21;
+                            case R2: return 22;
+                            default: return -__LINE__;
+                        }
+                    default: return -__LINE__;
+                }
+            case R1: 
+                switch( ciphers[1] ){
+                    case R0: 
+                        switch( ciphers[2] ){
+                            case R0: return 23;
+                            case R1: return 24;
+                            case R2: return 25;
+                            default: return -__LINE__;
+                        }
+                    case R1:
+                        switch( ciphers[2] ){
+                            case R0: return 26;
+                            case R1: return 27;
+                            case R2: return 28;
+                            default: return -__LINE__;
+                        }
+                    case R2:
+                        switch( ciphers[2] ){
+                            case R0: return 29;
+                            case R1: return 30;
+                            case R2: return 31;
+                            default: return -__LINE__;
+                        }
+                    default: return -__LINE__;
+                }
+            case R2: 
+                switch( ciphers[1] ){
+                    case R0: 
+                        switch( ciphers[2] ){
+                            case R0: return 32;
+                            case R1: return 33;
+                            case R2: return 34;
+                            default: return -__LINE__;
+                        }
+                    case R1:
+                        switch( ciphers[2] ){
+                            case R0: return 35;
+                            case R1: return 36;
+                            case R2: return 37;
+                            default: return -__LINE__;
+                        }
+                    case R2:
+                        switch( ciphers[2] ){
+                            case R0: return 38;
+                            case R1: return 39;
+                            case R2: return 40;
+                            default: return -__LINE__;
+                        }
+                    default: return -__LINE__;
+                }
+            default: return -__LINE__;
+        }
+
+    }
+    return -__LINE__; // todo: generic solution
 }
