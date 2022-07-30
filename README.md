@@ -147,7 +147,7 @@
 
 ##  7. <a name='GettingStarted'></a>Getting Started
 
-* See README.m in TCOBSv1 or TCOBSv2.
+* See README.md in TCOBSv1 or TCOBSv2.
 
 <!--
 * Add [./tcobs.c](./tcobs.c) to your embedded project and use function `TCOBSEncode` to convert a buffer into TCOBS format.

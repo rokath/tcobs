@@ -7,10 +7,10 @@
 
 <!-- vscode-markdown-toc -->
 * 1. [TCOBSv1 Specification](#TCOBSv1Specification)
-* 2. [TCOBS Framing Encoder and Decoder](#TCOBSFramingEncoderandDecoder)
-	* 2.1. [TCOBS Encoding](#TCOBSEncoding)
-	* 2.2. [TCOBS Decoding](#TCOBSDecoding)
-	* 2.3. [TCOBS Testing](#TCOBSTesting)
+* 2. [TCOBSv1 Framing Encoder and Decoder](#TCOBSv1FramingEncoderandDecoder)
+	* 2.1. [TCOBSv1 Encoding](#TCOBSv1Encoding)
+	* 2.2. [TCOBSv1 Decoding](#TCOBSv1Decoding)
+	* 2.3. [TCOBSv1 Testing](#TCOBSv1Testing)
 * 3. [Getting Started](#GettingStarted)
 	* 3.1. [Prerequisites](#Prerequisites)
 	* 3.2. [Installation](#Installation)
@@ -35,21 +35,21 @@
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-##  2. <a name='TCOBSFramingEncoderandDecoder'></a>TCOBS Framing Encoder and Decoder
+##  2. <a name='TCOBSv1FramingEncoderandDecoder'></a>TCOBSv1 Framing Encoder and Decoder
 
-###  2.1. <a name='TCOBSEncoding'></a>TCOBS Encoding
+###  2.1. <a name='TCOBSv1Encoding'></a>TCOBSv1 Encoding
 
 * [x] `tcobs.h` and `tcobs.c` contain the encoder as **C**-code.
 * [x] The encoding in **Go** is possible with `tcobs.go` using `tcobs.c` with CGO.
 * [x] The **Go** idiomatic usage is to use a `NewEncoder(w io.Writer, size int) (p *encoder)` and its *Reader* interface (see `read.go`)
 
-###  2.2. <a name='TCOBSDecoding'></a>TCOBS Decoding
+###  2.2. <a name='TCOBSv1Decoding'></a>TCOBSv1 Decoding
 
 * [x] `tcobs.go` contains the decoder as **Go**-code.
 * [ ] The decoding in **C** is not implemented (yet).
 * [x] The **Go** idiomatic usage is to use a `NewDecoder(r io.Reader, size int, multi bool) (p *decoder)` and its *Writer* interface (see `write.go`)
 
-###  2.3. <a name='TCOBSTesting'></a>TCOBS Testing
+###  2.3. <a name='TCOBSv1Testing'></a>TCOBSv1 Testing
 
 - [x] `tcobs_test.go` contains test code. CGO is not supported inside test files but usable through **Go** functions. 
   - Testing: `go test ./...`: ![./docs/ref/Test.PNG](./docs/ref/Test.PNG)

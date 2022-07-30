@@ -6,23 +6,22 @@
   <ol>
 
 <!-- vscode-markdown-toc -->
-* 1. [About The project](#AboutTheproject)
-* 2. [TCOBS Specification](#TCOBSSpecification)
-* 3. [TCOBS Framing Encoder and Decoder](#TCOBSFramingEncoderandDecoder)
-	* 3.1. [TCOBS Encoding](#TCOBSEncoding)
-	* 3.2. [TCOBS Decoding](#TCOBSDecoding)
-	* 3.3. [TCOBS Testing](#TCOBSTesting)
-* 4. [Getting Started](#GettingStarted)
-	* 4.1. [Prerequisites](#Prerequisites)
-	* 4.2. [Installation](#Installation)
-	* 4.3. [Usage in Go](#UsageinGo)
-		* 4.3.1. [Decoding](#Decoding)
-		* 4.3.2. [Encoding](#Encoding)
-* 5. [Roadmap](#Roadmap)
-* 6. [Contributing](#Contributing)
-* 7. [License](#License)
-* 8. [Contact](#Contact)
-	* 8.1. [Acknowledgments](#Acknowledgments)
+* 1. [TCOBSv2 Specification](#TCOBSv2Specification)
+* 2. [TCOBSv2 Framing Encoder and Decoder](#TCOBSv2FramingEncoderandDecoder)
+	* 2.1. [TCOBSv2 Encoding](#TCOBSv2Encoding)
+	* 2.2. [TCOBSv2 Decoding](#TCOBSv2Decoding)
+	* 2.3. [TCOBSv2 Testing](#TCOBSv2Testing)
+* 3. [Getting Started](#GettingStarted)
+	* 3.1. [Prerequisites](#Prerequisites)
+	* 3.2. [Installation](#Installation)
+	* 3.3. [Usage in Go](#UsageinGo)
+		* 3.3.1. [Decoding](#Decoding)
+		* 3.3.2. [Encoding](#Encoding)
+* 4. [Roadmap](#Roadmap)
+* 5. [Contributing](#Contributing)
+* 6. [License](#License)
+* 7. [Contact](#Contact)
+	* 7.1. [Acknowledgments](#Acknowledgments)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -33,27 +32,27 @@
   </ol>
 </details>
 
-##  2. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification
+##  1. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification
 
 * See [./docs/TCOBSSpecification.md](./docs/TCOBSSpecification.md).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-##  3. <a name='TCOBSFramingEncoderandDecoder'></a>TCOBS Framing Encoder and Decoder
+##  2. <a name='TCOBSv2FramingEncoderandDecoder'></a>TCOBSv2 Framing Encoder and Decoder
 
-###  3.1. <a name='TCOBSEncoding'></a>TCOBS Encoding
+###  2.1. <a name='TCOBSv2Encoding'></a>TCOBSv2 Encoding
 
 * [x] `tcobs.h` and `tcobsEncode.c` with `tcobs.Internal.h` contain the encoder as **C**-code.
 * [x] The encoding in **Go** is possible with `tcobs.go` using the encoder C-code with CGO.
 * [x] The **Go** idiomatic usage is to use a `NewEncoder(w io.Writer, size int) (p *encoder)` and its *Reader* interface (see `read.go`)
 
-###  3.2. <a name='TCOBSDecoding'></a>TCOBS Decoding
+###  2.2. <a name='TCOBSv2Decoding'></a>TCOBSv2 Decoding
 
 * [x] `tcobs.h` and `tcobDecode.c` with `tcobs.Internal.h` contain the encoder as **C**-code.
 * [x] The decoding in **Go** is possible with `tcobs.go` using the decoder C-code with CGO.
 * [x] The **Go** idiomatic usage is to use a `NewDecoder(r io.Reader, size int, multi bool) (p *decoder)` and its *Writer* interface (see `write.go`)
 
-###  3.3. <a name='TCOBSTesting'></a>TCOBS Testing
+###  2.3. <a name='TCOBSv2Testing'></a>TCOBSv2 Testing
 
 * [x] `tcobs_test.go` contains test code. CGO is not supported inside test files but usable through **Go** functions.
   * Testing: `go test ./...`: ![./docs/ref/Test.PNG](./docs/ref/Test.PNG) executes the C-code with many test data.
@@ -64,7 +63,7 @@
 
 <!-- GETTING STARTED -->
 
-##  4. <a name='GettingStarted'></a>Getting Started
+##  3. <a name='GettingStarted'></a>Getting Started
 
 * Add [./tcobs.c](./tcobs.c) to your embedded project and use function `TCOBSEncode` to convert a buffer into TCOBS format.
 * After transmitting one (or more) TCOBS package(s) transmit a 0-delimiter byte.
@@ -72,24 +71,24 @@
   * Encoder and Decoder in other languages are easy to implement using the TCOBS specification and the given **C**- and **Go**-code.
 * Contributions are appreciated.
 
-###  4.1. <a name='Prerequisites'></a>Prerequisites
+###  3.1. <a name='Prerequisites'></a>Prerequisites
 
 * Just a **C** compiler and, for testing, a **Go** installation.
 
-###  4.2. <a name='Installation'></a>Installation
+###  3.2. <a name='Installation'></a>Installation
 
 * To use TCOBS with **Go** execute `go get github.com/rokath/tcobs`
 
-###  4.3. <a name='UsageinGo'></a>Usage in Go
+###  3.3. <a name='UsageinGo'></a>Usage in Go
 
 * For example usage check the tests.
 
-####  4.3.1. <a name='Decoding'></a>Decoding
+####  3.3.1. <a name='Decoding'></a>Decoding
 
 * The function `tcobs.Decode` is usable standalone.
 * Also it is possible to create a Decoder instance and use the `Read` method.
 
-####  4.3.2. <a name='Encoding'></a>Encoding
+####  3.3.2. <a name='Encoding'></a>Encoding
 
 * The function `tcobs.CEncode` is usable standalone.
 * Also it is possible to create an Encoder instance and use the `Write` method.
@@ -97,7 +96,7 @@
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
-##  5. <a name='Roadmap'></a>Roadmap
+##  4. <a name='Roadmap'></a>Roadmap
 
 * [x] Add Changelog
 * [x] Add back to top links
@@ -110,7 +109,7 @@ See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
-##  6. <a name='Contributing'></a>Contributing
+##  5. <a name='Contributing'></a>Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -128,20 +127,20 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
-##  7. <a name='License'></a>License
+##  6. <a name='License'></a>License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
-##  8. <a name='Contact'></a>Contact
+##  7. <a name='Contact'></a>Contact
 
 Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle) - --> th@seerose.net
 Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 
 <!-- ACKNOWLEDGMENTS -->
-###  8.1. <a name='Acknowledgments'></a>Acknowledgments
+###  7.1. <a name='Acknowledgments'></a>Acknowledgments
 
 * [COBS](https://pypi.org/project/cobs/)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
