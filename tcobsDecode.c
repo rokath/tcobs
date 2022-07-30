@@ -8,19 +8,9 @@
 #include "tcobs.h"
 #include "tcobsInternal.h"
 
-//! CHECK_OUTPUT_SPACE checks for n plus distance output space.
-//#define CHECK_OUTPUT_SPACE(n) if( (uint8_t*)output - o + n + dc > 0 ){ return OUT_BUFFER_TOO_SMALL - __LINE__; }
-
-//! CHECK_INPUT_SPACE checks for distance input space.
-//#define CHECK_INPUT_SPACE  if( (uint8_t*)input > i - dc ){ return INPUT_DATA_CORRUPTED - __LINE__; }
-
-//! CHECK_SPACE checks for sufficient input and output space.
-//#define CHECK_SPACE( sigilDecodedCount) CHECK_INPUT_SPACE CHECK_OUTPUT_SPACE(sigilDecodedCount)
-
-//! COPY_BYTES transfers distance bytes backwards from the input buffer end to the output buffer end.
-//#define COPY_BYTES // do{ /* CHECK_SPACE(0) */ while( dc--){ *--o = *--i; } dc = 0; } while( 0 );
-
-#define MAX_CIPHERS 24 //!< MAX_CIPHERS is max expected sigil bytes of one kind in a row.
+//! MAX_CIPHERS is max expected sigil bytes of one kind in a row. 
+//! 3^24 = 282.429.536.481, we do not expect so much equal bytes.
+#define MAX_CIPHERS 24 
 
 static int writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
 static int writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
@@ -35,7 +25,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
         return 0;
     }else{
         uint8_t sigil;
-        int dc = 0; // distance;
+        int dc = 0; // distance counter
         uint8_t cc[MAX_CIPHERS];
         uint8_t * ss = cc + MAX_CIPHERS; // sigilSequence (without distance bits) = counted ciphers
         uint8_t * o = (uint8_t*)output + max; // output write pointer behind next value
@@ -110,21 +100,20 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     }
                 }
             }
-            // The following jump points are code to be executed inside the upper binary search, but "outsourced" here for better readability.
-            // This example is for better decode understanding:
-            // # state          #                      in buffer #                                   out buffer # state derived action to follow
-            // # sg zc fc rc dc # ------------------------------ # -------------------------------------------- # -------------------------------------------------------------
-            // #     0  0  0  0 # 22 33 Z0|2 Z0 77 88 99 Z0|3 F3 #                                              # start
-            // # F3  0  0  0  0 # 22 33 Z0|2 Z0 77 88 99 Z0|3    #                                              # all 0 -> F3 stored && continue
-            // # Z0  0  1  0  3 # 22 33 Z0|2 Z0 77 88 99         #                                              # Z0 && fc -> a change -> writeFn( &o, ss, fc );
-            // |     0  0  0  3 # 22 33 Z0|2 Z0 77 88 99         #                                  FF FF FF FF # *--o = 0;
-            // |     0  0  0  3 # 22 33 Z0|2 Z0 77 88 99         #                               00 FF FF FF FF # COPY_BYTES
-            // |     0  0  0  0 # 22 33 Z0|2 Z0                  #                      77 88 99 00 FF FF FF FF # continue
-            // # Z0  0  0  0  0 # 22 33 Z0|2                     #                      77 88 99 00 FF FF FF FF # all 0 -> Z0 stored && continue
-            // # Z0  0  1  0  2 # 22 33                          #                      77 88 99 00 FF FF FF FF # Z0 & zc & dc -> a change -> writeZn( &o, ss, zc ); Z0Z0==5
-            // |     0  0  0  2 # 22 33                          #       00 00 00 00 00 77 88 99 00 FF FF FF FF # COPY_BYTES
-            // |     0  0  0  0 # 22 33                          # 22 33 00 00 00 00 00 77 88 99 00 FF FF FF FF # i == input -> done
-
+// The following jump points are code to be executed inside the upper binary search, but "outsourced" here for better readability.
+// This example is for better decode understanding:
+// # state          #                      in buffer #                                   out buffer # state derived action to follow
+// # sg zc fc rc dc # ------------------------------ # -------------------------------------------- # ----------------------------------------------------------
+// #     0  0  0  0 # 22 33 Z0|2 Z0 77 88 99 Z0|3 F3 #                                              # start
+// # F3  0  0  0  0 # 22 33 Z0|2 Z0 77 88 99 Z0|3    #                                              # F3 stored && continue
+// # Z0  0  1  0  3 # 22 33 Z0|2 Z0 77 88 99         #                                              # Z0 && fc -> a change -> writeFn( &o, ss, fc );
+// |     0  0  0  3 # 22 33 Z0|2 Z0 77 88 99         #                                  FF FF FF FF # *--o = 0;
+// |     0  0  0  3 # 22 33 Z0|2 Z0 77 88 99         #                               00 FF FF FF FF # COPY_BYTES
+// |     0  0  0  0 # 22 33 Z0|2 Z0                  #                      77 88 99 00 FF FF FF FF # continue
+// # Z0  0  0  0  0 # 22 33 Z0|2                     #                      77 88 99 00 FF FF FF FF # all 0 -> Z0 stored && continue
+// # Z0  0  1  0  2 # 22 33                          #                      77 88 99 00 FF FF FF FF # Z0 & zc & dc -> a change -> writeZn( &o, ss, zc ); Z0Z0==5
+// |     0  0  0  2 # 22 33                          #       00 00 00 00 00 77 88 99 00 FF FF FF FF # COPY_BYTES
+// |     0  0  0  0 # 22 33                          # 22 33 00 00 00 00 00 77 88 99 00 FF FF FF FF # i == input -> done
             Z0sigil:
                 if( fc ){
                     ASSERT( rc == 0 )
@@ -165,7 +154,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             Z1sigil:
                 if( fc ){
@@ -207,7 +195,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             Z2sigil:
                 if( fc ){
@@ -249,7 +236,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             Z3sigil:
                 if( fc ){
@@ -291,7 +277,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             F0sigil: // This could be a single F0, but it is inside the sigil chain.
                 if( zc ){
@@ -333,7 +318,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             F1sigil:
                 if( zc ){
@@ -375,7 +359,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             F2sigil:
                 if( zc ){
@@ -417,7 +400,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             F3sigil:
                 if( zc ){
@@ -459,7 +441,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             R0sigil:
                 if( zc ){
@@ -501,7 +482,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             R1sigil:
                 if( zc ){
@@ -541,8 +521,8 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                 }
                 while( dc-- ){ 
                     *--o = *--i; 
-                } 
-                //COPY_BYTES
+                }
+                dc = 0;
                 continue;
             R2sigil:
                 if( zc ){
@@ -584,7 +564,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
             Nsigil:
                 ASSERT( dc != 0 )
@@ -624,7 +603,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     *--o = *--i; 
                 } 
                 dc = 0;
-                //COPY_BYTES
                 continue;
         }
     }

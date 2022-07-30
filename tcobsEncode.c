@@ -67,11 +67,10 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
                         fullCount++; // , fn -- FF. zz ... 
                         continue; 
                     }
-                    if( b == b_1 ){ // ???????????????????????????????????????
-                        ASSERT( (fullCount|zeroCount) == 0 );
-                        reptCount++; // , rn -- AA. zz ... 
-                        continue; 
-                    }                    
+                    //( b == b_1 )
+                    ASSERT( (fullCount|zeroCount) == 0 );
+                    reptCount++; // , rn -- AA. zz ... 
+                    continue; 
                 }else{ // , zn|fn|rn xx yy. zz ... (xx != yy)
                     if( b_1 == 0 ) { // , zn 00 yy. zz ...
                         ASSERT( (fullCount|reptCount) == 0 );
@@ -121,29 +120,28 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
                         }
                         return out - (uint8_t*)output;
                     }
-                    if( b == b_1 ){ // , zn AA AA. // ?????????????????????????????????????????????????????????
-                        ASSERT( (fullCount|zeroCount) == 0 );
-                        reptCount +=1; // , rn -- AA.
-                        if( distance == 31 ){
-                            err = writeNoopSigil( &out, &distance);
-                            if( err ){
-                                return err;
-                            }
-                        }
-                        *out++ = b; // AA, rn -- --.
-                        distance++;
-                        err = writeRepeatCount(&out, b, &reptCount, &distance);
+                    // , zn AA AA.
+                    ASSERT( (fullCount|zeroCount) == 0 );
+                    reptCount +=1; // , rn -- AA.
+                    if( distance == 31 ){
+                        err = writeNoopSigil( &out, &distance);
                         if( err ){
                             return err;
                         }
-                        if( distance > 0 ){
-                            err = writeNoopSigil( &out, &distance);
-                            if( err ){
-                                return err;
-                            }
+                    }
+                    *out++ = b; // AA, rn -- --.
+                    distance++;
+                    err = writeRepeatCount(&out, b, &reptCount, &distance);
+                    if( err ){
+                        return err;
+                    }
+                    if( distance > 0 ){
+                        err = writeNoopSigil( &out, &distance);
+                        if( err ){
+                            return err;
                         }
-                        return out - (uint8_t*)output;
-                    }                    
+                    }
+                    return out - (uint8_t*)output;
                 }else{ // , zn|fn|rn xx yy. (xx != yy)
                     if( b_1 == 0 ) { // , zn 00 yy.
                         ASSERT( (fullCount|reptCount) == 0 );
@@ -405,7 +403,6 @@ static int writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * distan
     return 0;
 }
 
-
 //! ntoCCQNZ converts num into a CCQN cipher sequence coded as Z sigils to buf and returns count of ciphers.
 static int ntoCCQNZ( int num, uint8_t* buf ){
     ASSERT( num > 0 )
@@ -480,12 +477,9 @@ static int ntoCCTNR( int num, uint8_t* buf ){
     return 0;
 }
 
-
 /////////////////////////////////////////////////////////////////////////////
-
-//  #define MAX_CIPHERS 16
-//  static uint8_t ciphers[MAX_CIPHERS];
-
+// generic solution, first ideas
+//
 //  //! firstQuaternaryCipher computes first quaternary cipher of *pNumber and reduces *pNumber accordingly.
 //  uint8_t firstQuaternaryCipher( int * pNumber ){
 //      int cipher = *pNumber;
