@@ -1,4 +1,14 @@
 # TCOBS Changelog
+## v0.3.0
+
+* Code divided into TCOBSv1 and TCOBSv2
+* TCOBSv1 passes all tests,and is limited:
+  * Encoding implemented in C only
+  * Decoding implemented in Go only
+* TCOBSv2 passes all tests, but is limited:
+  * Not more than 20 00-bytes in a row
+  * Not more than 20 FF-bytes in a row
+  * Not more than 40 equal other bytes in a row
 
 ## v0.2.0
 
