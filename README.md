@@ -110,11 +110,11 @@
 
 ###  5.1. <a name='TCOBSv1Specification'></a>TCOBSv1 Specification
 
-* See [./TCOBSv1/docs/TCOBSSpecification.md](./TCOBSv1/docs/TCOBSv1Specification.md).
+* See [./TCOBSv1/docs/TCOBSv1Specification.md](./TCOBSv1/docs/TCOBSv1Specification.md).
 
 ###  5.2. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification
 
-* See [./TCOBSv2/docs/TCOBSSpecification.md](./TCOBSv2/docs/TCOBSv2Specification.md).
+* See [./TCOBSv2/docs/TCOBSv2Specification.md](./TCOBSv2/docs/TCOBSv2Specification.md).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
