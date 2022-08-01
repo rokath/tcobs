@@ -8,7 +8,13 @@
 //! The more intensive testing is done from Go using CGO.
 static uint8_t dataSet[] = {
   //len, data...
+#if 0
 
+{[]byte{0, 0, 0, 0, 0, 0, 0xff}, []byte{0x20, 0x60, 0xff}},
+      7, 0, 0, 0, 0, 0, 0, 0xff,
+      3, 0x20, 0x60, 0xff
+
+#else
 // 00
       0, // decoded
       0, // encoded
@@ -144,7 +150,7 @@ static uint8_t dataSet[] = {
       //        Z3|11,                       F1|6,                                                          Z0|15,                                                                          R0|19,                               R2|8,                                      Z1|10,       R0|2,                           Z0|7,                                                                                                          F1|27,                                                                                      F1|22,                            N|7,
 */
 
-
+#endif
 
 
 };
