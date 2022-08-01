@@ -16,9 +16,9 @@ static int writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
 static int writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount);
 static int writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t repeatByte);
 
-//static int CCQNZtoCCQN( uint8_t* ciphers, int count );
-//static int CCQNFtoCCQN( uint8_t* ciphers, int count );
-//static int CCTNRtoCCTN( uint8_t* ciphers, int count );
+static int CCQNZtoCCQN( uint8_t* ciphers, int count );
+static int CCQNFtoCCQN( uint8_t* ciphers, int count );
+static int CCTNRtoCCTN( uint8_t* ciphers, int count );
 
 static int CCQNZtoN( uint8_t* ciphers, int count );
 static int CCQNFtoN( uint8_t* ciphers, int count );
@@ -612,7 +612,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
     }
 }
 
-
+//! writeZn writes 0x00 to *out n times. n is computed from sigil sequence in ss containing ciphersCount sigil bytes.
 static int writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
     int n = CCQNZtoN( *ss, *ciphersCount );
     if( n < 0 ){
@@ -627,6 +627,7 @@ static int writeZn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
     return 0;
 }
 
+//! writeFn writes 0xFF to *out n times. n is computed from sigil sequence in ss containing ciphersCount sigil bytes.
 static int writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
     int n = CCQNFtoN( *ss, *ciphersCount );
     if( n < 0 ){
@@ -641,6 +642,7 @@ static int writeFn( uint8_t ** out, uint8_t ** ss, int * ciphersCount){
     return 0;
 }
 
+//! writeRn writes repeatByte to *out n+1 times. n is computed from sigil sequence in ss containing ciphersCount sigil bytes.
 static int writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t repeatByte ){
     int n = CCTNRtoN( *ss, *ciphersCount );
     if( n < 0 ){
@@ -654,9 +656,6 @@ static int writeRn( uint8_t ** out, uint8_t ** ss, int * ciphersCount, uint8_t r
     *ciphersCount = 0;
     return 0;
 }
-
-
-#if 0
 
 //! CCQNZtoCCQN converts Z-sigils in ciphers to ciphers.
 static int CCQNZtoCCQN( uint8_t* ciphers, int count ){
@@ -676,7 +675,6 @@ static int CCQNZtoCCQN( uint8_t* ciphers, int count ){
     return 0;
 }
 
-/*
 //! CCQNFtoCCQN converts F-sigils in ciphers to ciphers.
 static int CCQNFtoCCQN( uint8_t* ciphers, int count ){
     for(int i = 0; i < count; i++ ){
@@ -710,53 +708,50 @@ static int CCTNRtoCCTN( uint8_t* ciphers, int count ){
     }
     return 0;
 }
-*/
-
-/* 01
-n  p
-0  1
-1  1 // n+=1*1
-2  1 // P*=4
-2  4 // n+=p
-6  4 // n+=0*4
-6  4 // p*=4
-6 16 //
-return
-*/
-
 
 //! CCQNtoN converts count CCQN ciphers in a number.
 static int CCQNtoN( uint8_t* ciphers, int count ){
     int n = 0;
     int pwr = 1; // 4^0
-    for(int i = 0; i < count; i++ ){
+    for(int i = count-1; i >= 0; i-- ){
         n += pwr; // generic start part
         n += ciphers[i] * pwr;
         pwr *= 4;
     }
     return n;
 }
-/*
+
 //! CCTNtoN converts count CCTN ciphers in a number.
-static int CCQTtoN( uint8_t* ciphers, int count ){
-    int n = 0;
+static int CCTNtoN( uint8_t* ciphers, int count ){
+    int n = 1;
     int pwr = 1; // 3^0
-    for(int i = 0; i < count; i++ ){
+    for(int i = count-1; i >= 0; i-- ){
         n += pwr; // generic start part 
         n += ciphers[i] * pwr;
         pwr *= 3;
     }
     return n;
 }
-*/
 
+//! CCQNZtoN converts count CCQNZ ciphers in a number.
 static int CCQNZtoN( uint8_t* ciphers, int count ){
     ASSERT( 0 == CCQNZtoCCQN( ciphers, count ) )
     return CCQNtoN( ciphers, count );
 }
 
-#else
+//! CCQNFtoN converts count CCQNF ciphers in a number.
+static int CCQNFtoN( uint8_t* ciphers, int count ){
+    ASSERT( 0 == CCQNFtoCCQN( ciphers, count ) )
+    return CCQNtoN( ciphers, count );
+}
 
+//! CCTNRtoN converts count CCTNR ciphers in a number.
+static int CCTNRtoN( uint8_t* ciphers, int count ){
+    ASSERT( 0 == CCTNRtoCCTN( ciphers, count ) )
+    return CCTNtoN( ciphers, count );
+}
+
+/*
 static int CCQNZtoN( uint8_t* ciphers, int count ){
     if( count == 1 ){
         switch( *ciphers ){
@@ -806,8 +801,6 @@ static int CCQNZtoN( uint8_t* ciphers, int count ){
     }
     return -__LINE__; // todo: generic solution
 }
-
-#endif
 
 static int CCQNFtoN( uint8_t* ciphers, int count ){
     if( count == 1 ){
@@ -977,3 +970,5 @@ static int CCTNRtoN( uint8_t* ciphers, int count ){
     }
     return -__LINE__; // todo: generic solution
 }
+
+*/
