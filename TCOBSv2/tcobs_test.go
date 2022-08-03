@@ -13,7 +13,7 @@ import (
 
 const (
 	maxLength int = 65536
-	rounds        = 20000
+	rounds    int = 20000
 )
 
 // TestCEncodeDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.
@@ -66,9 +66,8 @@ func checkSet(t *testing.T, index int, dat []byte) {
 
 	en := tcobs.CEncode(encBuf, dat)
 	if en < 0 {
-		fmt.Println(index, "encode failed with result", en)
 		fmt.Println(index, "dat:", len(dat), dat)
-
+		fmt.Println(index, "encode failed with result", en)
 	}
 	assert.True(t, en >= 0)
 	enc := encBuf[:en]
@@ -77,18 +76,30 @@ func checkSet(t *testing.T, index int, dat []byte) {
 
 	dn := tcobs.CDecode(decBuf, enc)
 	if dn < 0 {
-		fmt.Println(index, "decode failed with result", dn)
 		fmt.Println(index, "dat:", len(dat), dat)
 		fmt.Println(index, "enc:", en, enc)
+		fmt.Println(index, "decode failed with result", dn)
 	}
 	assert.True(t, dn >= 0)
+	dec := decBuf[len(decBuf)-dn:]
 	if dn != len(dat) {
-		fmt.Println(index, "decode failed with length", len(dat), "expected is", dn)
-		fmt.Println(index, "dat:", len(dat), dat)
-		fmt.Println(index, "enc:", en, enc)
+		fmt.Printf("\nindex=%d: dat:len=%d\n", index, len(dat))
+		dump(dat, 32)
+		fmt.Printf("\nindex=%d: enc:len=%d\n", index, len(enc))
+		dump(enc, 32)
+		fmt.Printf("\nindex=%d: dec:len=%d\n", index, dn)
+		dump(dec, 32)
+		fmt.Printf("\nindex=%d: decode failed with length %d, expected is %d\n", index, dn, len(dat))
 	}
 	assert.True(t, dn == len(dat))
-	dec := decBuf[len(decBuf)-dn:]
-	//fmt.Println(index, "dec:", dn, dec)
 	assert.Equal(t, dat, dec)
+}
+
+func dump(b []byte, width int) {
+	for i := 0; i < len(b); i++ {
+		if i%width == 0 {
+			fmt.Printf("\t//%6d\n", i)
+		}
+		fmt.Printf("0x%02x,", b[i])
+	}
 }
