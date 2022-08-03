@@ -51,12 +51,8 @@
   * Encoding in **C** (for the embedded device).
   * Decoding in **Go** (for the PC side).
   * Further TCOBSv1 development is not planned. 
-* The current TCOBSv2 code is stable and ready to use with limitations (for now):
-  * Not more than 20 00-bytes in a row.
-  * Not more than 20 FF-bytes in a row.
-  * Not more than 40 equal other bytes in a row.
-  * If such input buffer occurs, the encoder returns with an error.
-
+* The current TCOBSv2 code is stable and ready to use without limitations:
+  * It is extensively tested but needs further testing.
 
 <!-- ABOUT THE PROJECT -->
 ##  2. <a name='AboutTheproject'></a>About The project

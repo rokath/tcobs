@@ -1,4 +1,10 @@
 # TCOBS Changelog
+
+## v0.4.0
+
+* TCOBSv2 passes all tests and is is unlimited.
+  * More tests needed.
+
 ## v0.3.0
 
 * Code divided into TCOBSv1 and TCOBSv2
