@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
 #include "tcobs.h"
 #include "tcobsInternal.h"
 
@@ -14,6 +15,13 @@ static int writeRepeatCount( uint8_t ** out, uint8_t aa, int * count, int * dist
 
 static int writeNoopSigil( uint8_t ** out, int * distance);
 static int writeLastSigil( uint8_t ** out, int * distance);
+
+static int CCQNtoCCQNZ( uint8_t* ciphers, int count );
+static int CCQNtoCCQNF( uint8_t* ciphers, int count );
+static int CCTNtoCCTNR( uint8_t* ciphers, int count );
+
+static int ntoq( int num, uint8_t* buf );
+static int ntot( int num, uint8_t* buf );
 
 static int ntoCCQNZ( int num, uint8_t* buf );
 static int ntoCCQNF( int num, uint8_t* buf );
@@ -222,6 +230,7 @@ lastByte: // , -- xx.
     return out - (uint8_t*)output;
 }
 
+//! writeNoopSigil inserts a N-sigil carrying the *distance and sets *distance to 0.
 static int writeNoopSigil( uint8_t ** out, int * distance){
     ASSERT( 0 < *distance && *distance < 32 );
     **out = N | *distance;
@@ -230,6 +239,7 @@ static int writeNoopSigil( uint8_t ** out, int * distance){
     return 0;
 }
 
+//! writeLastSigil terminates encoded buffer by appending a sigil byte, if *distance is not 0.
 static int writeLastSigil( uint8_t ** out, int * distance){
     if( *distance ){
         int err = writeNoopSigil( out, distance);
@@ -240,6 +250,7 @@ static int writeLastSigil( uint8_t ** out, int * distance){
     return 0;
 }
 
+//! writeZeroCount writes *num 00-bytes encoded as Z-sigil sequence including *distance value.
 static int writeZeroCount( uint8_t ** out, int * num, int * distance ){
     uint8_t ciphers[16];
     int ciphersCount = ntoCCQNZ( *num, ciphers );
@@ -288,6 +299,7 @@ static int writeZeroCount( uint8_t ** out, int * num, int * distance ){
     return 0;
 }
 
+//! writeFullCount writes *num FF-bytes encoded as F-sigil sequence including *distance value.
 static int writeFullCount( uint8_t ** out, int * num, int * distance ){
     uint8_t ciphers[16];
     int ciphersCount = ntoCCQNF( *num, ciphers );
@@ -348,6 +360,7 @@ static int writeFullCount( uint8_t ** out, int * num, int * distance ){
     return 0;
 }
 
+//! writeRepeatCount writes *num aa-bytes encoded as aa followed by an R-sigil sequence including *distance value.
 static int writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * distance ){
     int err = 0;
     if( *num == 1 ){
@@ -403,6 +416,176 @@ static int writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * distan
     return 0;
 }
 
+//! CCQNgenericStartValue computes CCQN generic start value of n and returns it.
+//! It also fills ciphersCount with the appropriate number of ciphers.
+//! n->ciphersCount: 0->0, 1->1, 4->1, 5->2
+//! n->genericStart: 0->0, 1->1, 4->1, 5->5 (5=4^0+4^)
+static int CCQNgenericStartValue( int num, int * ciphersCount ){
+    *ciphersCount = 0;
+    int power = 1; // 4^0  // 0->0, 1->1, 4->1, 5->2
+    int genericStart = 0;
+    while( genericStart + power <= num ){
+        genericStart += power; // 4^0 + 4^1 + 4^2 + ...
+        power *= 4;
+        *ciphersCount += 1;
+    }
+    return genericStart;
+}
+
+//! CCTNgenericStartValue computes CCQN generic start value of n and returns it.
+//! It also fills ciphersCount with the appropriate number of ciphers.
+//! n->ciphersCount: 0->0, 1->1, 4->1, 5->2
+//! n->genericStart: 0->0, 1->1, 4->1, 5->5 (5=4^0+4^)
+static int CCTNgenericStartValue( int num, int * ciphersCount ){
+    *ciphersCount = 0;
+    int power = 1; // 3^0  // 0->0, 1->1, 3->1, 4->2
+    int genericStart = 1;
+    while( genericStart + power <= num ){
+        genericStart += power; // 1 + 3^0 + 3^1 + 3^2 + ...
+        power *= 3;
+        *ciphersCount += 1;
+    }
+    return genericStart;
+}
+
+//! ntoCCQNZ converts num into a CCQN cipher sequence coded as Z sigils to ciphers and returns count of ciphers.
+static int ntoCCQNZ( int num, uint8_t* ciphers ){
+    ASSERT( num > 0 ){
+			int ciphersCount = 0;
+			int gsv = CCQNgenericStartValue( num, &ciphersCount );
+			int n = num - gsv;
+			int qcount = ntoq( n, ciphers );
+			memcpy(ciphers + ciphersCount - qcount, ciphers, qcount);
+			memset(ciphers, 0, ciphersCount - qcount );
+			return CCQNtoCCQNZ( ciphers, ciphersCount );
+		}
+}
+
+//! ntoCCQNF converts num into a CCQN cipher sequence coded as F sigils to ciphers and returns count of ciphers.
+static int ntoCCQNF( int num, uint8_t* ciphers ){
+    ASSERT( num > 0 ){
+			int ciphersCount = 0;
+			int gsv = CCQNgenericStartValue( num, &ciphersCount );
+			int n = num - gsv;
+			int qcount = ntoq( n, ciphers );
+			memcpy(ciphers + ciphersCount - qcount, ciphers, qcount);
+			memset(ciphers, 0, ciphersCount - qcount );
+			return CCQNtoCCQNF( ciphers, ciphersCount );
+		}
+}
+
+//! ntoCCQNR converts num into a CCQN cipher sequence coded as F sigils to ciphers and returns count of ciphers.
+static int ntoCCTNR( int num, uint8_t* ciphers ){
+    ASSERT( num > 0 ){
+			int ciphersCount = 0;
+			int gsv = CCTNgenericStartValue( num, &ciphersCount );
+			int n = num - gsv;
+			int tcount = ntot( n, ciphers );
+			uint8_t* dest = ciphers + ciphersCount - tcount;
+			memmove(dest, ciphers, tcount);
+			memset(ciphers, 0, ciphersCount - tcount );
+			return CCTNtoCCTNR( ciphers, ciphersCount );
+		}
+}
+
+//! CCQNtoCCQNZ converts ciphers in ciphers to Z-sigils.
+static int CCQNtoCCQNZ( uint8_t* ciphers, int count ){
+    for(int i = 0; i < count; i++ ){
+        if( ciphers[i] == 0 ){
+            ciphers[i] = Z0;
+        }else if( ciphers[i] == 1 ){
+            ciphers[i] = Z1;
+        }else if( ciphers[i] == 2 ){
+            ciphers[i] = Z2;
+        }else if( ciphers[i] == 3 ){
+            ciphers[i] = Z3;
+        }else{
+            return - __LINE__;
+        }
+    }
+    return count;
+}
+
+//! CCQNtoCCQNF converts ciphers in ciphers to F-sigils.
+static int CCQNtoCCQNF( uint8_t* ciphers, int count ){
+    for(int i = 0; i < count; i++ ){
+        if( ciphers[i] == 0 ){
+            ciphers[i] = F0;
+        }else if( ciphers[i] == 1 ){
+            ciphers[i] = F1;
+        }else if( ciphers[i] == 2 ){
+            ciphers[i] = F2;
+        }else if( ciphers[i] == 3 ){
+            ciphers[i] = F3;
+        }else{
+            return - __LINE__;
+        }
+    }
+    return count;
+}
+
+//! CCTNtoCCTNR converts ciphers in ciphers to Z-sigils.
+static int CCTNtoCCTNR( uint8_t* ciphers, int count ){
+    for(int i = 0; i < count; i++ ){
+        if( ciphers[i] == 0 ){
+            ciphers[i] = R0;
+        }else if( ciphers[i] == 1 ){
+            ciphers[i] = R1;
+        }else if( ciphers[i] == 2 ){
+            ciphers[i] = R2;
+        }else{
+            return - __LINE__;
+        }
+    }
+    return count;
+}
+
+//! Function to swap two numbers
+static void swap(char *x, char *y) {
+    char t = *x; *x = *y; *y = t;
+}
+ 
+// Function to reverse `buffer[i…j]`
+static char* reverse(char *buffer, int i, int j){
+    while (i < j) {
+        swap(&buffer[i++], &buffer[j--]);
+    }
+    return buffer;
+}
+
+//! ntoq converts n into a quaternary cipher sequence to buf and returns count of ciphers.
+static int ntoq( int n, uint8_t* buffer ){
+    int i = 0;
+    while (n){
+        int r = n & 3;  // n % 4;
+        n     = n >> 2; // n / 4;
+        buffer[i++] = r;
+    }
+    //  // if the number is 0
+    //  if (i == 0) {
+    //      buffer[i++] = 0;
+    //  }
+		reverse((char*)buffer, 0, i-1);
+		return i;
+}
+
+//! ntot converts n into a ternary cipher sequence to buf and returns count of ciphers.
+static int ntot(int n, uint8_t* buffer ){
+    int i = 0;
+    while (n){
+        int r = n % 3;
+        n     = n / 3;
+        buffer[i++] = r;
+    }
+    //  // if the number is 0
+    //  if (i == 0) {
+    //      buffer[i++] = 0;
+    //  }
+    reverse((char*)buffer, 0, i - 1);
+		return i;
+}
+
+/*
 //! ntoCCQNZ converts num into a CCQN cipher sequence coded as Z sigils to buf and returns count of ciphers.
 static int ntoCCQNZ( int num, uint8_t* buf ){
     ASSERT( num > 0 )
@@ -495,36 +678,4 @@ static int ntoCCTNR( int num, uint8_t* buf ){
     ASSERT( num < 41 ) // todo: generic solution
     return 0;
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// generic solution, first ideas
-//
-//  //! firstQuaternaryCipher computes first quaternary cipher of *pNumber and reduces *pNumber accordingly.
-//  uint8_t firstQuaternaryCipher( int * pNumber ){
-//      int cipher = *pNumber;
-//      int power = 0;
-//      int part = 1;
-//      while( cipher > 3  ){
-//          cipher >>= 2; // /= 4
-//          power++;
-//          part <<= 2; // *= 4
-//      }
-//      *pNumber -= cipher * part; 
-//      return cipher;
-//  }
-//  
-//  //! ntoq converts num into a quaternary cipher sequence to buf and returns count of ciphers.
-//  unsigned ntoq( int num, uint8_t* buf ){
-//      // todo: more effective implementation
-//      int result = itoa( num, buf, MAX_CIPHERS, 4 );
-//      ASSERT( result == 0 )
-//      return strlen(buf);
-//  }
-//  
-//  //! ntot converts num into a ternary cipher sequence to buf and returns count of ciphers.
-//  unsigned ntot( int num, uint8_t* buf ){
-//      // todo: more effective implementation
-//      int result = itoa( num, buf, MAX_CIPHERS, 3 );
-//      ASSERT( result == 0 )
-//      return strlen(buf);
-//  }
+*/
