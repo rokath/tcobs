@@ -86,7 +86,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 | -    | -       | -          | -      |
 | 0    | 5       | 0T00       | exactly 2 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 8    | 13      | 0T33       | exactly 2 ciphers allowed |
+| 8    | 13      | 0T22       | exactly 2 ciphers allowed |
 
 ####  3.1.3. <a name='ThreeCCTNCiphers'></a>Three CCTN Ciphers
 
@@ -95,8 +95,16 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 |index | decimal | CCTN       | remark |
 | -    | -       | -          | -      |
 | 0    | 14      | 0T000      | exactly 3 ciphers allowed |
+| 1    | 15      | 0T001      | exactly 3 ciphers allowed |
+| 2    | 16      | 0T002      | exactly 3 ciphers allowed |
+| 3    | 17      | 0T010      | exactly 3 ciphers allowed |
+| 4    | 18      | 0T011      | exactly 3 ciphers allowed |
+| 5    | 19      | 0T012      | exactly 3 ciphers allowed |
+| 6    | 20      | 0T020      | exactly 3 ciphers allowed |
+| 7    | 21      | 0T021      | exactly 3 ciphers allowed |
+| 8    | 22      | 0T022      | exactly 3 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 26   | 40      | 0T333      | exactly 3 ciphers allowed |
+| 26   | 40      | 0T222      | exactly 3 ciphers allowed |
 
 ####  3.1.4. <a name='FourCCTNCiphers'></a>Four CCTN Ciphers
 
@@ -106,7 +114,7 @@ For the TCOBS encoding ternary and quaternary numbers are used in way, that the 
 | -    | -       | -          | -      |
 | 0    | 41      | 0T0000     | exactly 4 ciphers allowed |
 | ...  | ...     | ...        | ...                       |
-| 80   | 121     | 0T3333     | exactly 4 ciphers allowed |
+| 80   | 121     | 0T2222     | exactly 4 ciphers allowed |
 
 ####  3.1.5. <a name='ManyCCTNCiphers'></a>Many CCTN Ciphers
 
@@ -284,5 +292,6 @@ This frees the developer to plan in advance the integer transmit bit size of its
 | 2022-JUL-07 | 0.1.1 | Explanation and samples added. |
 | 2022-JUL-27 | 0.2.0 | Sigil code exchange R2 <-> N. Symbol assumptions reworked. |
 | 2022-JUL-27 | 0.2.1 | Integer number examples added. |
+| 2022-AUG-03 | 0.2.2 | Ternary tables corrected and extended. |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
