@@ -1,5 +1,10 @@
 # TCOBS Changelog
 
+## v0.5.0
+
+* TCOBSv1 C function decoder passes first tests and is is unlimited.
+  * More tests needed.
+
 ## v0.4.0
 
 * TCOBSv2 passes all tests and is is unlimited.

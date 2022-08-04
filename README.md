@@ -47,12 +47,15 @@
 
 ##  1. <a name='ATTENTION'></a>ATTENTION
 
-* The current TCOBSv1 code is stable and ready to use without limitations, but:
-  * Encoding in **C** (for the embedded device).
+* The current TCOBSv1 code is stable and ready to use without limitations:
+  * Encoding and decoding in **C**.
   * Decoding in **Go** (for the PC side).
+  * Needs more tests.
   * Further TCOBSv1 development is not planned. 
 * The current TCOBSv2 code is stable and ready to use without limitations:
-  * It is extensively tested but needs further testing.
+  * Encoding and decoding in **C**.
+  * Encoding and decoding in **Go** using CGO possible.
+  * It is extensively tested.
 
 <!-- ABOUT THE PROJECT -->
 ##  2. <a name='AboutTheproject'></a>About The project
