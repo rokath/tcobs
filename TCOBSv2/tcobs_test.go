@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	maxLength int = 65536
-	rounds    int = 20000
+	maxLength int = 1000000
+	rounds    int = 2000
+	maxEqual  int = 100000
 )
 
 // TestCEncodeDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.
@@ -22,9 +23,11 @@ func TestRandom12CEncodeDecode(t *testing.T) {
 
 	for i := 0; i < rounds; i++ {
 		length := rand.Intn(maxLength)
-		for i := 0; i < length; i++ {
-			b := uint8(rand.Intn(4)) - 1 // -1, 0, 1 2
-			datBuf[i] = b
+		j := 0
+		b := uint8(rand.Intn(4)) - 1 // -1, 0, 1 2
+		for k := 0; k < maxEqual && j < length; k++ {
+			datBuf[j] = b
+			j++
 		}
 		dat := datBuf[:length]
 		checkSet(t, i, dat)
