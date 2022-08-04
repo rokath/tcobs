@@ -1,6 +1,6 @@
 /*! \file tcobsInternal.h
 \author Thomas.Hoehenleitner [at] seerose.net
-\details See ./TCOBSSpecification.md. Only internal usage.
+\details See ./TCOBSv2Specification.md. Only internal usage.
 *******************************************************************************/
 
 #ifndef TCOBS_INTERNAL_H_

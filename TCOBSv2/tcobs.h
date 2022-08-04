@@ -1,5 +1,6 @@
 /*! \file tcobs.h
 \author thomas.hoehenleitner [at] seerose.net
+\details See ./TCOBSv2Specification.md.
 *******************************************************************************/
 
 #ifndef TCOBS_H_
@@ -32,9 +33,6 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
 
 #define OUT_BUFFER_TOO_SMALL -1000000 //!< OUT_BUFFER_TOO_SMALL is TCOBSDecode return error code.
 #define INPUT_DATA_CORRUPTED -2000000 //!< INPUT_DATA_CORRUPTED is TCOBSDecode return error code.
-
-void TCOBSEncodeTest( void );
-void TCOBSDecodeTest( void );
 
 #ifdef __cplusplus
 }

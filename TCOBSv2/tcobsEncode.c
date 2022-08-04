@@ -1,6 +1,6 @@
 /*! \file tcobsEncode.c
 \author Thomas.Hoehenleitner [at] seerose.net
-\details See ./TCOBSSpecification.md.
+\details See ./TCOBSv2Specification.md.
 *******************************************************************************/
 
 #include <stdint.h>

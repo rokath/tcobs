@@ -1,14 +1,15 @@
-/*! \file tcobs.c
+/*! \file tcobsEncode.c
 \author Thomas.Hoehenleitner [at] seerose.net
-\details See ./TCOBSSpecification.md.
+\details See ./TCOBSv1Specification.md.
 *******************************************************************************/
 
 #include <stdint.h>
 #include <stddef.h>
 #include "tcobs.h"
+#include "tcobsInternal.h"
 
 //! ASSERT checks for a true condition, otherwise stop. (used for testing)
-#define ASSERT( condition ) do{ if( !(condition) ){ for(;;){} } }while(0);
+//#define ASSERT( condition ) do{ if( !(condition) ){ for(;;){} } }while(0);
 
 //! OUTB writes a non-sigil byte to output and increments offset. 
 //! If offset reaches 31, a NOP sigil byte is inserted and offset is then set to 0.
@@ -62,22 +63,11 @@
     reptCount = 0; \
     }while(0);
 
-#define N  0xA0 //!< sigil byte 0x101ooooo, offset 0-31
-#define Z1 0x20 //!< sigil byte 0x001ooooo, offset 0-31
-#define Z2 0x40 //!< sigil byte 0x010ooooo, offset 0-31
-#define Z3 0x60 //!< sigil byte 0x011ooooo, offset 0-31
-#define F2 0xC0 //!< sigil byte 0x110ooooo, offset 0-31
-#define F3 0xE0 //!< sigil byte 0x111ooooo, offset 0-31
-#define F4 0x80 //!< sigil byte 0x100ooooo, offset 0-31
-#define R2 0x08 //!< sigil byte 0x00001ooo, offset 0-7
-#define R3 0x10 //!< sigil byte 0x00010ooo, offset 0-7
-#define R4 0x18 //!< sigil byte 0x00011ooo, offset 0-7
-
-size_t TCOBSEncode( void * restrict output, const void * restrict input, size_t length){
+int TCOBSEncode( void * restrict output, const void * restrict input, size_t length){
     uint8_t* o = output; // write pointer
     uint8_t* out = output;
     uint8_t const * i = input; // read pointer
-    uint8_t const * limit = input + length; // read limit
+    uint8_t const * limit = (uint8_t*)input + length; // read limit
     uint8_t zeroCount = 0; // counts zero bytes 1-3 for Z1-Z3
     uint8_t fullCount = 0; // counts 0xFF bytes 1-4 for FF and F2-F4
     uint8_t reptCount = 0; // counts repeat bytes 1-4 for !00 and R2-R4,
@@ -402,6 +392,6 @@ lastByte: // , -- xx.
         return o - out;
     }        
     
-    ASSERT( 0 ) 
+    //ASSERT( 0 ) 
     //return 0; // will not be reached 
 }
