@@ -27,6 +27,10 @@ static int ntoCCQNZ( int num, uint8_t* buf );
 static int ntoCCQNF( int num, uint8_t* buf );
 static int ntoCCTNR( int num, uint8_t* buf );
 
+static int ntoCCQNZgeneric( int num, uint8_t* buf );
+static int ntoCCQNFgeneric( int num, uint8_t* buf );
+static int ntoCCTNRgeneric( int num, uint8_t* buf );
+
 int TCOBSEncode( void * restrict output, const void * restrict input, size_t length){
     uint8_t const * i = input; // read pointer
     uint8_t const * limit = (uint8_t*)input + length; // read limit
@@ -449,7 +453,7 @@ static int CCTNgenericStartValue( int num, int * ciphersCount ){
 }
 
 //! ntoCCQNZ converts num into a CCQN cipher sequence coded as Z sigils to ciphers and returns count of ciphers.
-static int ntoCCQNZ( int num, uint8_t* ciphers ){
+static int ntoCCQNZgeneric( int num, uint8_t* ciphers ){
     ASSERT( num > 0 ){
 			int ciphersCount = 0;
 			int gsv = CCQNgenericStartValue( num, &ciphersCount );
@@ -462,7 +466,7 @@ static int ntoCCQNZ( int num, uint8_t* ciphers ){
 }
 
 //! ntoCCQNF converts num into a CCQN cipher sequence coded as F sigils to ciphers and returns count of ciphers.
-static int ntoCCQNF( int num, uint8_t* ciphers ){
+static int ntoCCQNFgeneric( int num, uint8_t* ciphers ){
     ASSERT( num > 0 ){
 			int ciphersCount = 0;
 			int gsv = CCQNgenericStartValue( num, &ciphersCount );
@@ -475,7 +479,7 @@ static int ntoCCQNF( int num, uint8_t* ciphers ){
 }
 
 //! ntoCCQNR converts num into a CCQN cipher sequence coded as F sigils to ciphers and returns count of ciphers.
-static int ntoCCTNR( int num, uint8_t* ciphers ){
+static int ntoCCTNRgeneric( int num, uint8_t* ciphers ){
     ASSERT( num > 0 ){
 			int ciphersCount = 0;
 			int gsv = CCTNgenericStartValue( num, &ciphersCount );
@@ -545,7 +549,7 @@ static void swap(char *x, char *y) {
     char t = *x; *x = *y; *y = t;
 }
  
-// Function to reverse `buffer[i…j]`
+// Function to reverse `buffer[iï¿½j]`
 static char* reverse(char *buffer, int i, int j){
     while (i < j) {
         swap(&buffer[i++], &buffer[j--]);
@@ -585,7 +589,6 @@ static int ntot(int n, uint8_t* buffer ){
 		return i;
 }
 
-/*
 //! ntoCCQNZ converts num into a CCQN cipher sequence coded as Z sigils to buf and returns count of ciphers.
 static int ntoCCQNZ( int num, uint8_t* buf ){
     ASSERT( num > 0 )
@@ -607,8 +610,7 @@ static int ntoCCQNZ( int num, uint8_t* buf ){
         buf[1] = ciphers[num-5][1];
         return 2;        
     }
-    ASSERT( num < 21 ) // todo: generic solution
-    return 0;
+    return ntoCCQNZgeneric( num, buf );
 }
 
 //! ntoCCQNF converts num into a CCQN cipher sequence coded as F sigils to buf and returns count of ciphers.
@@ -632,8 +634,7 @@ static int ntoCCQNF( int num, uint8_t* buf ){
         buf[1] = ciphers[num-5][1];
         return 2;        
     }
-    ASSERT( num < 21 ) // todo: generic solution
-    return 0;
+    return ntoCCQNFgeneric( num, buf );
 }
 
 //! ntoCCTNR converts num into a CCTN cipher sequence coded as R sigils to buf and returns count of ciphers.
@@ -675,7 +676,5 @@ static int ntoCCTNR( int num, uint8_t* buf ){
         buf[2] = ciphers[num-14][2];
         return 3;        
     }
-    ASSERT( num < 41 ) // todo: generic solution
-    return 0;
+    return ntoCCTNRgeneric( num, buf );
 }
-*/

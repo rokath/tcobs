@@ -825,9 +825,9 @@
               <FilePath>..\..\..\tcobsEncode.c</FilePath>
             </File>
             <File>
-              <FileName>tcobs_test.c</FileName>
+              <FileName>tcobsTest.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\tcobs_test.c</FilePath>
+              <FilePath>..\..\..\tcobsTest.c</FilePath>
             </File>
           </Files>
         </Group>

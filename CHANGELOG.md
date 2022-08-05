@@ -1,5 +1,11 @@
 # TCOBS Changelog
 
+## v0.6.0
+
+* TCOBSv2 now faster with internal look-up tables.
+* TCOBSv1 passes all tests and is is unlimited.
+* TCOBSv2 passes all tests and is is unlimited.
+
 ## v0.5.0
 
 * TCOBSv1 C function decoder passes first tests and is is unlimited.
