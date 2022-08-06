@@ -78,21 +78,6 @@
 * Several 0xFF in a row are a common pattern too (example -1 as 32 bit value).
 * Maybe some other bytes appear also in a row.
 * TCOBS should not know the inner data structure and therefore be **usable also on any user data**.- [TCOBS v1 & v2](#tcobs-v1--v2)
-  - [1. <a name='ATTENTION'></a>ATTENTION](#1-attention)
-  - [2. <a name='AboutTheproject'></a>About The project](#2-about-the-project)
-    - [1.1. <a name='Assumptions'></a>Assumptions](#11-assumptions)
-  - [3. <a name='Preface'></a> Preface](#3--preface)
-    - [3.1. <a name='Whynotin2steps'></a> Why not in 2 steps?](#31--why-not-in-2-steps)
-  - [4. <a name='COBSDataDisruption'></a>COBS Data Disruption](#4-cobs-data-disruption)
-  - [5. <a name='TCOBSSpecification'></a>TCOBS Specification](#5-tcobs-specification)
-    - [5.1. <a name='TCOBSv1Specification'></a>TCOBSv1 Specification](#51-tcobsv1-specification)
-    - [5.2. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification](#52-tcobsv2-specification)
-  - [6. <a name='GettingStarted'></a>Getting Started](#6-getting-started)
-  - [7. <a name='Roadmap'></a>Roadmap](#7-roadmap)
-  - [8. <a name='Contributing'></a>Contributing](#8-contributing)
-  - [9. <a name='License'></a>License](#9-license)
-  - [10. <a name='Contact'></a>Contact](#10-contact)
-    - [10.1. <a name='Acknowledgments'></a>Acknowledgments](#101-acknowledgments)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
