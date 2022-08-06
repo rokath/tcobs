@@ -118,7 +118,7 @@
 * If a package start was received and the next package end reception is more than ~100ms away, a data disruption is likely and the receiver should ignore these data.
   * To minimise the loss in case of data disruption, each message should get TCOBS encoded and 0-byte delimited separately.
   * The more often 0-byte delimiters are increasing the transmit overhead a bit on the other hand. 
-* Of course, when the receiver starts, the first buffer can contain broken TCOBS data, but we have to live with that on a PC. Anyway there is a reasonable likelihood that the COBS decoder will detect a data inconsistency as explained.
+* Of course, when the receiver starts, the first buffer can contain broken TCOBS data, but we have to live with that on a PC. Anyway there is a reasonable likelihood that a data inconsistency is detected as explained.
 
 ##  5. <a name='TCOBSSpecification'></a>TCOBS Specification
 
