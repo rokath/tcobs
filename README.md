@@ -104,8 +104,9 @@
   * If the decoded data are structured one can estimate the false match probability and increase the safety with an additional package CRC before encoding if needed.
 * The receiver calls continuously a `Read()` function. The received buffer can contain 0-delimited COBS packages and the receiver assumes them all to be valid because there is no known significant time delay between package start and end.
 * If a package start was received and the next package end reception is more than ~100ms away, a data disruption is likely and the receiver should ignore these data.
-  * To minimise data loss, each message should get COBS encoded separately.
-* Of course, when the receiver starts, the first buffer can contain broken COBS data, but we have to live with that on a PC. Anyway there is a reasonable likelihood that the COBS decoder will detect a data inconsistency.
+  * To minimise the loss in case of data disruption, each message should get TCOBS encoded and 0-byte delimited separately.
+  * The more often 0-byte delimiters are increasing the transmit overhead a bit on the other hand. 
+* Of course, when the receiver starts, the first buffer can contain broken TCOBS data, but we have to live with that on a PC. Anyway there is a reasonable likelihood that the COBS decoder will detect a data inconsistency as explained.
 
 ##  5. <a name='TCOBSSpecification'></a>TCOBS Specification
 
