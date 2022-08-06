@@ -6,11 +6,12 @@
   <ol>
 
 <!-- vscode-markdown-toc -->
-* 1. [ATTENTION](#ATTENTION)
+* 1. [Overview](#Overview)
 * 2. [About The project](#AboutTheproject)
+	* 2.1. [Assumptions](#Assumptions)
 * 3. [ Preface](#Preface)
 	* 3.1. [ Why not in 2 steps?](#Whynotin2steps)
-* 4. [COBS Data Disruption](#COBSDataDisruption)
+* 4. [Data Disruption Handling](#DataDisruptionHandling)
 * 5. [TCOBS Specification](#TCOBSSpecification)
 	* 5.1. [TCOBSv1 Specification](#TCOBSv1Specification)
 	* 5.2. [TCOBSv2 Specification](#TCOBSv2Specification)
@@ -25,7 +26,9 @@
 	numbering=true
 	autoSave=true
 	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc --><div id="top"></div>
+<!-- /vscode-markdown-toc -->
+
+<div id="top"></div>
 
   </ol>
 </details>
@@ -45,15 +48,15 @@
 [![Coverage Status](https://coveralls.io/repos/github/rokath/tcobs/badge.svg?branch=master)](https://coveralls.io/github/rokath/tcobs?branch=master)
 ![GitHub issues](https://img.shields.io/github/issues/rokath/tcobs)
 
-##  1. <a name='ATTENTION'></a>ATTENTION
+##  1. <a name='Overview'></a>Overview
 
-* The current TCOBSv1 code is stable and ready to use without limitations:
+* The TCOBSv1 code is stable and ready to use without limitations:
   * Encoding and decoding in **C**.
     * Decode code in C is smaller than TCOBSv2 code.
   * Encoding and decoding in **Go** using CGO possible.
   * Decoding in **Go** (for the PC side).
   * Further TCOBSv1 development is not planned. 
-* The current TCOBSv2 code is stable and ready to use without limitations:
+* The TCOBSv2 code is stable and ready to use without limitations:
   * Encoding and decoding in **C**.
     * Encoded data are smaller than TCOBSv1 code.
   * Encoding and decoding in **Go** using CGO possible.
@@ -66,6 +69,30 @@
 
 * TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) combined with real-time [RLE](https://en.wikipedia.org/wiki/Run-length_encoding) data compression especially for short messages containing integers.
 * The **consistent overhead** with TCOBS is 1 byte for each starting 31 bytes in the worst case, when no compression is possible. (*Example: A 1000 bytes buffer can be encoded with max 33 additional bytes.*) This is more compared to the original COBS with +1 byte for each starting 254 bytes but if the data contain integer numbers, as communication packets often do, the encoded data will be statistically shorter with TCOBS compared to the legacy COBS.
+
+###  2.1. <a name='Assumptions'></a>Assumptions
+
+* Most messages like [*Trices*](https://github.com/rokath/trice) consist of 16 or less bytes.
+* Some messages or user data are longer.
+* Several zeros in a row are a common pattern (example:`00 00 00 05`).
+* Several 0xFF in a row are a common pattern too (example -1 as 32 bit value).
+* Maybe some other bytes appear also in a row.
+* TCOBS should not know the inner data structure and therefore be **usable also on any user data**.- [TCOBS v1 & v2](#tcobs-v1--v2)
+  - [1. <a name='ATTENTION'></a>ATTENTION](#1-attention)
+  - [2. <a name='AboutTheproject'></a>About The project](#2-about-the-project)
+    - [1.1. <a name='Assumptions'></a>Assumptions](#11-assumptions)
+  - [3. <a name='Preface'></a> Preface](#3--preface)
+    - [3.1. <a name='Whynotin2steps'></a> Why not in 2 steps?](#31--why-not-in-2-steps)
+  - [4. <a name='COBSDataDisruption'></a>COBS Data Disruption](#4-cobs-data-disruption)
+  - [5. <a name='TCOBSSpecification'></a>TCOBS Specification](#5-tcobs-specification)
+    - [5.1. <a name='TCOBSv1Specification'></a>TCOBSv1 Specification](#51-tcobsv1-specification)
+    - [5.2. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification](#52-tcobsv2-specification)
+  - [6. <a name='GettingStarted'></a>Getting Started](#6-getting-started)
+  - [7. <a name='Roadmap'></a>Roadmap](#7-roadmap)
+  - [8. <a name='Contributing'></a>Contributing](#8-contributing)
+  - [9. <a name='License'></a>License](#9-license)
+  - [10. <a name='Contact'></a>Contact](#10-contact)
+    - [10.1. <a name='Acknowledgments'></a>Acknowledgments](#101-acknowledgments)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -92,8 +119,8 @@
 * Separating compression and COBS costs more time (2 processing loops) and does not allow to squeeze out the last byte.
 * With the TCOBS algorithm, in only one processing loop a smaller transfer packet size is expected, combined with more speed.
 
-##  4. <a name='COBSDataDisruption'></a>COBS Data Disruption
-  
+##  4. <a name='DataDisruptionHandling'></a>Data Disruption Handling
+   
 * In case of data disruption, the receiver will wait for the next 0-delimiter byte. As a result it will get a packet start and end of 2 different packages A and Z.
 
   <a href="https://github.com/rokath/tcobs">
@@ -102,7 +129,7 @@
 
 * For the decoder it makes no difference if the packages start or end with a sigil byte. In any case it will run into issues in such case with high probability and report a data disruption. But a false match is not excluded for 100%.
   * If the decoded data are structured one can estimate the false match probability and increase the safety with an additional package CRC before encoding if needed.
-* The receiver calls continuously a `Read()` function. The received buffer can contain 0-delimited COBS packages and the receiver assumes them all to be valid because there is no known significant time delay between package start and end.
+* The receiver calls continuously a `Read()` function. The received buffer can contain 0-delimited packages and the receiver assumes them all to be valid because there is no known significant time delay between package start and end.
 * If a package start was received and the next package end reception is more than ~100ms away, a data disruption is likely and the receiver should ignore these data.
   * To minimise the loss in case of data disruption, each message should get TCOBS encoded and 0-byte delimited separately.
   * The more often 0-byte delimiters are increasing the transmit overhead a bit on the other hand. 
@@ -132,8 +159,8 @@
 * [x] Add Changelog
 * [x] Add back to top links
 * [x] Add **Go** Reader & Writer interface
-* [ ] Add generic CCTN & CCQN conversions to remove TCOBSv2 limitations.
-* [ ] Improve testing with groups of equal bytes.
+* [x] Add generic CCTN & CCQN conversions to remove TCOBSv2 limitations.
+* [x] Improve testing with groups of equal bytes.
 * [ ] Compare efficiency TCOBSv2 with TCOBSv1.
 * [ ] Add Additional Templates w/ Examples
 

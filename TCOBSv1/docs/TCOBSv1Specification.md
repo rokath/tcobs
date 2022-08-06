@@ -6,15 +6,14 @@
 
 <!-- vscode-markdown-toc -->
 * 1. [TCOBS Encoding Principle](#TCOBSEncodingPrinciple)
-	* 1.1. [Assumptions](#Assumptions)
-	* 1.2. [Symbols](#Symbols)
-		* 1.2.1. [NOP Sigil Byte `N`](#NOPSigilByteN)
-		* 1.2.2. [Zero Sigil Byte `Z1`, `Z2`, `Z3`](#ZeroSigilByteZ1Z2Z3)
-		* 1.2.3. [Full Sigil Byte `F2`, `F3`, `F4`](#FullSigilByteF2F3F4)
-		* 1.2.4. [Repeat Sigil Byte `R2`, `R3`, `R4`](#RepeatSigilByteR2R3R4)
-	* 1.3. [TCOBS Encoding](#TCOBSEncoding)
-		* 1.3.1. [Simple Encoding Algorithm](#SimpleEncodingAlgorithm)
-		* 1.3.2. [Sigil Bytes Chaining](#SigilBytesChaining)
+	* 1.1. [Symbols](#Symbols)
+		* 1.1.1. [NOP Sigil Byte `N`](#NOPSigilByteN)
+		* 1.1.2. [Zero Sigil Byte `Z1`, `Z2`, `Z3`](#ZeroSigilByteZ1Z2Z3)
+		* 1.1.3. [Full Sigil Byte `F2`, `F3`, `F4`](#FullSigilByteF2F3F4)
+		* 1.1.4. [Repeat Sigil Byte `R2`, `R3`, `R4`](#RepeatSigilByteR2R3R4)
+	* 1.2. [TCOBS Encoding](#TCOBSEncoding)
+		* 1.2.1. [Simple Encoding Algorithm](#SimpleEncodingAlgorithm)
+		* 1.2.2. [Sigil Bytes Chaining](#SigilBytesChaining)
 * 2. [TCOBS Software Interface](#TCOBSSoftwareInterface)
 	* 2.1. [C Interface and Code](#CInterfaceandCode)
 	* 2.2. [Go interface and Code](#GointerfaceandCode)
@@ -36,16 +35,7 @@
 
 ##  1. <a name='TCOBSEncodingPrinciple'></a>TCOBS Encoding Principle
 
-###  1.1. <a name='Assumptions'></a>Assumptions
-
-* Most messages like [*Trices*](https://github.com/rokath/trice) consist of 16 or less bytes.
-* Some messages or user data are longer.
-* Several zeros in a row are a common pattern (example:`00 00 00 05`).
-* Several 0xFF in a row are a common pattern too (example -1 as 32 bit value).
-* Maybe some other bytes appear also in a row.
-* TCOBS should not know the inner data structure and therefore be **usable also on any user data**.
-
-###  1.2. <a name='Symbols'></a>Symbols
+###  1.1. <a name='Symbols'></a>Symbols
 
 * `o` = offset bit to next sigil byte
 
@@ -62,14 +52,14 @@
 * `00000ooo` reserved bytes: `ooo` = 1-7
 * `00000000` forbidden byte  
 
-####  1.2.1. <a name='NOPSigilByteN'></a>NOP Sigil Byte `N`
+####  1.1.1. <a name='NOPSigilByteN'></a>NOP Sigil Byte `N`
 
 This does not represent data in the stream and only serves to keep the chain linked. The remaining 5 bits encode the distance to the next sigil (0 <= n <=31).
 * N_0 = `101000001`
 * ...
 * N_31 = `10111111`
 
-####  1.2.2. <a name='ZeroSigilByteZ1Z2Z3'></a>Zero Sigil Byte `Z1`, `Z2`, `Z3`
+####  1.1.2. <a name='ZeroSigilByteZ1Z2Z3'></a>Zero Sigil Byte `Z1`, `Z2`, `Z3`
 
 * This sigil represents 1 to 3 zeroes in the data stream, and is a `00` to `00 00 00` replacement to eliminate zeroes, reduce data and keep the chain linked.
 * The remaining 5 bits encode the distance to the next sigil (0 <= n <= 31).
@@ -83,7 +73,7 @@ This does not represent data in the stream and only serves to keep the chain lin
   * ...
   * Z3_31 = `01111111`
 
-####  1.2.3. <a name='FullSigilByteF2F3F4'></a>Full Sigil Byte `F2`, `F3`, `F4`
+####  1.1.3. <a name='FullSigilByteF2F3F4'></a>Full Sigil Byte `F2`, `F3`, `F4`
 
 * This sigil represents 2 to 4 0xFF in the data stream, and is a `FF FF` to `FF FF FF FF` replacement to reduce data and keep the chain linked.
 * The remaining 5 bits encode the distance to the next sigil (0 <= n <= 31).
@@ -97,7 +87,7 @@ This does not represent data in the stream and only serves to keep the chain lin
   * ...
   * F4_31 = `10011111`
 
-####  1.2.4. <a name='RepeatSigilByteR2R3R4'></a>Repeat Sigil Byte `R2`, `R3`, `R4`
+####  1.1.4. <a name='RepeatSigilByteR2R3R4'></a>Repeat Sigil Byte `R2`, `R3`, `R4`
 
 * This sigil represents 2 to 4 repetitions of previous byte in the data stream, and is a replacement to reduce data and keep the chain linked.
 * The remaining 3 bits encode the distance to the next sigil (0 <= n <= 7).
@@ -111,11 +101,11 @@ This does not represent data in the stream and only serves to keep the chain lin
   * ...
   * R4_7 = `00011111`
 
-###  1.3. <a name='TCOBSEncoding'></a>TCOBS Encoding
+###  1.2. <a name='TCOBSEncoding'></a>TCOBS Encoding
 
 The encoding can be done in a straight forward code on the senders side touching each byte only once.
 
-####  1.3.1. <a name='SimpleEncodingAlgorithm'></a>Simple Encoding Algorithm
+####  1.2.1. <a name='SimpleEncodingAlgorithm'></a>Simple Encoding Algorithm
 
 * `aa` represents any non-zero and non-FF byte
 * `aa aa ...` represents any non-zero and non-FF **equal** bytes
@@ -160,7 +150,7 @@ The encoding can be done in a straight forward code on the senders side touching
   * Example: `00 00 00 00` could be encoded `A0 20` (Z3 Z1) or `40 40` (Z2 Z2)
 * NOP sigil bytes are logically ignored. They simply serve as link chain elements.
 
-####  1.3.2. <a name='SigilBytesChaining'></a>Sigil Bytes Chaining
+####  1.2.2. <a name='SigilBytesChaining'></a>Sigil Bytes Chaining
 
 * The encoding starts at first buffer address.
 * The encoded buffer ends with a sigil byte.
@@ -303,3 +293,4 @@ F4 is maybe not use that often and could be used in a completely different way. 
 | 2022-MAY-22 | 0.8.4 | F4 remark added. Correction: *Trice* \-> message in chapter 2 and 3. |
 | 2022-JUL-24 | 0.8.5 | Smaller wording improvements. |
 | 2022-JUL-30 | 0.9.0 | Common (v1 & v2) parts removed. |
+| 2022-AUG-06 | 0.9.1 | Assumptions moved to TCOBS ReadMe.md |
