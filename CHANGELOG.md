@@ -1,5 +1,10 @@
 # TCOBS Changelog
 
+## v0.7.0
+
+* TCOBSv1 **Go** interface improved and more tested
+* TCOBSv2 **Go** interface improved and more tested
+
 ## v0.6.1
 
 * TCOBSv2 **Go** interface improved and tested

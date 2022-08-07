@@ -38,6 +38,7 @@ func sigilAndOffset(by uint8) (sigil, offset int) {
 // Framing with 0-delimiter to be done before is assumed, so no 0-checks performed.
 // For details see TCOBSSpecification.md.
 func Decode(d, in []byte) (n int, e error) {
+	var count int
 	for {
 		if len(in) == 0 {
 			return
@@ -108,6 +109,12 @@ func Decode(d, in []byte) (n int, e error) {
 	copyBytes:
 		to := len(d) - n - offset
 		from := len(in) - offset // sigil byte is already removed
+		count += len(in[from:])
+		if count > len(d) {
+			n = 0
+			e = errors.New("data buffer too small")
+			return
+		}
 		n += copy(d[to:], in[from:])
 		in = in[:len(in)-offset] // remove copied bytes
 		continue

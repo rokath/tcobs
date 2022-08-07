@@ -43,19 +43,22 @@ func (p *decoder) Read(buffer []byte) (n int, e error) {
 		return
 	}
 	n = CDecode(buffer, before)
+	p.iCnt = copy(p.iBuf, after)
 	if n < -2000000 {
 		e = fmt.Errorf("CDecode returned input buffer corrupted error from tcobsDecode.c line number %d)", -n-2000000)
+		n = 0
 		return
 	} else if n < -1000000 {
 		e = fmt.Errorf("CDecode returned output buffer too small error from tcobsDecode.c line number %d)", -n-1000000)
+		n = 0
 		return
 	} else if n < 0 {
 		e = fmt.Errorf("CDecode returned an error. Check tcobsDecode.c line number %d", -n)
+		n = 0
 		return
 	} else {
 		e = nil
 	}
 	copy(buffer, buffer[len(buffer)-n:])
-	p.iCnt = copy(p.iBuf, after)
 	return
 }
