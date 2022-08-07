@@ -174,19 +174,20 @@ The encoding can be done in a straight forward code on the senders side touching
 
 ###  2.1. <a name='CInterfaceandCode'></a>C Interface and Code
 
-* [../pkg/tcobs/tcobs.h](../pkg/tcobs/tcobs.h)
-* [../pkg/tcobs/tcobs.c](../pkg/tcobs/tcobs.c)
+* [../tcobs.h](../tcobs.h)
+* [..tcobsEncode.c](../tcobsEncode.c)
+* [..tcobsDecode.c](../tcobsDecode.c)
 
 ###  2.2. <a name='GointerfaceandCode'></a>Go interface and Code
 
 ```Go
-// TCOBSEncode a slice of bytes to a null-terminated frame
-func TCOBSEncode(p []byte) []byte 
+// TCOBSCEncode a slice of bytes to a null-terminated frame
+func TCOBSCEncode(p []byte) []byte)
 ```
 
 ```Go
 // TCOBSDecode a null-terminated frame to a slice of bytes
-func TCOBSDecode(p []byte) []byte 
+func TCOBSDecode(p []byte) []byte)
 ```
 
 * [../pkg/tcobs/tcobs.go](../pkg/tcobs/tcobs.go)
