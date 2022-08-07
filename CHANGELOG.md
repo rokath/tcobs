@@ -1,5 +1,9 @@
 # TCOBS Changelog
 
+## v0.6.1
+
+* TCOBSv2 **Go** interface improved and tested
+
 ## v0.6.0
 
 * TCOBSv2 now faster with internal look-up tables.

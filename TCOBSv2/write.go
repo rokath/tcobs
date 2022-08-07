@@ -2,6 +2,7 @@ package tcobs
 
 import (
 	"errors"
+	"fmt"
 	"io"
 )
 
@@ -26,21 +27,18 @@ func (p *encoder) Write(buffer []byte) (n int, e error) {
 		e = errors.New("inner buffer not empty (needs Flush)")
 		return
 	}
-	n = len(buffer)
-	for max := n + 1 + ((n + 1) >> 5); max > len(p.iBuf); { // worst case
-		n >>= 1                                         // reduce amount
+	r := CEncode(p.iBuf, buffer)
+	if r < 0 {
+		e = fmt.Errorf("CEncode returned an internal error. Check tcobsEncode.c line %d", -r)
+		return
 	}
-	siz := CEncode(p.iBuf, buffer[:n])
-	enc := append(p.iBuf[:siz], 0) // 0-delimiter
+	n = len(buffer)
+	enc := append(p.iBuf[:r], 0) // 0-delimiter
 	m, e := p.w.Write(enc)
 	if m == len(enc) { // all written
 		return
 	}
-	if m == 0 { // could not write at all
-		n = 0
-		return
-	}
-	// some bytes could be written, so keep the leftovers for Flush
+	// keep the leftovers for Flush
 	p.iCnt = copy(p.iBuf, enc[m:])
 	e = errors.New("inner buffer not empty (needs Flush)")
 	return

@@ -25,7 +25,7 @@ func CEncode(o, i []byte) (n int) {
 }
 
 // CDecode decodes `i` into `o` and returns number of bytes in `o`.
-// For details see https://github.com/rokath/TCOBS/blob/master/docs/TCOBSSpecification.md.
+// For details see https://github.com/rokath/TCOBS/TCOBSv2/blob/master/docs/TCOBSv2Specification.md.
 // The CDecode implementation is done in C because the aimed use case is an embedded device running C.
 func CDecode(o, i []byte) (n int) {
 	if len(i) == 0 {
