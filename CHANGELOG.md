@@ -1,5 +1,9 @@
 # TCOBS Changelog
 
+## v0.7.1
+
+* TCOBSv1 & TCOBSv2 README.md files corrected.
+
 ## v0.7.0
 
 * TCOBSv1 **Go** interface improved and more tested

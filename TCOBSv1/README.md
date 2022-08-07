@@ -39,19 +39,21 @@
 
 ###  2.1. <a name='TCOBSv1Encoding'></a>TCOBSv1 Encoding
 
-* [x] `tcobs.h` and `tcobs.c` contain the encoder as **C**-code.
-* [x] The encoding in **Go** is possible with `tcobs.go` using `tcobs.c` with CGO.
+* [x] `tcobs.h` and `tcobsEncode.c` contain the encoder as **C**-code.
+* [x] The decoding in **Go** is possible with `tcobsCDecode.go` using `tcobsDecode.c` with CGO.
+* [x] The decoding in **Go** is possible also with `tcobsDecode.go` and recommended.
 * [x] The **Go** idiomatic usage is to use a `NewEncoder(w io.Writer, size int) (p *encoder)` and its *Reader* interface (see `read.go`)
 
 ###  2.2. <a name='TCOBSv1Decoding'></a>TCOBSv1 Decoding
 
-* [x] `tcobs.go` contains the decoder as **Go**-code.
-* [ ] The decoding in **C** is not implemented (yet).
+* [x] `tcobsDecode.go` contains the decoder as **Go**-code.
+* [x] `tcobs.h` and `tcobsDecode.c` contain the decoder as **C**-code.
+* [x] The encoding in **Go** is possible with `tcobsCEncode.go` using `tcobsEncode.c` with CGO.
 * [x] The **Go** idiomatic usage is to use a `NewDecoder(r io.Reader, size int, multi bool) (p *decoder)` and its *Writer* interface (see `write.go`)
 
 ###  2.3. <a name='TCOBSv1Testing'></a>TCOBSv1 Testing
 
-- [x] `tcobs_test.go` contains test code. CGO is not supported inside test files but usable through **Go** functions. 
+- [x] `*_test.go` files contain test code. CGO is not supported inside test files but usable through **Go** functions. 
   - Testing: `go test ./...`: ![./docs/ref/Test.PNG](./docs/ref/Test.PNG)
 - The test execution can take several seconds. If your computer is slow you can reduce the loop count in the test functions `TestEncodeDecode*`.
 
@@ -61,9 +63,9 @@
 
 ##  3. <a name='GettingStarted'></a>Getting Started
 
-* Add [./tcobs.c](./tcobs.c) to your embedded project and use function `TCOBSEncode` to convert a buffer into TCOBS format.
+* Add [./tcobsEncode.c](./tcobsEncode.c) and/or [./tcobsDecode.c](./tcobsDecode.c) to your embedded project and use function `TCOBSEncode` and/or `TCOBSDecode`  to convert a buffer to/from TCOBS format.
 * After transmitting one (or more) TCOBS package(s) transmit a 0-delimiter byte.
-* Decoding is currently implemented in **Go**.
+* Decoding is implemented also in **Go**.
   * Encoder and Decoder in other languages are easy to implement using the TCOBS specification and the given **C**- and **Go**-code.
 * Contributions are appreciated.
 
@@ -73,7 +75,7 @@
 
 ###  3.2. <a name='Installation'></a>Installation
 
-* To use TCOBS with **Go** execute `go get github.com/rokath/tcobs`
+* To use TCOBSv1 with **Go** execute `go get github.com/rokath/tcobs/TCOBSv1`
 
 ###  3.3. <a name='UsageinGo'></a>Usage in Go
 
@@ -83,6 +85,7 @@
 
 * The function `tcobs.Decode` is usable standalone.
 * Also it is possible to create a Decoder instance and use the `Read` method.
+* The function `tcobs.CDecode` is usable standalone also.
 
 ####  3.3.2. <a name='Encoding'></a>Encoding
 

@@ -65,10 +65,10 @@
 
 ##  3. <a name='GettingStarted'></a>Getting Started
 
-* Add [./tcobs.c](./tcobs.c) to your embedded project and use function `TCOBSEncode` to convert a buffer into TCOBS format.
+* Add [./tcobsEncode.c](./tcobsEncode.c) and/or [./tcobsDecode.c](./tcobsDecode.c)  to your embedded project and use function `TCOBSEncode` and/or `TCOBSDecode` to convert a buffer to/from TCOBS format.
 * After transmitting one (or more) TCOBS package(s) transmit a 0-delimiter byte.
-* Decoding is currently implemented in **Go**.
-  * Encoder and Decoder in other languages are easy to implement using the TCOBS specification and the given **C**- and **Go**-code.
+* Encoding and Decoding is currently implemented in **Go** using the C-code with CGO.
+* Encoder and Decoder in other languages are implementable using the TCOBS specification and the given **C**- and **Go**-code.
 * Contributions are appreciated.
 
 ###  3.1. <a name='Prerequisites'></a>Prerequisites
@@ -77,7 +77,7 @@
 
 ###  3.2. <a name='Installation'></a>Installation
 
-* To use TCOBS with **Go** execute `go get github.com/rokath/tcobs`
+* To use TCOBSv2 with **Go** execute `go get github.com/rokath/tcobs/TCOBSv2`
 
 ###  3.3. <a name='UsageinGo'></a>Usage in Go
 
@@ -85,7 +85,7 @@
 
 ####  3.3.1. <a name='Decoding'></a>Decoding
 
-* The function `tcobs.Decode` is usable standalone.
+* The function `tcobs.CDecode` is usable standalone.
 * Also it is possible to create a Decoder instance and use the `Read` method.
 
 ####  3.3.2. <a name='Encoding'></a>Encoding
@@ -101,7 +101,7 @@
 * [x] Add Changelog
 * [x] Add back to top links
 * [x] Add **Go** Reader & Writer interface
-* [ ] Add decode function in **C**
+* [x] Add decode function in **C**
 * [ ] Add Additional Templates w/ Examples
 
 See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of proposed features (and known issues).
