@@ -27,27 +27,37 @@ func NewDecoder(r io.Reader, size int) (p *decoder) {
 // io.EOF is returned when inner reader reached end of input stream.
 // In case of a corrupted input buffer an error is returned with n = 0.
 func (p *decoder) Read(buffer []byte) (n int, e error) {
+	var dataInvalid bool
+start:
 	if len(p.iBuf[p.iCnt:]) == 0 {
-		e = errors.New("encoded package is bigger than internal buffer, cannot read")
-		return
+		p.iCnt = 0 // drop data
+		dataInvalid = true
 	}
 	nCnt, e := p.r.Read(p.iBuf[p.iCnt:])
 	p.iCnt += nCnt
 	if e != nil && e != io.EOF {
-		return
+		return // internal Read error
+	}
+	if e == io.EOF && p.iCnt == 0 {
+		return // no more data
 	}
 	before, after, found := bytes.Cut(p.iBuf[:p.iCnt], []byte{0})
 	if !found {
+		goto start
+	}
+	if dataInvalid {
+		p.iCnt = copy(p.iBuf, after) // remove data
+		dataInvalid = false
+		e = errors.New("encoded package is bigger than internal buffer, cannot read")
 		return
 	}
 	n, e = Decode(buffer, before)
+	p.iCnt = copy(p.iBuf, after)
 	if e != nil && e != io.EOF {
-		p.iCnt = copy(p.iBuf, after)
 		n = 0
 		return
 	}
 	copy(buffer, buffer[len(buffer)-n:])
-	p.iCnt = copy(p.iBuf, after)
 	return
 }
 

@@ -26,7 +26,8 @@ func NewDecoder(r io.Reader, size int) (p *decoder) {
 
 // Read returns one decoded TCOBS package if available.
 // io.EOF is returned when inner reader reached end of input stream.
-// The inner buffer must be able to hold
+// The inner buffer must be able to hold the whole TCOBS package, otherwise it is dropped
+// and an error is returned.
 func (p *decoder) Read(buffer []byte) (n int, e error) {
 	var dataInvalid bool
 start:
