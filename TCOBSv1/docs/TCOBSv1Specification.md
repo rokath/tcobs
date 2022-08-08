@@ -297,3 +297,4 @@ F4 is maybe not use that often and could be used in a completely different way. 
 | 2022-JUL-24 | 0.8.5 | Smaller wording improvements. |
 | 2022-JUL-30 | 0.9.0 | Common (v1 & v2) parts removed. |
 | 2022-AUG-06 | 0.9.1 | Assumptions moved to TCOBS ReadMe.md |
+| 2022-AUG-08 | 0.9.2 | Link corrected |
