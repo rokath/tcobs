@@ -1,5 +1,9 @@
 # TCOBS Changelog
 
+## v0.8.0
+
+* TCOBSv2 Read function more robust against errors.
+
 ## v0.7.1
 
 * TCOBSv1 & TCOBSv2 README.md files corrected.

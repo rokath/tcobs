@@ -88,25 +88,42 @@ func TestMultiReadPacketsWithOneErrorPackageInside(t *testing.T) {
 
 // When the internal buffer is smaller than the encoded buffer, no read is possible.
 func TestTooSmallBufferRead0(t *testing.T) {
-	enc := []byte{0x1, 0x2, 0x62, 0xff, 0x2, 0xff, 0x1, 0x54, 0x2, 0x1, 0xff, 0x1, 0x1, 0x2, 0x2, 0x1, 0xff, 0x1, 0xaa, 0}
+	enc := []byte{
+		0x1, 0x2, 0x62, 0xff, 0x2, 0xff, 0x1, 0x54, 0x2, 0x1, 0xff, 0x1, 0x1, 0x2, 0x2, 0x1, 0xff, 0x1, 0xaa, 0,
+		0xaa, 0xbb, 0x02, 0,
+	}
 	p := tcobs.NewDecoder(bytes.NewReader(enc), 15)
 	dec := make([]byte, 100)
+
+	// package does not fit in internal buffer and is ignored therefore
 	n, e := p.Read(dec)
-	assert.Nil(t, e)
-	assert.True(t, n == 0)
-	n, e = p.Read(dec)
 	assert.True(t, e != nil)
 	assert.True(t, e != io.EOF)
 	assert.True(t, n == 0)
+
+	// next package is ok
+	n, e = p.Read(dec)
+	assert.Nil(t, e)
+	assert.True(t, n == 2)
 }
 
 // When the provided buffer is smaller than the decoded buffer, no read is possible.
 func TestTooSmallBufferRead1(t *testing.T) {
-	enc := []byte{0x1, 0x2, 0x62, 0xff, 0x2, 0xff, 0x1, 0x54, 0x2, 0x1, 0xff, 0x1, 0x1, 0x2, 0x2, 0x1, 0xff, 0x1, 0xaa, 0}
+	enc := []byte{
+		0x1, 0x2, 0x62, 0xff, 0x2, 0xff, 0x1, 0x54, 0x2, 0x1, 0xff, 0x1, 0x1, 0x2, 0x2, 0x1, 0xff, 0x1, 0xaa, 0,
+		0xaa, 0xbb, 0x02, 0,
+	}
 	p := tcobs.NewDecoder(bytes.NewReader(enc), 150)
 	dec := make([]byte, 10)
+
+	// package does not fit in external buffer
 	n, e := p.Read(dec)
 	assert.True(t, e != nil)
 	assert.True(t, e != io.EOF)
 	assert.True(t, n < 1000000)
+
+	// next package is ok
+	n, e = p.Read(dec)
+	assert.Nil(t, e)
+	assert.True(t, n == 2)
 }
