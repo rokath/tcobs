@@ -185,12 +185,14 @@ The encoding can be done in a straight forward code on the senders side touching
 func TCOBSCEncode(p []byte) []byte)
 ```
 
+* [../tcobsCEncode.go](../tcobsCEncode.go)
+
 ```Go
 // TCOBSDecode a null-terminated frame to a slice of bytes
 func TCOBSDecode(p []byte) []byte)
 ```
 
-* [../pkg/tcobs/tcobs.go](../pkg/tcobs/tcobs.go)
+* [../tcobsDecode.go](../tcobsDecode.go)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
