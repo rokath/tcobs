@@ -50,17 +50,14 @@
 
 ##  1. <a name='Overview'></a>Overview
 
-* The TCOBSv1 code is stable and ready to use without limitations:
-  * Encoding and decoding in **C**.
-    * Decode code in C is smaller than TCOBSv2 code.
-  * Encoding and decoding in **Go** using CGO possible.
-  * Decoding in **Go** (for the PC side).
-  * Further TCOBSv1 development is not planned. 
-* The TCOBSv2 code is stable and ready to use without limitations:
-  * Encoding and decoding in **C**.
-    * Encoded data are smaller than TCOBSv1 code.
-  * Encoding and decoding in **Go** using CGO possible.
-  
+* The TCOBSv1 & TCOBSv2 code is stable and ready to use without limitations.
+* Encoding and decoding in **C**.
+
+| TCOBSv1 | TCOBSv2 |
+| - | - |
+| less code | more code |
+| less compression | more compression |
+| Decoding direct in **Go** | Decoding in **Go** using CGO |
 
 <!-- ABOUT THE PROJECT -->
 ##  2. <a name='AboutTheproject'></a>About The project
