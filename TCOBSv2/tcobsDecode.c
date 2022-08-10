@@ -8,6 +8,10 @@
 #include "tcobs.h"
 #include "tcobsInternal.h"
 
+//! ASSERT checks for a true condition, otherwise stop.
+//! For the decoding this macro was used just to verify the code during development.
+#define ASSERT( condition ) // do{ if( !(condition) ){ return -__LINE__; } }while(0);
+
 //! MAX_CIPHERS is max expected sigil bytes of one kind in a row. 
 //! 3^24 = 282.429.536.481, we do not expect so much equal bytes.
 #define MAX_CIPHERS 24 
@@ -735,18 +739,27 @@ static int CCTNtoN( uint8_t* ciphers, int count ){
 
 //! CCQNZtoN converts count CCQNZ ciphers in a number.
 static int CCQNZtoN( uint8_t* ciphers, int count ){
-    ASSERT( 0 == CCQNZtoCCQN( ciphers, count ) )
+    int r = CCQNZtoCCQN( ciphers, count );
+    if( r < 0 ){
+        return __LINE__;
+    }
     return CCQNtoN( ciphers, count );
 }
 
 //! CCQNFtoN converts count CCQNF ciphers in a number.
 static int CCQNFtoN( uint8_t* ciphers, int count ){
-    ASSERT( 0 == CCQNFtoCCQN( ciphers, count ) )
+    int r = CCQNFtoCCQN( ciphers, count );
+    if( r < 0 ){
+        return __LINE__;
+    }
     return CCQNtoN( ciphers, count );
 }
 
 //! CCTNRtoN converts count CCTNR ciphers in a number.
 static int CCTNRtoN( uint8_t* ciphers, int count ){
-    ASSERT( 0 == CCTNRtoCCTN( ciphers, count ) )
+    int r = CCTNRtoCCTN( ciphers, count );
+    if( r < 0 ){
+        return __LINE__;
+    }
     return CCTNtoN( ciphers, count );
 }

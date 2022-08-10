@@ -28,9 +28,6 @@ extern "C" {
 #define F3 0xF0 //!< F3 is the sigil byte 0x1111oooo, a CCQN fullCount cipher 3 with offsets 0-14.
 #define F0 0xFF //!< F0 is the sigil byte 0x11111111, a CCQN fullCount cipher 0 with offset 0.
 
-//! ASSERT checks for a true condition, otherwise stop.
-#define ASSERT( condition ) do{ if( !(condition) ){ return -__LINE__; } }while(0);
-
 #ifdef __cplusplus
 }
 #endif

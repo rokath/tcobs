@@ -13,7 +13,7 @@ import (
 
 const (
 	maxLength int = 1000000
-	rounds    int = 200
+	rounds    int = 2000
 	maxEqual  int = 100000
 )
 

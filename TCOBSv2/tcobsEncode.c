@@ -9,6 +9,14 @@
 #include "tcobs.h"
 #include "tcobsInternal.h"
 
+//! ASSERT checks for a true condition, otherwise stop.
+//! For the encoding this macro was used just to verify the code during development.
+#define ASSERT( condition ) // do{ if( !(condition) ){ return -__LINE__; } }while(0);
+
+//! MAX_CIPHERS is max expected sigil bytes of one kind in a row. 
+//! 3^24 = 282.429.536.481, we do not expect so much equal bytes.
+#define MAX_CIPHERS 24 
+
 static int writeZeroCount( uint8_t ** out, int * count, int * distance );
 static int writeFullCount( uint8_t ** out, int * count, int * distance );
 static int writeRepeatCount( uint8_t ** out, uint8_t aa, int * count, int * distance );
@@ -256,7 +264,7 @@ static int writeLastSigil( uint8_t ** out, int * distance){
 
 //! writeZeroCount writes *num 00-bytes encoded as Z-sigil sequence including *distance value.
 static int writeZeroCount( uint8_t ** out, int * num, int * distance ){
-    uint8_t ciphers[16];
+    uint8_t ciphers[MAX_CIPHERS];
     int ciphersCount = ntoCCQNZ( *num, ciphers );
     int err = 0;
     if( ciphersCount < 0 ){
@@ -305,7 +313,7 @@ static int writeZeroCount( uint8_t ** out, int * num, int * distance ){
 
 //! writeFullCount writes *num FF-bytes encoded as F-sigil sequence including *distance value.
 static int writeFullCount( uint8_t ** out, int * num, int * distance ){
-    uint8_t ciphers[16];
+    uint8_t ciphers[MAX_CIPHERS];
     int ciphersCount = ntoCCQNF( *num, ciphers );
     int err = 0;
     if( ciphersCount < 0 ){
@@ -378,7 +386,7 @@ static int writeRepeatCount( uint8_t ** out, uint8_t aa, int * num, int * distan
         *out += 1;
         *distance += 1;
     }else{
-        uint8_t ciphers[16];
+        uint8_t ciphers[MAX_CIPHERS];
         int ciphersCount = ntoCCTNR( *num, ciphers );
 
         if( ciphersCount < 0 ){
@@ -455,41 +463,41 @@ static int CCTNgenericStartValue( int num, int * ciphersCount ){
 //! ntoCCQNZ converts num into a CCQN cipher sequence coded as Z sigils to ciphers and returns count of ciphers.
 static int ntoCCQNZgeneric( int num, uint8_t* ciphers ){
     ASSERT( num > 0 ){
-			int ciphersCount = 0;
-			int gsv = CCQNgenericStartValue( num, &ciphersCount );
-			int n = num - gsv;
-			int qcount = ntoq( n, ciphers );
-			memcpy(ciphers + ciphersCount - qcount, ciphers, qcount);
-			memset(ciphers, 0, ciphersCount - qcount );
-			return CCQNtoCCQNZ( ciphers, ciphersCount );
-		}
+        int ciphersCount = 0;
+        int gsv = CCQNgenericStartValue( num, &ciphersCount );
+        int n = num - gsv;
+        int qcount = ntoq( n, ciphers );
+        memmove(ciphers + ciphersCount - qcount, ciphers, qcount);
+        memset(ciphers, 0, ciphersCount - qcount );
+        return CCQNtoCCQNZ( ciphers, ciphersCount );
+    }
 }
 
 //! ntoCCQNF converts num into a CCQN cipher sequence coded as F sigils to ciphers and returns count of ciphers.
 static int ntoCCQNFgeneric( int num, uint8_t* ciphers ){
     ASSERT( num > 0 ){
-			int ciphersCount = 0;
-			int gsv = CCQNgenericStartValue( num, &ciphersCount );
-			int n = num - gsv;
-			int qcount = ntoq( n, ciphers );
-			memcpy(ciphers + ciphersCount - qcount, ciphers, qcount);
-			memset(ciphers, 0, ciphersCount - qcount );
-			return CCQNtoCCQNF( ciphers, ciphersCount );
-		}
+        int ciphersCount = 0;
+        int gsv = CCQNgenericStartValue( num, &ciphersCount );
+        int n = num - gsv;
+        int qcount = ntoq( n, ciphers );
+        memmove(ciphers + ciphersCount - qcount, ciphers, qcount);
+        memset(ciphers, 0, ciphersCount - qcount );
+        return CCQNtoCCQNF( ciphers, ciphersCount );
+    }
 }
 
 //! ntoCCQNR converts num into a CCQN cipher sequence coded as F sigils to ciphers and returns count of ciphers.
 static int ntoCCTNRgeneric( int num, uint8_t* ciphers ){
     ASSERT( num > 0 ){
-			int ciphersCount = 0;
-			int gsv = CCTNgenericStartValue( num, &ciphersCount );
-			int n = num - gsv;
-			int tcount = ntot( n, ciphers );
-			uint8_t* dest = ciphers + ciphersCount - tcount;
-			memmove(dest, ciphers, tcount);
-			memset(ciphers, 0, ciphersCount - tcount );
-			return CCTNtoCCTNR( ciphers, ciphersCount );
-		}
+        int ciphersCount = 0;
+        int gsv = CCTNgenericStartValue( num, &ciphersCount );
+        int n = num - gsv;
+        int tcount = ntot( n, ciphers );
+        uint8_t* dest = ciphers + ciphersCount - tcount;
+        memmove(dest, ciphers, tcount);
+        memset(ciphers, 0, ciphersCount - tcount );
+        return CCTNtoCCTNR( ciphers, ciphersCount );
+    }
 }
 
 //! CCQNtoCCQNZ converts ciphers in ciphers to Z-sigils.
@@ -544,52 +552,38 @@ static int CCTNtoCCTNR( uint8_t* ciphers, int count ){
     return count;
 }
 
-//! Function to swap two numbers
-static void swap(char *x, char *y) {
-    char t = *x; *x = *y; *y = t;
-}
- 
-// Function to reverse `buffer[i�j]`
-static char* reverse(char *buffer, int i, int j){
-    while (i < j) {
-        swap(&buffer[i++], &buffer[j--]);
-    }
-    return buffer;
-}
-
 //! ntoq converts n into a quaternary cipher sequence to buf and returns count of ciphers.
+//! It assumes at least MAX_CIPHERS bytes space in buffer and uses them as scratchpad.
 static int ntoq( int n, uint8_t* buffer ){
-    int i = 0;
+    int i = MAX_CIPHERS;
+    int count;
     while (n){
         int r = n & 3;  // n % 4;
         n     = n >> 2; // n / 4;
-        buffer[i++] = r;
+        buffer[--i] = r;
     }
-    //  // if the number is 0
-    //  if (i == 0) {
-    //      buffer[i++] = 0;
-    //  }
-		reverse((char*)buffer, 0, i-1);
-		return i;
+    count = MAX_CIPHERS-i;
+    memmove(buffer, buffer+i, count);
+	return count;
 }
 
 //! ntot converts n into a ternary cipher sequence to buf and returns count of ciphers.
+//! It assumes at least MAX_CIPHERS bytes space in buffer and uses them as scratchpad.
 static int ntot(int n, uint8_t* buffer ){
-    int i = 0;
+    int i = MAX_CIPHERS;
+    int count;
     while (n){
-        int r = n % 3;
-        n     = n / 3;
-        buffer[i++] = r;
+        int r = n % 3; // option: speedup by computing r and n in one step
+        n     = n / 3; // but it makes not much sense, when lookup tables are used
+        buffer[--i] = r;
     }
-    //  // if the number is 0
-    //  if (i == 0) {
-    //      buffer[i++] = 0;
-    //  }
-    reverse((char*)buffer, 0, i - 1);
-		return i;
+    count = MAX_CIPHERS-i;
+    memmove(buffer, buffer+i, count);
+	return count;
 }
 
 //! ntoCCQNZ converts num into a CCQN cipher sequence coded as Z sigils to buf and returns count of ciphers.
+//! It assumes at least MAX_CIPHERS bytes space in buffer and uses them as scratchpad.
 static int ntoCCQNZ( int num, uint8_t* buf ){
     ASSERT( num > 0 )
     if( num <= 4 ){
@@ -648,7 +642,7 @@ static int ntoCCTNR( int num, uint8_t* buf ){
         return 1;
     }
     if( num <= 13 ){
-        static uint8_t ciphers[16][2] = {
+        static uint8_t ciphers[9][2] = {
             {R0, R0}, {R0, R1}, {R0, R2}, //  5,  6,  7,
             {R1, R0}, {R1, R1}, {R1, R2}, //  8,  9, 10,
             {R2, R0}, {R2, R1}, {R2, R2}, // 11, 12, 13,
@@ -678,3 +672,44 @@ static int ntoCCTNR( int num, uint8_t* buf ){
     }
     return ntoCCTNRgeneric( num, buf );
 }
+
+/*
+//! Function to swap two numbers
+static void swap(char *x, char *y) {
+    char t = *x; *x = *y; *y = t;
+}
+ 
+// Function to reverse `buffer[i�j]`
+static char* reverse(char *buffer, int i, int j){
+    while (i < j) {
+        swap(&buffer[i++], &buffer[j--]);
+    }
+    return buffer;
+}
+
+//! ntoq converts n into a quaternary cipher sequence to buf and returns count of ciphers.
+static int ntoq( int n, uint8_t* buffer ){
+    int i = 0;
+    while (n){
+        int r = n & 3;  // n % 4;
+        n     = n >> 2; // n / 4;
+        buffer[i++] = r;
+    }
+    reverse((char*)buffer, 0, i-1);
+    return i;
+}
+
+//! ntot converts n into a ternary cipher sequence to buf and returns count of ciphers.
+//! It assumes at least 16 bytes space in buffer and uses them as scratchpad.
+static int ntot(int n, uint8_t* buffer ){
+    int i = 0;
+    while (n){
+        int r = n % 3;
+        n     = n / 3;
+        buffer[i++] = r;
+    }
+    reverse((char*)buffer, 0, i - 1);
+	return i;
+}
+*/
+
