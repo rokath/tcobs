@@ -61,7 +61,7 @@ start:
 	return
 }
 
-// Alternate and tested implementation using C-code.
+// Alternate and less tested implementation using C-code.
 //  // Read returns one decoded TCOBS package if available.
 //  // If n == len(buffer), the returned package is maybe not complete
 //  // and further Read calls are needed.

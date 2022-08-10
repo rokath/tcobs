@@ -1,3 +1,4 @@
+// Package tcobs_test contains blackbox tests.
 package tcobs_test
 
 import (
