@@ -21,9 +21,6 @@ extern "C" {
 #define R3 0x10 //!< sigil byte 0x00010ooo, offset 0-7
 #define R4 0x18 //!< sigil byte 0x00011ooo, offset 0-7
 
-//! ASSERT checks for a true condition, otherwise return with negative line number.
-#define ASSERT( condition ) do{ if( !(condition) ){ return -__LINE__; } }while(0);
-
 #ifdef __cplusplus
 }
 #endif

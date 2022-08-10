@@ -8,8 +8,9 @@
 #include "tcobs.h"
 #include "tcobsInternal.h"
 
-//! ASSERT checks for a true condition, otherwise stop. (used for testing)
-//#define ASSERT( condition ) do{ if( !(condition) ){ for(;;){} } }while(0);
+//! ASSERT checks for a true condition, otherwise stop.
+//! This macro was used during development to verify the code.
+#define ASSERT( condition ) //  do{ if( !(condition) ){ for(;;){} } }while(0);
 
 //! OUTB writes a non-sigil byte to output and increments offset. 
 //! If offset reaches 31, a NOP sigil byte is inserted and offset is then set to 0.
@@ -390,8 +391,5 @@ lastByte: // , -- xx.
         ASSERT( offset <= 31 );
         *o++ = N | offset; // aa Nn, -- --.
         return o - out;
-    }        
-    
-    //ASSERT( 0 ) 
-    //return 0; // will not be reached 
+    }
 }
