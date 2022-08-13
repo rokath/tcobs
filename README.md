@@ -91,7 +91,7 @@
 * Use cases in mind are speed, limited bandwidth and long time data recording in the field.
 * TCOBS is inspired by [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html). The ending sigil byte idea comes from [rCOBS](https://github.com/Dirbaio/rcobs). It allows a straight forward encoding avoiding lookahead and makes this way the embedded device code simpler.
 * TCOBS uses various chained sigil bytes to achieve an additional lossless compression if possible.
-* Each encoded package ends with an sigil byte.
+* Each encoded package ends with a sigil byte.
 * `0` is usable as delimiter byte between the packages containing no `0` anymore. It is up to the user to insert the **optional** delimiters for framing after each or several packages.
 
 ###  3.1. <a name='Whynotin2steps'></a> Why not in 2 steps?
