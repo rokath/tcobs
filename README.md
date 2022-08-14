@@ -232,7 +232,7 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
   <p align="center">
     Common Object Byte Stuffing with optimized Run-Length Encoding 
     <br />
-    <a href="https://github.com/rokath/tcobs/blob/master/TCOBSv2/docs/TCOBSv1Specification.md"><strong>Explore v1 docs »</strong></a>
+    <a href="https://github.com/rokath/tcobs/blob/master/TCOBSv1/docs/TCOBSv1Specification.md"><strong>Explore v1 docs »</strong></a>
     .
     <a href="https://github.com/rokath/tcobs/blob/master/TCOBSv2/docs/TCOBSv2Specification.md"><strong>Explore v2 docs »</strong></a>
     <br />
