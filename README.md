@@ -235,10 +235,10 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
     <a href="https://github.com/rokath/tcobs/blob/master/TCOBSv2/docs/TCOBSv2Specification.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/rokath/tcobs/blob/master">View Code</a>
+    <a href="https://github.com/rokath/tcobs/tree/master/TCOBSv1">View v1 Code</a>
     ·
-    <a href="https://github.com/rokath/tcobs/issues">Report Bug</a>
+    <a href="https://github.com/rokath/tcobs/tree/master/TCOBSv2">View v2 Code</a>
     ·
-    <a href="https://github.com/rokath/tcobs/issues">Request Feature</a>
+    <a href="https://github.com/rokath/tcobs/issues">Report Bug / Request Feature</a>
   </p>
 </div>
