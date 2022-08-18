@@ -110,7 +110,7 @@
   </a>
 
 * For the decoder it makes no difference if the packages starts or ends with a sigil byte. In any case it will run into issues in such case with high probability and report a data disruption. But a false match is not excluded for 100%.
-  * If the decoded data are structured one can estimate the false match probability and increase the safety with an additional package CRC before encoding if needed.
+  * If the decoded data are structured, one can estimate the false match probability and increase the safety with an additional package CRC before encoding, if needed.
 * The receiver calls continuously a `Read()` function. The received buffer can contain 0-delimited packages and the receiver assumes them all to be valid because there is no known significant time delay between package start and end.
 * If a package start was received and the next package end reception is more than ~100ms away, a data disruption is likely and the receiver should ignore these data.
   * To minimise the loss in case of data disruption, each message should get TCOBS encoded and 0-byte delimited separately.
