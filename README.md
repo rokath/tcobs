@@ -20,7 +20,7 @@
 * 8. [Contributing](#Contributing)
 * 9. [License](#License)
 * 10. [Contact](#Contact)
-	* 10.1. [Acknowledgments](#Acknowledgments)
+* 11. [Acknowledgments](#Acknowledgments)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -183,11 +183,15 @@ Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle
 Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 
 <!-- ACKNOWLEDGMENTS -->
-###  10.1. <a name='Acknowledgments'></a>Acknowledgments
+##  11. <a name='Acknowledgments'></a>Acknowledgments
 
 * [COBS](https://pypi.org/project/cobs/)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
 * [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html)
+
+## Short Messages Compression Link
+
+* This maybe is interesting for you, if you arrived here: [SMAZ](https://github.com/antirez/smaz)
 
 <!--
 * [Choose an Open Source License](https://choosealicense.com)
