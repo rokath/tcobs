@@ -6,21 +6,23 @@
   <ol>
 
 <!-- vscode-markdown-toc -->
-* 1. [Overview](#Overview)
-* 2. [About The project](#AboutTheproject)
-	* 2.1. [Assumptions](#Assumptions)
-* 3. [ Preface](#Preface)
-	* 3.1. [ Why not in 2 steps?](#Whynotin2steps)
-* 4. [Data Disruption Handling](#DataDisruptionHandling)
-* 5. [TCOBS Specification](#TCOBSSpecification)
-	* 5.1. [TCOBSv1 Specification](#TCOBSv1Specification)
-	* 5.2. [TCOBSv2 Specification](#TCOBSv2Specification)
-* 6. [Getting Started](#GettingStarted)
-* 7. [Roadmap](#Roadmap)
-* 8. [Contributing](#Contributing)
-* 9. [License](#License)
-* 10. [Contact](#Contact)
-* 11. [Acknowledgments](#Acknowledgments)
+* 1. [About The project](#AboutTheproject)
+	* 1.1. [Assumptions](#Assumptions)
+* 2. [ Preface](#Preface)
+	* 2.1. [ Why not in 2 steps?](#Whynotin2steps)
+* 3. [Data Disruption Handling](#DataDisruptionHandling)
+* 4. [Current State](#CurrentState)
+* 5. [Use cases](#Usecases)
+* 6. [TCOBS Specification](#TCOBSSpecification)
+	* 6.1. [TCOBSv1 Specification](#TCOBSv1Specification)
+	* 6.2. [TCOBSv2 Specification](#TCOBSv2Specification)
+* 7. [Getting Started](#GettingStarted)
+* 8. [Roadmap](#Roadmap)
+* 9. [Contributing](#Contributing)
+* 10. [License](#License)
+* 11. [Contact](#Contact)
+* 12. [Acknowledgments](#Acknowledgments)
+* 13. [Short Messages Compression Link](#ShortMessagesCompressionLink)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -34,6 +36,9 @@
 </details>
 
 <!--
+
+🟢✅🟡⛔🔴🔵💧❓↩෴⚓🛑❗🌡⏱∑✳‼♦♣🚫⚠🎥📷🌊🆘🧷🐢➡☕
+
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rokath/tcobs/goreleaser)
 ![GitHub All Releases](https://img.shields.io/github/downloads/rokath/tcobs/total)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/rokath/tcobs)
@@ -48,26 +53,15 @@
 [![Coverage Status](https://coveralls.io/repos/github/rokath/tcobs/badge.svg?branch=master)](https://coveralls.io/github/rokath/tcobs?branch=master)
 ![GitHub issues](https://img.shields.io/github/issues/rokath/tcobs)
 
-##  1. <a name='Overview'></a>Overview
-
-* The TCOBSv1 & TCOBSv2 code is stable and ready to use without limitations.
-* Encoding and decoding in **C**.
-
-| TCOBSv1 | TCOBSv2 |
-| - | - |
-| less code | more code |
-| less compression | more compression |
-| Decoding direct in **Go** | Decoding in **Go** using CGO |
-
 <!-- ABOUT THE PROJECT -->
-##  2. <a name='AboutTheproject'></a>About The project
+##  1. <a name='AboutTheproject'></a>About The project
 
 ![./TCOBSv1/docs/ref/COBSDataDisruption.svg](./TCOBSv1/docs/ref/COBSDataDisruption.svg)
 
 * TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) combined with real-time [RLE](https://en.wikipedia.org/wiki/Run-length_encoding) data compression especially for short messages containing integers.
 * The **consistent overhead** with TCOBS is 1 byte for each starting 31 bytes in the worst case, when no compression is possible. (*Example: A 1000 bytes buffer can be encoded with max 33 additional bytes.*) This is more compared to the original COBS with +1 byte for each starting 254 bytes but if the data contain integer numbers, as communication packets often do, the encoded data will be statistically shorter with TCOBS compared to the legacy COBS.
 
-###  2.1. <a name='Assumptions'></a>Assumptions
+###  1.1. <a name='Assumptions'></a>Assumptions
 
 * Most messages like [*Trices*](https://github.com/rokath/trice) consist of 16 or less bytes.
 * Some messages or user data are longer.
@@ -78,7 +72,7 @@
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-##  3. <a name='Preface'></a> Preface
+##  2. <a name='Preface'></a> Preface
 
 * TCOBS was originally developed as an optional [*Trice*](https://github.com/rokath/trice) part and that's the **T** is standing for. It aims to reduce the binary [trice](https://github.com/rokath/trice) data together with framing in one step.
   * T symbols also the joining of the 2 orthogonal tasks compression and framing.
@@ -94,14 +88,14 @@
 * Each encoded package ends with a sigil byte.
 * `0` is usable as delimiter byte between the packages containing no `0` anymore. It is up to the user to insert the **optional** delimiters for framing after each or several packages.
 
-###  3.1. <a name='Whynotin2steps'></a> Why not in 2 steps?
+###  2.1. <a name='Whynotin2steps'></a> Why not in 2 steps?
 
 * Usually it is better to divide this task and do compression and COBS encoding separately. This is good if size and time do not really matter. 
 * The for TCOBS expected messages are typically in the range of 2 to 300 bytes, but not limited, and a run-length encoding then makes sense for real-time compression.
 * Separating compression and COBS costs more time (2 processing loops) and does not allow to squeeze out the last byte.
 * With the TCOBS algorithm, in only one processing loop a smaller transfer packet size is expected, combined with more speed.
 
-##  4. <a name='DataDisruptionHandling'></a>Data Disruption Handling
+##  3. <a name='DataDisruptionHandling'></a>Data Disruption Handling
    
 * In case of data disruption, the receiver will wait for the next 0-delimiter byte. As a result it will get a packet start and end of 2 different packages A and Z.
 
@@ -118,26 +112,50 @@
   * The more often 0-byte delimiters are increasing the transmit overhead a bit on the other hand. 
 * Of course, when the receiver starts, the first buffer can contain broken TCOBS data, but we have to live with that on a PC. Anyway there is a reasonable likelihood that a data inconsistency is detected as explained.
 
-##  5. <a name='TCOBSSpecification'></a>TCOBS Specification
+##  4. <a name='CurrentState'></a>Current State
 
-###  5.1. <a name='TCOBSv1Specification'></a>TCOBSv1 Specification
+* [x] The TCOBSv1 & TCOBSv2 code is stable and ready to use without limitations.
 
-* See [./TCOBSv1/docs/TCOBSv1Specification.md](./TCOBSv1/docs/TCOBSv1Specification.md).
+|       Property                                                              | TCOBSv1         | TCOBSv2 |
+| -                                                                           | -               | - |
+| Code amount                                                                 | 🟢 less         | 🟡 more |
+| Speed assumption (not measured yet)                                         | 🟢 faster       | 🟢 fast |
+| Compression on short messages from 1 byte length                            | 🟢 yes          | 🟢 yes |
+| Compression on messages with many equal bytes in a row                      | 🟡 good         | 🟢 better |
+| Encoding **C** language support                                             | 🟢 yes          | 🟢 yes |
+| Decoding **C** language support                                             | 🟢 yes          | 🟢 yes |
+| Encoding **Go** language support                                            | 🟡 yes with CGO | 🟡 yes with CGO |
+| Decoding **Go** language support                                            | 🟢 yes          | 🟡 yes with CGO |
+| Other language support                                                      | 🆘 No           | 🆘 No |
 
-###  5.2. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification
+##  5. <a name='Usecases'></a>Use cases
 
-* See [./TCOBSv2/docs/TCOBSv2Specification.md](./TCOBSv2/docs/TCOBSv2Specification.md).
+* Compression is a wide field and there is a lot of excellent code around.
+* But when it comes to **very short messages like up to 100 bytes** these algorithms fail for one of two reasons:
+  * The rely on a case specific runtime generated dictionary, which must be packed into the compressed data as well.
+  * They rely on a common dictionary on encoder and decoder side which then is not needed to be a part of the compressed data. An interesting example is [SMAZ](https://github.com/antirez/smaz). But this method is not usable on arbitrary data.
+* If your packages contain many integers, they have statistically more 0xFF and 0x00 bytes: ✅ that is TCOBS is made for.
+* If your packages contain many equal bytes in a row: ✅ that is TCOBS is made for.
+* If your packages contain statistically mixed byte sequences, like encrypted data: 🛑 that is TCOBS is **NOT** made for. Such data you frame better simply with COBS, even it is possible with TCOBS. Any compression may have a sense before the encryption.
+
+##  6. <a name='TCOBSSpecification'></a>TCOBS Specification
+
+###  6.1. <a name='TCOBSv1Specification'></a>TCOBSv1 Specification
+
+↩ See [./TCOBSv1/docs/TCOBSv1Specification.md](./TCOBSv1/docs/TCOBSv1Specification.md).
+
+###  6.2. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification
+
+↩ See [./TCOBSv2/docs/TCOBSv2Specification.md](./TCOBSv2/docs/TCOBSv2Specification.md).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- GETTING STARTED -->
+##  7. <a name='GettingStarted'></a>Getting Started
 
-##  6. <a name='GettingStarted'></a>Getting Started
-
-* See README.md in TCOBSv1 or TCOBSv2.
+↩ See README.md in TCOBSv1 or TCOBSv2.
 
 <!-- ROADMAP -->
-##  7. <a name='Roadmap'></a>Roadmap
+##  8. <a name='Roadmap'></a>Roadmap
 
 * [x] Add Changelog
 * [x] Add back to top links
@@ -145,14 +163,19 @@
 * [x] Add generic CCTN & CCQN conversions to remove TCOBSv2 limitations.
 * [x] Improve testing with groups of equal bytes.
 * [ ] Compare efficiency TCOBSv2 with TCOBSv1.
-* [ ] Add Additional Templates w/ Examples
 
 See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- CONTRIBUTING -->
-##  8. <a name='Contributing'></a>Contributing
+## Future improvements?
+
+❓ One could think that arbitrary byte buffer examples could be analyzed concerning the statistical usage of bytes and find that 0xFC...0xFF and 0x00...0x20 are used more often than 0xBD for example. This would allow to code some bytes with 5 bits and others with 11 bits creating a universal table, like huffman encoding. This table than is commonly used and the need to pack it into the compressed buffer disappears. Maybe some 2-byte sequences get also in this table and the table code could get enhanced with run-length codes.
+❓ Several such "universal" tables are thinkable and during compression the encoder decides which "universal" table fits best for a specific short buffer. Then the table index must get into the compressed data.
+❗ Because these "universal" tables then must reside together with the encoder and the decoder, this will increase the needed code space significantly.
+
+
+##  9. <a name='Contributing'></a>Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -170,28 +193,25 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
-##  9. <a name='License'></a>License
+##  10. <a name='License'></a>License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
-##  10. <a name='Contact'></a>Contact
+##  11. <a name='Contact'></a>Contact
 
 Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle) - --> th@seerose.net
 Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 
 <!-- ACKNOWLEDGMENTS -->
-##  11. <a name='Acknowledgments'></a>Acknowledgments
+##  12. <a name='Acknowledgments'></a>Acknowledgments
 
 * [COBS](https://pypi.org/project/cobs/)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
 * [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html)
 
-## Short Messages Compression Link
-
-* This maybe is interesting for you, if you arrived here: [SMAZ](https://github.com/antirez/smaz)
 
 <!--
 * [Choose an Open Source License](https://choosealicense.com)
