@@ -171,7 +171,9 @@ See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of
 ## Future improvements?
 
 ❓ One could think that arbitrary byte buffer examples could be analyzed concerning the statistical usage of bytes and find that 0xFC...0xFF and 0x00...0x20 are used more often than 0xBD for example. This would allow to code some bytes with 5 bits and others with 11 bits creating a universal table, like huffman encoding. This table than is commonly used and the need to pack it into the compressed buffer disappears. Maybe some 2-byte sequences get also in this table and the table code could get enhanced with run-length codes.
+
 ❓ Several such "universal" tables are thinkable and during compression the encoder decides which "universal" table fits best for a specific short buffer. Then the table index must get into the compressed data.
+
 ❗ Because these "universal" tables then must reside together with the encoder and the decoder, this will increase the needed code space significantly.
 
 
