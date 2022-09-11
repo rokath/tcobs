@@ -120,7 +120,7 @@
 | -                                                                           | -               | - |
 | Code amount                                                                 | 🟢 less         | 🟡 more |
 | Speed assumption (not measured yet)                                         | 🟢 faster       | 🟢 fast |
-| Compression on short messages from 1 byte length                            | 🟢 yes          | 🟢 yes |
+| Compression on short messages from 2 bytes length                           | 🟢 yes          | 🟢 yes |
 | Compression on messages with many equal bytes in a row                      | 🟡 good         | 🟢 better |
 | Encoding **C** language support                                             | 🟢 yes          | 🟢 yes |
 | Decoding **C** language support                                             | 🟢 yes          | 🟢 yes |
@@ -132,11 +132,11 @@
 
 * Compression is a wide field and there is a lot of excellent code around.
 * But when it comes to **very short messages like up to 100 bytes** these algorithms fail for one of two reasons:
-  * The rely on a case specific runtime generated dictionary, which must be packed into the compressed data as well.
+  * They rely on a case specific runtime generated dictionary, which must be packed into the compressed data as well.
   * They rely on a common dictionary on encoder and decoder side which then is not needed to be a part of the compressed data. An interesting example is [SMAZ](https://github.com/antirez/smaz). But this method is not usable on arbitrary data.
 * If your packages contain many integers, they have statistically more 0xFF and 0x00 bytes: ✅ that is TCOBS is made for.
 * If your packages contain many equal bytes in a row: ✅ that is TCOBS is made for.
-* If your packages contain statistically mixed byte sequences, like encrypted data: 🛑 that is TCOBS is **NOT** made for. Such data you frame better simply with COBS, even it is possible with TCOBS. Any compression may have a sense before the encryption.
+* If your packages contain statistically mixed byte sequences, like encrypted data: 🛑 that is TCOBS is **NOT** made for. Such data you frame better simply with COBS, even it is possible with TCOBS. A compression may make sense before the encryption.
 
 ##  6. <a name='TCOBSSpecification'></a>TCOBS Specification
 
