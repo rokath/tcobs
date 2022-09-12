@@ -30,10 +30,7 @@
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
-<div id="top"></div>
-
-  </ol>
-</details>
+<div id="top"></div></ol></details>
 
 <!--
 
@@ -95,6 +92,8 @@
 * Separating compression and COBS costs more time (2 processing loops) and does not allow to squeeze out the last byte.
 * With the TCOBS algorithm, in only one processing loop a smaller transfer packet size is expected, combined with more speed.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ##  3. <a name='DataDisruptionHandling'></a>Data Disruption Handling
    
 * In case of data disruption, the receiver will wait for the next 0-delimiter byte. As a result it will get a packet start and end of 2 different packages A and Z.
@@ -112,6 +111,8 @@
   * The more often 0-byte delimiters are increasing the transmit overhead a bit on the other hand. 
 * Of course, when the receiver starts, the first buffer can contain broken TCOBS data, but we have to live with that on a PC. Anyway there is a reasonable likelihood that a data inconsistency is detected as explained.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ##  4. <a name='CurrentState'></a>Current State
 
 * [x] The TCOBSv1 & TCOBSv2 code is stable and ready to use without limitations.
@@ -128,6 +129,8 @@
 | Decoding **Go** language support                                            | 🟢 yes          | 🟡 yes with CGO |
 | Other language support                                                      | 🆘 No           | 🆘 No |
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ##  5. <a name='Usecases'></a>Use cases
 
 * Compression is a wide field and there is a lot of excellent code around.
@@ -137,6 +140,8 @@
 * If your packages contain many integers, they have statistically more 0xFF and 0x00 bytes: ✅ that is TCOBS is made for.
 * If your packages contain many equal bytes in a row: ✅ that is TCOBS is made for.
 * If your packages contain statistically mixed byte sequences, like encrypted data: 🛑 that is TCOBS is **NOT** made for. Such data you frame better simply with COBS, even it is possible with TCOBS. A compression may make sense before the encryption.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ##  6. <a name='TCOBSSpecification'></a>TCOBS Specification
 
@@ -153,6 +158,8 @@
 ##  7. <a name='GettingStarted'></a>Getting Started
 
 ↩ See README.md in TCOBSv1 or TCOBSv2.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ##  8. <a name='Roadmap'></a>Roadmap
@@ -176,6 +183,7 @@ See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of
 
 ❗ Because these "universal" tables then must reside together with the encoder and the decoder, this will increase the needed code space significantly.
 
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ##  9. <a name='Contributing'></a>Contributing
 
