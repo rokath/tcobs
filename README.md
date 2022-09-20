@@ -181,7 +181,7 @@ See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of
 
 ❓ Several such "universal" tables are thinkable and during compression the encoder decides which "universal" table fits best for a specific short buffer. Then the table index must get into the compressed data.
 
-❗ Because these "universal" tables then must reside together with the encoder and the decoder, this will increase the needed code space significantly. Alternatively these tables reside acessible outside the embedded device.
+❗ Because these "universal" tables then must reside together with the encoder and the decoder, this will increase the needed code space significantly. Alternatively these tables reside accessible outside the embedded device.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
