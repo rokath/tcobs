@@ -1,4 +1,4 @@
-# TCOBS v1 & v2
+*# TCOBS v1 & v2
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -56,7 +56,7 @@
 ![./TCOBSv1/docs/ref/COBSDataDisruption.svg](./TCOBSv1/docs/ref/COBSDataDisruption.svg)
 
 * TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) combined with real-time [RLE](https://en.wikipedia.org/wiki/Run-length_encoding) data compression especially for short messages containing integers.
-* The **consistent overhead** with TCOBS is 1 byte for each starting 31 bytes in the worst case, when no compression is possible. (*Example: A 1000 bytes buffer can be encoded with max 33 additional bytes.*) This is more compared to the original COBS with +1 byte for each starting 254 bytes but if the data contain integer numbers, as communication packets often do, the encoded data will be statistically shorter with TCOBS compared to the legacy COBS.
+* The **consistent overhead** with TCOBS is 1 byte for each starting 31 bytes in the worst case, when no compression is possible. (*Example: A 1000 bytes buffer can be encoded with max 33 additional bytes.*) This is more compared to the original COBS with +1 byte for each starting 254 bytes, but if the data contain integer numbers, as communication packets often do, the encoded data will be statistically shorter with TCOBS compared to the legacy COBS.
 
 ###  1.1. <a name='Assumptions'></a>Assumptions
 
@@ -73,9 +73,9 @@
 
 * TCOBS was originally developed as an optional [*Trice*](https://github.com/rokath/trice) part and that's the **T** is standing for. It aims to reduce the binary [trice](https://github.com/rokath/trice) data together with framing in one step.
   * T symbols also the joining of the 2 orthogonal tasks compression and framing.
-  * Additionally, the usage of ternary and quaternary numbers is reflected in the letter T.
-* TCOBSv2 is a better approach for TCOBSv1, suited also when long sequences of equal characters occur in the data stream.
-  * The TCOBSv1 compression is expected to be not that good as with TCOBS v2.
+  * Additionally, the usage of ternary and quaternary numbers in TCOBSv2 is reflected in the letter T.
+* TCOBSv2 is a better approach for TCOBSv1, suited perfect when long sequences of equal characters occur in the data stream.
+  * The TCOBSv1 compression is expected to be not that good as with TCOBSv2.
 * About the data is assumed, that 00-bytes and FF-bytes occur a bit more often than other bytes.
 * The compression aim is more to get a reasonable data reduction with minimal computing effort, than reducing to an absolute minimum. The method shown here simply counts repeated bytes and transforms them into shorter sequences. It works well also on very short messages, like 2 or 4 bytes and on very long buffers. The compressed buffer contains no 00-bytes anymore what is the aim of COBS. <!-- In the worst case, if no repeated bytes occur at all, the encoded data can be about 3% longer (1 byte per each 31 input bytes). -->
 * **TCOBS is stand-alone usable in any project for package framing with data minimizing.**
