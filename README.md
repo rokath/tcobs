@@ -20,9 +20,10 @@
 * 8. [Roadmap](#Roadmap)
 * 9. [Contributing](#Contributing)
 * 10. [License](#License)
-* 11. [Contact](#Contact)
-* 12. [Acknowledgments](#Acknowledgments)
-* 13. [Short Messages Compression Link](#ShortMessagesCompressionLink)
+* 11. About me
+* 12. [Contact](#Contact)
+* 13. [Acknowledgments](#Acknowledgments)
+* 14. [Short Messages Compression Link](#ShortMessagesCompressionLink)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -209,14 +210,18 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## 11. About me
+
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=rokath)](https://github.com/anuraghazra/github-readme-stats)
+
 <!-- CONTACT -->
-##  11. <a name='Contact'></a>Contact
+##  12. <a name='Contact'></a>Contact
 
 Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle) - --> th@seerose.net
 Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 
 <!-- ACKNOWLEDGMENTS -->
-##  12. <a name='Acknowledgments'></a>Acknowledgments
+##  13. <a name='Acknowledgments'></a>Acknowledgments
 
 * [COBS](https://pypi.org/project/cobs/)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
