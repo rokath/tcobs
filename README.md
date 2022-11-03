@@ -220,6 +220,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle) - --> th@seerose.net
 Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 
+![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=rokath&count_private=true)
+
 <!-- ACKNOWLEDGMENTS -->
 ##  13. <a name='Acknowledgments'></a>Acknowledgments
 
