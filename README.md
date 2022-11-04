@@ -214,6 +214,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 [![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=rokath)](https://github.com/anuraghazra/github-readme-stats)
 
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=rokath)](https://github.com/anuraghazra/github-readme-stats)
+
+
 <!-- CONTACT -->
 ##  12. <a name='Contact'></a>Contact
 
@@ -284,5 +287,3 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
     <a href="https://github.com/rokath/tcobs/issues">Report Bug / Request Feature</a>
   </p>
 </div>
-
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=rokath)](https://github.com/anuraghazra/github-readme-stats)
