@@ -1,4 +1,4 @@
-*# TCOBS v1 & v2
+# TCOBS v1 & v2
 
 <!-- TABLE OF CONTENTS -->
 <details>
