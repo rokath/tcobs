@@ -1,5 +1,9 @@
 # TCOBS Changelog
 
+## v0.8.2
+
+* ReadMe.md file extended and restructured a bit.
+
 ## v0.8.1
 
 * TCOBSv1 Read function more robust against errors.
