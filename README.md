@@ -6,22 +6,27 @@
   <ol>
 
 <!-- vscode-markdown-toc -->
-* 1. [About The project](#AboutTheproject)
-	* 1.1. [Assumptions](#Assumptions)
-* 2. [ Preface](#Preface)
-	* 2.1. [ Why not in 2 steps?](#Whynotin2steps)
-* 3. [Data Disruption Handling](#DataDisruptionHandling)
-* 4. [Current State](#CurrentState)
-* 5. [Use cases](#Usecases)
-* 6. [TCOBS Specification](#TCOBSSpecification)
-	* 6.1. [TCOBSv1 Specification](#TCOBSv1Specification)
-	* 6.2. [TCOBSv2 Specification](#TCOBSv2Specification)
-* 7. [Getting Started](#GettingStarted)
-* 8. [Roadmap](#Roadmap)
-* 9. [Contributing](#Contributing)
-* 10. [License](#License)
-* 11. [Contact](#Contact)
-* 12. [Acknowledgments](#Acknowledgments)
+- [TCOBS v1 \& v2](#tcobs-v1--v2)
+  - [1. About The project](#1-about-the-project)
+    - [1.1. Assumptions](#11-assumptions)
+  - [2.  Preface](#2--preface)
+    - [2.1.  Why not in 2 steps?](#21--why-not-in-2-steps)
+  - [3. Data Disruption Handling](#3-data-disruption-handling)
+  - [4. Current State](#4-current-state)
+  - [5. Use cases](#5-use-cases)
+  - [6. TCOBS Specification](#6-tcobs-specification)
+    - [6.1. TCOBSv1 Specification](#61-tcobsv1-specification)
+    - [6.2. TCOBSv2 Specification](#62-tcobsv2-specification)
+  - [7. Getting Started](#7-getting-started)
+    - [7.1. TCOBSv1 Go only decode](#71-tcobsv1-go-only-decode)
+    - [7.2. TCOBSv1 and TCOBSv2 Go with CGO encode and decode](#72-tcobsv1-and-tcobsv2-go-with-cgo-encode-and-decode)
+    - [7.3. TCOBSv1 and TCOBSv2 `C` encode and decode](#73-tcobsv1-and-tcobsv2-c-encode-and-decode)
+  - [8. Roadmap](#8-roadmap)
+  - [9. Future improvements?](#9-future-improvements)
+  - [10. Contributing](#10-contributing)
+  - [11. License](#11-license)
+  - [12. Contact](#12-contact)
+  - [13. Acknowledgments](#13-acknowledgments)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -52,7 +57,7 @@
 <!-- ABOUT THE PROJECT -->
 ##  1. <a name='AboutTheproject'></a>About The project
 
-![./TCOBSv1/docs/ref/COBSDataDisruption.svg](./TCOBSv1/docs/ref/COBSDataDisruption.svg)
+![./docs/ref/COBSDataDisruption.svg](./docs/ref/COBSDataDisruption.svg)
 
 * TCOBS is a variant of [COBS](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) combined with real-time [RLE](https://en.wikipedia.org/wiki/Run-length_encoding) data compression especially for short messages containing integers.
 * The **consistent overhead** with TCOBS is 1 byte for each starting 31 bytes in the worst case, when no compression is possible. (*Example: A 1000 bytes buffer can be encoded with max 33 additional bytes.*) This is more compared to the original COBS with +1 byte for each starting 254 bytes, but if the data contain integer numbers, as communication packets often do, the encoded data will be statistically shorter with TCOBS compared to the legacy COBS.
@@ -146,17 +151,31 @@
 
 ###  6.1. <a name='TCOBSv1Specification'></a>TCOBSv1 Specification
 
-↩ See [./TCOBSv1/docs/TCOBSv1Specification.md](./TCOBSv1/docs/TCOBSv1Specification.md).
+↩ See [./docs/TCOBSv1Specification.md](./docs/TCOBSv1Specification.md).
 
 ###  6.2. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification
 
-↩ See [./TCOBSv2/docs/TCOBSv2Specification.md](./TCOBSv2/docs/TCOBSv2Specification.md).
+↩ See [./docs/TCOBSv2Specification.md](./docs/TCOBSv2Specification.md).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ##  7. <a name='GettingStarted'></a>Getting Started
 
-↩ See README.md in TCOBSv1 or TCOBSv2.
+###  7.1. <a name='TCOBSv1Goonlydecode'></a>TCOBSv1 Go only decode
+
+* Add `import "github.com/rokath/tcobs/v1"` to your go source file.
+  * Use function `tcobs.Decode` OR
+  * use function `tcobs.NewDecoder` and then method `Read`. See `read_test.go` for an example.
+
+###  7.2. <a name='TCOBSv1andTCOBSv2GowithCGOencodeanddecode'></a>TCOBSv1 and TCOBSv2 Go with CGO encode and decode
+
+* Add `import "tcobs github.com/rokath/tcobs/Cv1"` or `import "tcobs github.com/rokath/tcobs/Cv2"` to your go source file.
+  * Use functions `tcobs.CDecode` and `tcobs.CEncode` OR
+  * use functions `tcobs.NewDecoder` and `tcobs.NewEncoder` and then methods `Read` and `Write`. See `read_test.go` `write_test.go` for an example.
+
+###  7.3. <a name='TCOBSv1andTCOBSv2Cencodeanddecode'></a>TCOBSv1 and TCOBSv2 `C` encode and decode
+
+* Include the Cv1 or Cv2 C sources in your C project. Check `tcobsTest.c` for usage example.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -174,7 +193,7 @@ See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Future improvements?
+##  9. <a name='Futureimprovements'></a>Future improvements?
 
 ❓ One could think that arbitrary byte buffer examples could be analyzed concerning the statistical usage of bytes and find that 0xFC...0xFF and 0x00...0x20 are used more often than 0xBD for example. This would allow to code some bytes with 5 bits and others with 11 bits creating a universal table, like huffman encoding. This table than is commonly used and the need to pack it into the compressed buffer disappears. Maybe some 2-byte sequences get also in this table and the table code could get enhanced with run-length codes.
 
@@ -184,7 +203,7 @@ See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-##  9. <a name='Contributing'></a>Contributing
+##  10. <a name='Contributing'></a>Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -202,20 +221,20 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
-##  10. <a name='License'></a>License
+##  11. <a name='License'></a>License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
-##  11. <a name='Contact'></a>Contact
+##  12. <a name='Contact'></a>Contact
 
 Thomas Höhenleitner - <!-- [@twitter_handle](https://twitter.com/twitter_handle) - --> th@seerose.net
 Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 
 <!-- ACKNOWLEDGMENTS -->
-##  12. <a name='Acknowledgments'></a>Acknowledgments
+##  13. <a name='Acknowledgments'></a>Acknowledgments
 
 * [COBS](https://pypi.org/project/cobs/)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
@@ -258,7 +277,7 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
 <br />
 <div align="center">
   <a href="https://github.com/rokath/tcobs">
-    <img src="TCOBSv1/docs/ref/COBSDataDisruption.svg" alt="Logo" width="800" height="80">
+    <img src="./docs/ref/COBSDataDisruption.svg" alt="Logo" width="800" height="80">
   </a>
 
 <h3 align="center">TCOBS</h3>
@@ -266,14 +285,16 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
   <p align="center">
     Common Object Byte Stuffing with optimized Run-Length Encoding 
     <br />
-    <a href="https://github.com/rokath/tcobs/blob/master/TCOBSv1/docs/TCOBSv1Specification.md"><strong>Explore v1 docs »</strong></a>
-    .
-    <a href="https://github.com/rokath/tcobs/blob/master/TCOBSv2/docs/TCOBSv2Specification.md"><strong>Explore v2 docs »</strong></a>
+    <a href="https://github.com/rokath/tcobs/blob/master/docs"><strong>Explore docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/rokath/tcobs/tree/master/TCOBSv1">View v1 Code</a>
+    <a href="https://github.com/rokath/tcobs/tree/master/v1">v1 Code</a>
     ·
-    <a href="https://github.com/rokath/tcobs/tree/master/TCOBSv2">View v2 Code</a>
+    <a href="https://github.com/rokath/tcobs/tree/master/v2">v2 Code</a>
+    ·
+    <a href="https://github.com/rokath/tcobs/tree/master/Cv1">Cv1 Code</a>
+    ·
+    <a href="https://github.com/rokath/tcobs/tree/master/Cv2">Cv2 Code</a>
     ·
     <a href="https://github.com/rokath/tcobs/issues">Report Bug / Request Feature</a>
   </p>
