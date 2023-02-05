@@ -6,18 +6,18 @@
   <ol>
 
 <!-- vscode-markdown-toc -->
-* 1. [TCOBSv1 Specification](#TCOBSv1Specification)
-* 2. [TCOBSv1 Framing Encoder and Decoder](#TCOBSv1FramingEncoderandDecoder)
-	* 2.1. [TCOBSv1 Encoding](#TCOBSv1Encoding)
-	* 2.2. [TCOBSv1 Decoding](#TCOBSv1Decoding)
-	* 2.3. [TCOBSv1 Testing](#TCOBSv1Testing)
-* 3. [Getting Started](#GettingStarted)
-	* 3.1. [Prerequisites](#Prerequisites)
-	* 3.2. [Installation](#Installation)
-	* 3.3. [Usage in Go](#UsageinGo)
-		* 3.3.1. [Decoding](#Decoding)
-		* 3.3.2. [Encoding](#Encoding)
-
+- [TCOBSv1](#tcobsv1)
+	- [1. TCOBSv1 Specification](#1-tcobsv1-specification)
+	- [2. TCOBSv1 Framing Encoder and Decoder](#2-tcobsv1-framing-encoder-and-decoder)
+		- [2.1. TCOBSv1 Encoding](#21-tcobsv1-encoding)
+		- [2.2. TCOBSv1 Decoding](#22-tcobsv1-decoding)
+		- [2.3. TCOBSv1 Testing](#23-tcobsv1-testing)
+	- [3. Getting Started](#3-getting-started)
+		- [3.1. Prerequisites](#31-prerequisites)
+		- [3.2. Installation](#32-installation)
+		- [3.3. Usage in Go](#33-usage-in-go)
+			- [3.3.1. Decoding](#331-decoding)
+			- [3.3.2. Encoding](#332-encoding)
 <!-- vscode-markdown-toc-config
 	numbering=true
 	autoSave=true

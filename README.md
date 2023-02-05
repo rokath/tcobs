@@ -103,7 +103,7 @@
 * In case of data disruption, the receiver will wait for the next 0-delimiter byte. As a result it will get a packet start and end of 2 different packages A and Z.
 
   <a href="https://github.com/rokath/tcobs">
-    <img src="TCOBSv1/docs/ref/COBSDataDisruption.svg" alt="Logo" width="1200" height="120">
+    <img src="./docs/ref/COBSDataDisruption.svg" alt="Logo" width="1200" height="120">
   </a>
 
 * For the decoder it makes no difference if the packages starts or ends with a sigil byte. In any case it will run into issues in such case with high probability and report a data disruption. But a false match is not excluded for 100%.
@@ -171,7 +171,7 @@
 
 * Add `import "tcobs github.com/rokath/tcobs/Cv1"` or `import "tcobs github.com/rokath/tcobs/Cv2"` to your go source file.
   * Use functions `tcobs.CDecode` and `tcobs.CEncode` OR
-  * use functions `tcobs.NewDecoder` and `tcobs.NewEncoder` and then methods `Read` and `Write`. See `read_test.go` `write_test.go` for an example.
+  * use functions `tcobs.NewDecoder` and `tcobs.NewEncoder` and then methods `Read` and `Write`. See `read_test.go` and `write_test.go` for an example.
 
 ###  7.3. <a name='TCOBSv1andTCOBSv2Cencodeanddecode'></a>TCOBSv1 and TCOBSv2 `C` encode and decode
 
@@ -187,6 +187,7 @@
 * [x] Add **Go** Reader & Writer interface
 * [x] Add generic CCTN & CCQN conversions to remove TCOBSv2 limitations.
 * [x] Improve testing with groups of equal bytes.
+* [ ] Add fuzzing testing.
 * [ ] Compare efficiency TCOBSv2 with TCOBSv1.
 
 See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of proposed features (and known issues).
@@ -289,8 +290,6 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
     <br />
     <br />
     <a href="https://github.com/rokath/tcobs/tree/master/v1">v1 Code</a>
-    ·
-    <a href="https://github.com/rokath/tcobs/tree/master/v2">v2 Code</a>
     ·
     <a href="https://github.com/rokath/tcobs/tree/master/Cv1">Cv1 Code</a>
     ·
