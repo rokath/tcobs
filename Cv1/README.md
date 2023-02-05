@@ -28,8 +28,6 @@
   </ol>
 </details>
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 ##  1. <a name='TCOBSv1Specification'></a>TCOBSv1 Specification
 
 * See [../docs/TCOBSv1Specification.md](../docs/TCOBSv1Specification.md).
@@ -84,9 +82,9 @@
 
 ####  3.3.1. <a name='Decoding'></a>Decoding
 
-* The function `tcobs.Decode` is usable standalone.
+* The function `tcobs.CDecode` is usable standalone.
 * Also it is possible to create a Decoder instance and use the `Read` method.
-* The function `tcobs.CDecode` is usable standalone also.
+* The function `tcobs.Decode` is usable standalone.
 
 ####  3.3.2. <a name='Encoding'></a>Encoding
 
