@@ -34,7 +34,7 @@
 
 ##  1. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification
 
-* See [./docs/TCOBSSpecification.md](./docs/TCOBSSpecification.md).
+* See [../docs/TCOBSSpecification.md](../docs/TCOBSSpecification.md).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -55,7 +55,7 @@
 ###  2.3. <a name='TCOBSv2Testing'></a>TCOBSv2 Testing
 
 * [x] `tcobs_test.go` contains test code. CGO is not supported inside test files but usable through **Go** functions.
-  * Testing: `go test ./...`: ![./docs/ref/Test.PNG](./docs/ref/Test.PNG) executes the C-code with many test data.
+  * Testing: `go test ./...`: ![../docs/ref/Test.PNG](../docs/ref/Test.PNG) executes the C-code with many test data.
 * The test execution can take several seconds. If your computer is slow you can reduce the loop count in the test functions `TestEncodeDecode*`.
 * The file `tcobsTest.c` contains also some test data but is intended only for debugging.
 
@@ -182,7 +182,7 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
 <br />
 <div align="center">
   <a href="https://github.com/rokath/tcobs">
-    <img src="docs/ref/COBSDataDisruption.svg" alt="Logo" width="800" height="80">
+    <img src="../docs/ref/COBSDataDisruption.svg" alt="Logo" width="800" height="80">
   </a>
 
 <h3 align="center">TCOBS</h3>
@@ -190,7 +190,7 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
   <p align="center">
     Common Object Byte Stuffing with optimized Run-Length Encoding 
     <br />
-    <a href="https://github.com/rokath/tcobs/blob/master/docs/TCOBSSpecification.md"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/rokath/tcobs/blob/master/docs"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/rokath/tcobs/blob/master">View Code</a>

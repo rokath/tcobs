@@ -31,7 +31,7 @@
 
 ##  1. <a name='TCOBSv1Specification'></a>TCOBSv1 Specification
 
-* See [./docs/TCOBSv1Specification.md](./docs/TCOBSv1Specification.md).
+* See [../docs/TCOBSv1Specification.md](../docs/TCOBSv1Specification.md).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -54,7 +54,7 @@
 ###  2.3. <a name='TCOBSv1Testing'></a>TCOBSv1 Testing
 
 - [x] `*_test.go` files contain test code. CGO is not supported inside test files but usable through **Go** functions. 
-  - Testing: `go test ./...`: ![./docs/ref/Test.PNG](./docs/ref/Test.PNG)
+  - Testing: `go test ./...`: ![../docs/ref/Test.PNG](../docs/ref/Test.PNG)
 - The test execution can take several seconds. If your computer is slow you can reduce the loop count in the test functions `TestEncodeDecode*`.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
