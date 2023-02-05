@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/rokath/tcobs"
+	"github.com/rokath/tcobs/v2"
 	"github.com/tj/assert"
 )
 

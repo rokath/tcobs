@@ -3,7 +3,7 @@ package tcobs_test
 import (
 	"testing"
 
-	"github.com/rokath/tcobs"
+	"github.com/rokath/tcobs/v2"
 	"github.com/stretchr/testify/assert"
 )
 
