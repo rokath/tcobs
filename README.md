@@ -111,7 +111,7 @@
 * The receiver calls continuously a `Read()` function. The received buffer can contain 0-delimited packages and the receiver assumes them all to be valid because there is no known significant time delay between package start and end.
 * If a package start was received and the next package end reception is more than ~100ms away, a data disruption is likely and the receiver should ignore these data.
   * Specify a maximum inter-byte delay inside a single package like ~50ms for example.
-  * To minimise the loss in case of data disruption, each message should get TCOBS encoded and 0-byte delimited separately.
+  * To minimize the loss in case of data disruption, each message should get TCOBS encoded and 0-byte delimited separately.
   * The more often 0-byte delimiters are increasing the transmit overhead a bit on the other hand. 
 * Of course, when the receiver starts, the first buffer can contain broken TCOBS data, but we have to live with that on a PC. Anyway there is a reasonable likelihood that a data inconsistency is detected as explained.
 
