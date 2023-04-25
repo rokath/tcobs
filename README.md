@@ -46,7 +46,7 @@
 ![GitHub commits since latest release](https://img.shields.io/github/commits-since/rokath/tcobs/latest)
 -->
 
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rokath/tcobs)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rokath/cobs)
 ![GitHub watchers](https://img.shields.io/github/watchers/rokath/tcobs?label=watch)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rokath/tcobs)](https://goreportcard.com/report/github.com/rokath/tcobs)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
