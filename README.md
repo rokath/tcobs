@@ -243,7 +243,8 @@ Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 
 ## Maybe Interesting Too
 
-* Integer Buffer Compression: https://github.com/lemire/streamvbyte
+* https://github.com/lemire/streamvbyte
+* https://github.com/kiyo-masui/bitshuffle
 
 <!--
 * [Choose an Open Source License](https://choosealicense.com)
