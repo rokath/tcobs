@@ -241,6 +241,9 @@ Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
 * [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html)
 
+## Maybe Interesting Too
+
+* Integer Buffer Compression: https://github.com/lemire/streamvbyte
 
 <!--
 * [Choose an Open Source License](https://choosealicense.com)
