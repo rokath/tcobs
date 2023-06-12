@@ -29,7 +29,7 @@
 
 ##  1. <a name='TCOBSv2Specification'></a>TCOBSv2 Specification
 
-* See [../docs/TCOBSSpecification.md](../docs/TCOBSSpecification.md).
+* See [../docs/TCOBSv2Specification.md](../docs/TCOBSv2Specification.md).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
