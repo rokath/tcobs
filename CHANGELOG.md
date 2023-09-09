@@ -1,5 +1,10 @@
 # TCOBS Changelog
 
+## v0.9.0
+
+* ReadMe.md file extended and restructured a bit.
+* v1 Go decoder more stable against data garbage. Fixes 
+
 ## v0.8.2
 
 * ReadMe.md file extended and restructured a bit.

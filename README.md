@@ -6,6 +6,9 @@
   <ol>
 
 <!-- vscode-markdown-toc -->
+<!-- Use Shift-Ctrl-P "Generate TOC for Markdown to get the automatic numbering. -->
+<!-- Use Shift-Ctrl-P "Markdown All in Once: Create Table of Contence" to get correct links in the TOC. Delete the old one. -->
+
 - [TCOBS v1 \& v2](#tcobs-v1--v2)
   - [1. About The project](#1-about-the-project)
     - [1.1. Assumptions](#11-assumptions)
@@ -18,15 +21,17 @@
     - [6.1. TCOBSv1 Specification](#61-tcobsv1-specification)
     - [6.2. TCOBSv2 Specification](#62-tcobsv2-specification)
   - [7. Getting Started](#7-getting-started)
-    - [7.1. TCOBSv1 Go only decode](#71-tcobsv1-go-only-decode)
-    - [7.2. TCOBSv1 and TCOBSv2 Go with CGO encode and decode](#72-tcobsv1-and-tcobsv2-go-with-cgo-encode-and-decode)
-    - [7.3. TCOBSv1 and TCOBSv2 `C` encode and decode](#73-tcobsv1-and-tcobsv2-c-encode-and-decode)
+    - [7.1. Folder Overview](#71-folder-overview)
+    - [7.2. TCOBSv1 Go only decode](#72-tcobsv1-go-only-decode)
+    - [7.3. TCOBSv1 and TCOBSv2 Go with CGO encode and decode](#73-tcobsv1-and-tcobsv2-go-with-cgo-encode-and-decode)
+    - [7.4. TCOBSv1 and TCOBSv2 `C` encode and decode](#74-tcobsv1-and-tcobsv2-c-encode-and-decode)
   - [8. Roadmap](#8-roadmap)
   - [9. Future improvements?](#9-future-improvements)
   - [10. Contributing](#10-contributing)
   - [11. License](#11-license)
   - [12. Contact](#12-contact)
   - [13. Acknowledgments](#13-acknowledgments)
+  - [14. Maybe Interesting Too](#14-maybe-interesting-too)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -121,17 +126,17 @@
 
 * [x] The TCOBSv1 & TCOBSv2 code is stable and ready to use without limitations.
 
-|       Property                                                              | TCOBSv1         | TCOBSv2 |
-| -                                                                           | -               | - |
-| Code amount                                                                 | 🟢 less         | 🟡 more |
-| Speed assumption (not measured yet)                                         | 🟢 faster       | 🟢 fast |
-| Compression on short messages from 2 bytes length                           | 🟢 yes          | 🟢 yes |
-| Compression on messages with many equal bytes in a row                      | 🟡 good         | 🟢 better |
-| Encoding **C** language support                                             | 🟢 yes          | 🟢 yes |
-| Decoding **C** language support                                             | 🟢 yes          | 🟢 yes |
-| Encoding **Go** language support                                            | 🟡 yes with CGO | 🟡 yes with CGO |
-| Decoding **Go** language support                                            | 🟢 yes          | 🟡 yes with CGO |
-| Other language support                                                      | 🆘 No           | 🆘 No |
+| Property                                               | TCOBSv1         | TCOBSv2         |
+|--------------------------------------------------------|-----------------|-----------------|
+| Code amount                                            | 🟢 less         | 🟡 more         |
+| Speed assumption (not measured yet)                    | 🟢 faster       | 🟢 fast         |
+| Compression on short messages from 2 bytes length      | 🟢 yes          | 🟢 yes          |
+| Compression on messages with many equal bytes in a row | 🟡 good         | 🟢 better       |
+| Encoding **C** language support                        | 🟢 yes          | 🟢 yes          |
+| Decoding **C** language support                        | 🟢 yes          | 🟢 yes          |
+| Encoding **Go** language support                       | 🟡 yes with CGO | 🟡 yes with CGO |
+| Decoding **Go** language support                       | 🟢 yes          | 🟡 yes with CGO |
+| Other language support                                 | 🆘 No           | 🆘 No           |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -161,19 +166,27 @@
 
 ##  7. <a name='GettingStarted'></a>Getting Started
 
-###  7.1. <a name='TCOBSv1Goonlydecode'></a>TCOBSv1 Go only decode
+###  7.1. <a name='FolderOverview'></a>Folder Overview
+
+Name | Content
+-----|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+v1   | This is a pure Go TCOBSv1 package. Only decoding is supported. Usable in Go apps, which only need to decode. One example is [trice](https://github.com/rokath/trice). The Go files inside this folder are copied from Cv1.
+Cv1  | This is the with C-sources and tests extended v1 folder. It provides a TCOBSv1 Go encoding and decoding using CGO. The C-files are direct usable in an embedded project.
+Cv2  | Here are the TCOBSv2 C-sources usable in an embedded project. The Go-files are the CGO adaption and the Go tests for TCOBSv2.
+
+###  7.2. <a name='TCOBSv1Goonlydecode'></a>TCOBSv1 Go only decode
 
 * Add `import "github.com/rokath/tcobs/v1"` to your go source file.
   * Use function `tcobs.Decode` OR
   * use function `tcobs.NewDecoder` and then method `Read`. See `read_test.go` for an example.
 
-###  7.2. <a name='TCOBSv1andTCOBSv2GowithCGOencodeanddecode'></a>TCOBSv1 and TCOBSv2 Go with CGO encode and decode
+###  7.3. <a name='TCOBSv1andTCOBSv2GowithCGOencodeanddecode'></a>TCOBSv1 and TCOBSv2 Go with CGO encode and decode
 
 * Add `import "tcobs github.com/rokath/tcobs/Cv1"` or `import "tcobs github.com/rokath/tcobs/Cv2"` to your go source file.
   * Use functions `tcobs.CDecode` and `tcobs.CEncode` OR
   * use functions `tcobs.NewDecoder` and `tcobs.NewEncoder` and then methods `Read` and `Write`. See `read_test.go` and `write_test.go` for an example.
 
-###  7.3. <a name='TCOBSv1andTCOBSv2Cencodeanddecode'></a>TCOBSv1 and TCOBSv2 `C` encode and decode
+###  7.4. <a name='TCOBSv1andTCOBSv2Cencodeanddecode'></a>TCOBSv1 and TCOBSv2 `C` encode and decode
 
 * Include the Cv1 or Cv2 C sources in your C project. Check `tcobsTest.c` for usage example.
 
@@ -241,7 +254,7 @@ Project Link: [https://github.com/rokath/tcobs](https://github.com/rokath/tcobs)
 * [rCOBS](https://github.com/Dirbaio/rcobs)
 * [rlercobs](https://docs.rs/kolben/0.0.3/kolben/rlercobs/index.html)
 
-## Maybe Interesting Too
+##  14. <a name='MaybeInterestingToo'></a>Maybe Interesting Too
 
 * https://github.com/lemire/streamvbyte
 * https://github.com/kiyo-masui/bitshuffle
