@@ -11,7 +11,7 @@ builds:
   - 
     # ID of the build.
     # Defaults to the project name.
-    #id: "tcobs"
+    id: "tcobsID"
 
     # Path to project's (sub)directory containing Go code.
     # This is the working directory for the Go build command(s).
@@ -25,7 +25,7 @@ builds:
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     # Default is the name of the project directory.
-    #binary: tcobs
+    binary: tcobsBIN
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
