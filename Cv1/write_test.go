@@ -1,4 +1,4 @@
-package tcobs_test
+package tcobsv1_test
 
 import (
 	"bytes"

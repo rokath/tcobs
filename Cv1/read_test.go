@@ -1,5 +1,5 @@
 // Package tcobs_test contains blackbox tests.
-package tcobs_test
+package tcobsv1_test
 
 import (
 	"bytes"
