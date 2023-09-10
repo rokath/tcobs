@@ -20,7 +20,7 @@ builds:
 
     # Path to main.go file or main package.
     # Default is `.`.
-    # main: ./cmd/trice/.
+    main: ./cmd/TCOBSv1Encode/.
  
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
