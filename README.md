@@ -5,9 +5,9 @@
   <summary>Table of Contents</summary>
   <ol>
 
-<!-- vscode-markdown-toc -->
 <!-- Use Shift-Ctrl-P "Generate TOC for Markdown to get the automatic numbering. -->
 <!-- Use Shift-Ctrl-P "Markdown All in Once: Create Table of Contence" to get correct links in the TOC. Delete the old one. -->
+<!-- vscode-markdown-toc -->
 
 - [TCOBS v1 \& v2](#tcobs-v1--v2)
   - [1. About The project](#1-about-the-project)
