@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	tcobs "github.com/rokath/tcobs/Cv1"
+	tcobs "github.com/rokath/tcobs/v1"
 	"github.com/spf13/afero"
 )
 

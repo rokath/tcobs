@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	tcobs "github.com/rokath/tcobs/Cv2"
+	tcobs "github.com/rokath/tcobs/v1"
 	"github.com/spf13/afero"
 )
 
@@ -31,8 +31,8 @@ func doit(w io.Writer, fSys *afero.Afero) {
 
 	if len(os.Args) != 1 {
 		fmt.Fprintln(w, version, commit, date)
-		fmt.Fprintln(w, "Feed with a space separated byte sequence to decode a TCOBSv2 sequence.")
-		fmt.Fprintln(w, "Example: `echo 96 1 2 66 88 129 128 | TCOBSv2Decode` will return `0 0 1 2 2 2 2 88 88 88 88 88 88`")
+		fmt.Fprintln(w, "Feed with a space separated byte sequence to decode a TCOBSv1 sequence.")
+		fmt.Fprintln(w, "Example: `echo 64 1 2 18 88 25 88 161 | TCOBSv1Decode` will return `0 0 1 2 2 2 2 88 88 88 88 88 88`")
 		return
 	}
 
@@ -47,6 +47,9 @@ func doit(w io.Writer, fSys *afero.Afero) {
 				log.Fatal("len of internal buffer too small")
 			}
 			count := tcobs.CDecode(o, i)
+			if count < 0 {
+				log.Fatal("invalid input data, error code ", count)
+			}
 			o = o[len(o)-count:]
 			for _, b := range o {
 				fmt.Fprintf(w, "%d ", b)

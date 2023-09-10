@@ -7,7 +7,7 @@ import (
 	"io"
 	"testing"
 
-	tcobs "github.com/rokath/tcobs/Cv1"
+	tcobs "github.com/rokath/tcobs/v1"
 	"github.com/stretchr/testify/assert"
 )
 
