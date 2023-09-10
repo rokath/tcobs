@@ -1,4 +1,4 @@
-// Package tcobs_test contains blackbox tests.
+// Package tcobsv1_test contains blackbox tests.
 package tcobsv1_test
 
 import (
@@ -7,7 +7,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/rokath/tcobs/v1"
+	tcobs "github.com/rokath/tcobs/Cv1"
 	"github.com/stretchr/testify/assert"
 )
 

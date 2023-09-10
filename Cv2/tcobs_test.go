@@ -1,5 +1,5 @@
-// Package tcobs_test contains TCOBS whitebox tests.
-package tcobs_test
+// Package tcobsv2_test contains TCOBS whitebox tests.
+package tcobsv2_test
 
 import (
 	"bytes"
