@@ -14,6 +14,7 @@ builds:
     main: ./cmd/TCOBSv1Decode/main.go
     env:
       - CGO_ENABLED=1
+  -
     goos:
       - windows
       - linux
