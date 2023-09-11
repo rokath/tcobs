@@ -25,7 +25,7 @@ builds:
       - arm
       - arm64
     goarm:
-      - 6
+      #- 6
       - 7
   - 
     id: TCOBSv1CEncode
