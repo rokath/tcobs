@@ -43,9 +43,9 @@ builds:
     env:
       - CGO_ENABLED=1
     goos:
-      - 386
       - windows
     goarch:
+      - 386
       - amd64
   - 
     id: TCOBSv2CEncode
