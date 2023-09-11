@@ -14,7 +14,7 @@ builds:
     main: ./cmd/TCOBSv1Decode/main.go
     binary: ./bin/TCOBSv1Decode
     env:
-      - CGO_ENABLED=1
+    #  - CGO_ENABLED=1
     goos:
       - windows
     goarch:
