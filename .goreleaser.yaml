@@ -12,6 +12,12 @@ builds:
   - 
     id: TCOBSv1Decode
     main: ./cmd/TCOBSv1Decode/main.go
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - windows
+    goarch:
+      - amd64
 #- id: TCOBSv1CDecode
 #  main: ./cmd/TCOBSv1CDecode/main.go
 #- id: TCOBSv1CEncode
@@ -44,18 +50,18 @@ builds:
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
-  - env:
-      - CGO_ENABLED=1
-    goos:
-      - windows
+  #- env:
+  #    - CGO_ENABLED=1
+  #  goos:
+  #    - windows
       #- linux
       #- darwin
 
     # GOARCH to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
     # Defaults are 386 and amd64.
-    goarch:
-      - 386
+    #goarch:
+    #  - 386
     #  - amd64
     #  - arm # build error on server?
     #  - arm64 # build error on server?
