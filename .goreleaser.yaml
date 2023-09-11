@@ -14,12 +14,9 @@ builds:
     main: ./cmd/TCOBSv1Decode/main.go
     env:
       - CGO_ENABLED=1
-  -
     goos:
       - windows
-      - linux
-      - darwin
-   goarch:
+    goarch:
       - amd64
 #- id: TCOBSv1CDecode
 #  main: ./cmd/TCOBSv1CDecode/main.go
