@@ -9,8 +9,9 @@ before:
 # https://goreleaser.com/customization/#Builds
 
 builds:
-- id: TCOBSv1Decode
-  main: ./cmd/TCOBSv1Decode/main.go
+  - 
+    id: TCOBSv1Decode
+    main: ./cmd/TCOBSv1Decode/main.go
 #- id: TCOBSv1CDecode
 #  main: ./cmd/TCOBSv1CDecode/main.go
 #- id: TCOBSv1CEncode
