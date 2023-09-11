@@ -23,7 +23,7 @@ builds:
       - 386
       - amd64
       #- arm
-      - arm64
+      #- arm64
     goarm:
       #- 6
       #- 7
@@ -36,6 +36,7 @@ builds:
     goos:
       - windows
     goarch:
+      - 386
       - amd64
   - 
     id: TCOBSv1CDecode
@@ -44,6 +45,7 @@ builds:
     env:
       - CGO_ENABLED=1
     goos:
+      - 386
       - windows
     goarch:
       - amd64
@@ -56,6 +58,7 @@ builds:
     goos:
       - windows
     goarch:
+      - 386
       - amd64
   -    
     id: TCOBSv2CDecode
@@ -66,6 +69,7 @@ builds:
     goos:
       - windows
     goarch:
+      - 386
       - amd64
 
 
