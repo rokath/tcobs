@@ -16,6 +16,7 @@ builds:
       - CGO_ENABLED=1
     goos:
       - windows
+      - linux
     goarch:
       - amd64
 #- id: TCOBSv1CDecode
