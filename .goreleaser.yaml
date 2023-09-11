@@ -15,10 +15,7 @@ builds:
   main: ./cmd/TCOBSv1CDecode/main.go
 - id: TCOBSv1CEncode
   main: ./cmd/TCOBSv1CEncode/main.go
-#- id: TCOBSv2CDecode
-#  main: ./cmd/TCOBSv2CDecode/main.go
-- id: TCOBSv2CEncode
-  main: ./cmd/TCOBSv2CEncode/main.go
+
 
 
 #builds:
