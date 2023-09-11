@@ -12,6 +12,7 @@ builds:
   - 
     id: TCOBSv1Decode
     main: ./cmd/TCOBSv1Decode/main.go
+    binary: TCOBSv1Decode
     env:
       - CGO_ENABLED=1
     goos:
@@ -21,6 +22,7 @@ builds:
   - 
     id: TCOBSv1CDecode
     main: ./cmd/TCOBSv1CDecode/main.go
+    binary: TCOBSv1CDecode
     env:
       - CGO_ENABLED=1
     goos:
