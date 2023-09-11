@@ -21,7 +21,7 @@ builds:
       - 386
       - amd64
       #- arm
-      #- arm64
+      - arm64
     goarm:
       #- 6
       #- 7
@@ -36,6 +36,7 @@ builds:
     goarch:
       - 386
       - amd64
+      - arm64
   - 
     id: TCOBSv1CDecode
     main: ./cmd/TCOBSv1CDecode/main.go
@@ -47,6 +48,7 @@ builds:
     goarch:
       - 386
       - amd64
+      - arm64
   - 
     id: TCOBSv2CEncode
     main: ./cmd/TCOBSv2CEncode/main.go
@@ -58,6 +60,7 @@ builds:
     goarch:
       - 386
       - amd64
+      - arm64
   -    
     id: TCOBSv2CDecode
     main: ./cmd/TCOBSv2CDecode/main.go
@@ -69,6 +72,7 @@ builds:
     goarch:
       - 386
       - amd64
+      - arm64
 
 
 #- id: TCOBSv1CDecode
