@@ -17,10 +17,8 @@ builds:
       - CGO_ENABLED=1
     goos:
       - windows
-      - linux
-      - darwin
     goarch:
-      - 386
+      #- 386
       - amd64
       #- arm
       #- arm64
@@ -36,7 +34,7 @@ builds:
     goos:
       - windows
     goarch:
-      - 386
+      #- 386
       - amd64
   - 
     id: TCOBSv1CDecode
@@ -45,7 +43,7 @@ builds:
     env:
       - CGO_ENABLED=1
     goos:
-      - 386
+      #- 386
       - windows
     goarch:
       - amd64
@@ -58,7 +56,7 @@ builds:
     goos:
       - windows
     goarch:
-      - 386
+      #- 386
       - amd64
   -    
     id: TCOBSv2CDecode
@@ -69,7 +67,7 @@ builds:
     goos:
       - windows
     goarch:
-      - 386
+      #- 386
       - amd64
 
 
