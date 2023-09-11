@@ -7,25 +7,39 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 # https://goreleaser.com/customization/#Builds
+
 builds:
-  - 
+- id: TCOBSv1Decode
+  main: ./cmd/TCOBSv1Decode/main.go
+- id: TCOBSv1CDecode
+  main: ./cmd/TCOBSv1CDecode/main.go
+- id: TCOBSv1CEncode
+  main: ./cmd/TCOBSv1CEncode/main.go
+- id: TCOBSv2CDecode
+  main: ./cmd/TCOBSv1CDecode/main.go
+- id: TCOBSv2CEncode
+  main: ./cmd/TCOBSv1CEncode/main.go
+
+
+#builds:
+#  - 
     # ID of the build.
     # Defaults to the project name.
-    id: "tcobsID"
+#    id: "tcobsID"
 
     # Path to project's (sub)directory containing Go code.
     # This is the working directory for the Go build command(s).
     # Default is `.`.
-    dir: .
+#    dir: .
 
     # Path to main.go file or main package.
     # Default is `.`.
-    main: ./cmd/TCOBSv1Encode/.
+#    main: ./cmd/TCOBSv1Encode/.
  
     # Binary name.
     # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
     # Default is the name of the project directory.
-    binary: tcobsBIN
+#    binary: tcobsBIN
 
     # GOOS list to build for.
     # For more info refer to: https://golang.org/doc/install/source#environment
@@ -96,16 +110,15 @@ archives:
     # `README*` and `CHANGELOG*` (case-insensitive).
     files:
       - .vscode/*
-      - v1/*
-      - Cv1/*
-      - Cv2/*
+      - cmd/*
       - docs/*
       - testdata/*
+      - v1/*
+      - v2/*
       - .goreleaser.yaml
       - CHANGELOG.md
       - go.mod
       - go.sum
-      - GoInfos.txt
       - LICENSE.txt
       - README.md
 checksum:
