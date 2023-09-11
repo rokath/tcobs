@@ -20,6 +20,16 @@ builds:
     goarch:
       - amd64
   - 
+    id: TCOBSv1CEncode
+    main: ./cmd/TCOBSv1CEncode/main.go
+    binary: ./bin/TCOBSv1CEncode
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - windows
+    goarch:
+      - amd64
+  - 
     id: TCOBSv1CDecode
     main: ./cmd/TCOBSv1CDecode/main.go
     binary: ./bin/TCOBSv1CDecode
@@ -29,6 +39,28 @@ builds:
       - windows
     goarch:
       - amd64
+  - 
+    id: TCOBSv2CEncode
+    main: ./cmd/TCOBSv2CEncode/main.go
+    binary: ./bin/TCOBSv2CEncode
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - windows
+    goarch:
+      - amd64
+  - 
+    id: TCOBSv2CDecode
+    main: ./cmd/TCOBSv2CDecode/main.go
+    binary: ./bin/TCOBSv2CDecode
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - windows
+    goarch:
+      - amd64
+
+
 #- id: TCOBSv1CDecode
 #  main: ./cmd/TCOBSv1CDecode/main.go
 #- id: TCOBSv1CEncode
