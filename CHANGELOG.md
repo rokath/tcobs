@@ -1,5 +1,21 @@
 # TCOBS Changelog
 
+## v0.9.2
+
+* not needed project files & foldes removed
+* demo binaries added
+* Folders Cv1 & Cv2 renamed into v1 & v2
+* goreleaser config file added
+
+## v0.9.1
+
+* module tagged with version number
+
+## v0.9.0
+
+* ReadMe.md file extended and restructured a bit.
+* v1 Go decoder more stable against data garbage. Fixes issue #23.
+
 ## v0.8.2
 
 * ReadMe.md file extended and restructured a bit.

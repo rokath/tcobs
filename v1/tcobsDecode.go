@@ -1,4 +1,4 @@
-package tcobs
+package tcobsv1
 
 import (
 	"errors"
@@ -39,6 +39,7 @@ func sigilAndOffset(by uint8) (sigil, offset int) {
 // For details see TCOBSSpecification.md.
 func Decode(d, in []byte) (n int, e error) {
 	var count int
+	var b byte
 	for {
 		if len(in) == 0 {
 			return
@@ -84,20 +85,30 @@ func Decode(d, in []byte) (n int, e error) {
 			goto copyBytes
 
 		case R4:
+			b, e = repeatByte(offset, in)
+			if e != nil {
+				return
+			}
 			n++
-			d[len(d)-n] = repeatByte(offset, in)
+			d[len(d)-n] = b
 			fallthrough
 		case R3:
+			b, e = repeatByte(offset, in)
+			if e != nil {
+				return
+			}
 			n++
-			d[len(d)-n] = repeatByte(offset, in)
+			d[len(d)-n] = b
 			fallthrough
 		case R2:
-			r := repeatByte(offset, in)
+			b, e = repeatByte(offset, in)
+			if e != nil {
+				return
+			}
 			n++
-			d[len(d)-n] = r
+			d[len(d)-n] = b
 			n++
-			d[len(d)-n] = r
-
+			d[len(d)-n] = b
 			goto copyBytes
 
 		case Reserved:
@@ -122,10 +133,20 @@ func Decode(d, in []byte) (n int, e error) {
 }
 
 // repeatByte returns the value to repeat
-func repeatByte(offset int, in []byte) byte {
+func repeatByte(offset int, in []byte) (b byte, e error) {
 	if offset == 0 { // left byte of Ri is a sigil byte (probably N)
-		return in[len(in)-2] // a buffer cannot start with Ri
+		if len(in) < 2 {
+			e = errors.New("inconsistent TCOBS data")
+			return
+		}
+		b = in[len(in)-2] // a buffer cannot start with Ri
+		return
 	} else {
-		return in[len(in)-1]
+		if len(in) < 1 {
+			e = errors.New("inconsistent TCOBS data")
+			return
+		}
+		b = in[len(in)-1]
+		return
 	}
 }
