@@ -316,3 +316,18 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
     <a href="https://github.com/rokath/tcobs/issues">Report Bug / Request Feature</a>
   </p>
 </div>
+
+
+<a href="https://www.buymeacoffee.com/rokath" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="30" width="120"></a>
+
+OR
+
+<p>
+  <a href="https://www.paypal.me/rolfkarlthomas">
+      <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="paypal" height="40" width="120">
+  </a>
+</p>
+
+OR
+
+[Become a Sponsor with your Github Account](https://github.com/sponsors/rokath/)
