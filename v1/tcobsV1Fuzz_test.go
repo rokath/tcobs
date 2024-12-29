@@ -10,7 +10,7 @@ import (
 
 // FuzzCC tests the TCOBSv1 C-code encoding and decoding
 //
-// To run this test:  go test -run FuzzCC github.com/rokath/tcobs/v1 -fuzz=FuzzCC
+// To run this test: go test -run FuzzCC github.com/rokath/tcobs/v1 -fuzz=FuzzCC -fuzztime 3s -v
 // See also
 // https://stackoverflow.com/questions/71584005/how-to-run-multi-fuzz-test-cases-wirtten-in-one-source-file-with-go1-18
 func FuzzCC(f *testing.F) {
@@ -22,6 +22,10 @@ func FuzzCC(f *testing.F) {
 		n := tcobsv1.CEncode(act, dec)
 		actual := act[:n]
 
+		for _, x := range actual {
+			assert.True(t, x != 0)
+		}
+
 		decoded := make([]byte, 1000000)
 		n = tcobsv1.CDecode(decoded, actual)
 		actual = decoded[len(decoded)-n:]
@@ -30,7 +34,7 @@ func FuzzCC(f *testing.F) {
 }
 
 // FuzzCGo tests the TCOBSv1 C-code encoding with Go decoding
-// To run this test:  go test -run FuzzCGo github.com/rokath/tcobs/v1 -fuzz=FuzzCGo
+// To run this test: go test -run FuzzCGo github.com/rokath/tcobs/v1 -fuzz=FuzzCGo -fuzztime 3s -v
 // See also
 // https://stackoverflow.com/questions/71584005/how-to-run-multi-fuzz-test-cases-wirtten-in-one-source-file-with-go1-18
 func FuzzCGo(f *testing.F) {
@@ -41,6 +45,10 @@ func FuzzCGo(f *testing.F) {
 		act := make([]byte, 1000000)
 		n := tcobsv1.CEncode(act, dec)
 		actual := act[:n]
+
+		for _, x := range actual {
+			assert.True(t, x != 0)
+		}
 
 		decoded := make([]byte, 1000000)
 		n, err := tcobsv1.Decode(decoded, actual)
