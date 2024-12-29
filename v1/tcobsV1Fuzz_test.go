@@ -10,7 +10,7 @@ import (
 
 // FuzzCC tests the TCOBSv1 C-code encoding and decoding
 //
-// To run this test:  go  test -run FuzzCC github.com/rokath/tcobs/v1 -fuzz=FuzzCC
+// To run this test:  go test -run FuzzCC github.com/rokath/tcobs/v1 -fuzz=FuzzCC
 // See also
 // https://stackoverflow.com/questions/71584005/how-to-run-multi-fuzz-test-cases-wirtten-in-one-source-file-with-go1-18
 func FuzzCC(f *testing.F) {
@@ -30,7 +30,7 @@ func FuzzCC(f *testing.F) {
 }
 
 // FuzzCGo tests the TCOBSv1 C-code encoding with Go decoding
-// To run this test:  go  test -run FuzzCGo github.com/rokath/tcobs/v1 -fuzz=FuzzCGo
+// To run this test:  go test -run FuzzCGo github.com/rokath/tcobs/v1 -fuzz=FuzzCGo
 // See also
 // https://stackoverflow.com/questions/71584005/how-to-run-multi-fuzz-test-cases-wirtten-in-one-source-file-with-go1-18
 func FuzzCGo(f *testing.F) {

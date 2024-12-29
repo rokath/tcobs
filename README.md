@@ -201,7 +201,7 @@ Cv2  | Here are the TCOBSv2 C-sources usable in an embedded project. The Go-file
 * [x] Add **Go** Reader & Writer interface
 * [x] Add generic CCTN & CCQN conversions to remove TCOBSv2 limitations.
 * [x] Improve testing with groups of equal bytes.
-* [ ] Add fuzzing testing.
+* [x] Add fuzzing testing.
 * [ ] Compare efficiency TCOBSv2 with TCOBSv1.
 
 See the [open issues](https://github.com/rokath/tcobs/issues) for a full list of proposed features (and known issues).
