@@ -32,7 +32,7 @@ func doit(w io.Writer, fSys *afero.Afero) {
 	if len(os.Args) != 1 {
 		fmt.Fprintln(w, version, commit, date)
 		fmt.Fprintln(w, "Feed with a space separated byte sequence to encode it in a TCOBSv1 sequence.")
-		fmt.Fprintln(w, "Example: `echo 0 0 1 0b10 2 02 0x2 88 88 88 88 88 88 | TCOBSv1Encode` will return `64 1 2 18 88 25 88 161`")
+		fmt.Fprintln(w, "Example: `echo 0 0 1 0b10 2 02 0x2 88 88 88 88 88 88 | TCOBSv1CEncode` will return `64 1 2 18 88 25 88 161`")
 		return
 	}
 
