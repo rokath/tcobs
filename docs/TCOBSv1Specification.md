@@ -50,13 +50,6 @@
 * `00010ooo` Repeat sigil byte **R3**:  `ooo` = 0-7
 * `00011ooo` Repeat sigil byte **R4**:  `ooo` = 0-7
 * `00000ooo` reserved bytes: `ooo` = 1-7
-* 4: 00 00 00 00 Z1 z3
-* 5: 00 00 00 00 00  Z2 z3
-* 6: 00 00 00 00 00 00 Z3 z3
-* 7: 00 00 00 00 00 00 00 Z1 z6
-* 8: 00 00 00 00 00 00 00 00 Z2 z6
-* 9: 00 00 00 00 00 00 00 00 00 Z3 z6
-* 
 * `00000000` forbidden byte  
 
 ####  1.1.1. <a name='NOPSigilByteN'></a>NOP Sigil Byte `N`
