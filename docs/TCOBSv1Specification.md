@@ -33,9 +33,9 @@
   </ol>
 </details>
 
-##  1. <a name='TCOBSEncodingPrinciple'></a>TCOBS Encoding Principle
+## 1. <a id='TCOBSEncodingPrinciple'></a>TCOBS Encoding Principle
 
-###  1.1. <a name='Symbols'></a>Symbols
+### 1.1. <a id='Symbols'></a>Symbols
 
 * `o` = offset bit to next sigil byte
 
@@ -52,14 +52,14 @@
 * `00000ooo` reserved bytes: `ooo` = 1-7
 * `00000000` forbidden byte  
 
-####  1.1.1. <a name='NOPSigilByteN'></a>NOP Sigil Byte `N`
+#### 1.1.1. <a id='NOPSigilByteN'></a>NOP Sigil Byte `N`
 
 This does not represent data in the stream and only serves to keep the chain linked. The remaining 5 bits encode the distance to the next sigil (0 <= n <=31).
 * N_0 = `101000001`
 * ...
 * N_31 = `10111111`
 
-####  1.1.2. <a name='ZeroSigilByteZ1Z2Z3'></a>Zero Sigil Byte `Z1`, `Z2`, `Z3`
+#### 1.1.2. <a id='ZeroSigilByteZ1Z2Z3'></a>Zero Sigil Byte `Z1`, `Z2`, `Z3`
 
 * This sigil represents 1 to 3 zeroes in the data stream, and is a `00` to `00 00 00` replacement to eliminate zeroes, reduce data and keep the chain linked.
 * The remaining 5 bits encode the distance to the next sigil (0 <= n <= 31).
@@ -73,7 +73,7 @@ This does not represent data in the stream and only serves to keep the chain lin
   * ...
   * Z3_31 = `01111111`
 
-####  1.1.3. <a name='FullSigilByteF2F3F4'></a>Full Sigil Byte `F2`, `F3`, `F4`
+#### 1.1.3. <a id='FullSigilByteF2F3F4'></a>Full Sigil Byte `F2`, `F3`, `F4`
 
 * This sigil represents 2 to 4 0xFF in the data stream, and is a `FF FF` to `FF FF FF FF` replacement to reduce data and keep the chain linked.
 * The remaining 5 bits encode the distance to the next sigil (0 <= n <= 31).
@@ -87,7 +87,7 @@ This does not represent data in the stream and only serves to keep the chain lin
   * ...
   * F4_31 = `10011111`
 
-####  1.1.4. <a name='RepeatSigilByteR2R3R4'></a>Repeat Sigil Byte `R2`, `R3`, `R4`
+#### 1.1.4. <a id='RepeatSigilByteR2R3R4'></a>Repeat Sigil Byte `R2`, `R3`, `R4`
 
 * This sigil represents 2 to 4 repetitions of previous byte in the data stream, and is a replacement to reduce data and keep the chain linked.
 * The remaining 3 bits encode the distance to the next sigil (0 <= n <= 7).
@@ -101,11 +101,11 @@ This does not represent data in the stream and only serves to keep the chain lin
   * ...
   * R4_7 = `00011111`
 
-###  1.2. <a name='TCOBSEncoding'></a>TCOBS Encoding
+### 1.2. <a id='TCOBSEncoding'></a>TCOBS Encoding
 
 The encoding can be done in a straight forward code on the senders side touching each byte only once.
 
-####  1.2.1. <a name='SimpleEncodingAlgorithm'></a>Simple Encoding Algorithm
+#### 1.2.1. <a id='SimpleEncodingAlgorithm'></a>Simple Encoding Algorithm
 
 * `aa` represents any non-zero and non-FF byte
 * `aa aa ...` represents any non-zero and non-FF **equal** bytes
@@ -150,7 +150,7 @@ The encoding can be done in a straight forward code on the senders side touching
   * Example: `00 00 00 00` could be encoded `A0 20` (Z3 Z1) or `40 40` (Z2 Z2)
 * NOP sigil bytes are logically ignored. They simply serve as link chain elements.
 
-####  1.2.2. <a name='SigilBytesChaining'></a>Sigil Bytes Chaining
+#### 1.2.2. <a id='SigilBytesChaining'></a>Sigil Bytes Chaining
 
 * The encoding starts at first buffer address.
 * The encoded buffer ends with a sigil byte.
@@ -170,15 +170,15 @@ The encoding can be done in a straight forward code on the senders side touching
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-##  2. <a name='TCOBSSoftwareInterface'></a>TCOBS Software Interface
+## 2. <a id='TCOBSSoftwareInterface'></a>TCOBS Software Interface
 
-###  2.1. <a name='CInterfaceandCode'></a>C Interface and Code
+### 2.1. <a id='CInterfaceandCode'></a>C Interface and Code
 
 * [../tcobs.h](../tcobs.h)
 * [..tcobsEncode.c](../tcobsEncode.c)
 * [..tcobsDecode.c](../tcobsDecode.c)
 
-###  2.2. <a name='GointerfaceandCode'></a>Go interface and Code
+### 2.2. <a id='GointerfaceandCode'></a>Go interface and Code
 
 ```Go
 // TCOBSCEncode a slice of bytes to a null-terminated frame
@@ -196,11 +196,11 @@ func TCOBSDecode(p []byte) []byte)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-##  3. <a name='Appendix:ExtendedEncodingPossibilities'></a>Appendix: Extended Encoding Possibilities 
+## 3. <a id='Appendix:ExtendedEncodingPossibilities'></a>Appendix: Extended Encoding Possibilities 
 
 * The reserved bytes `00000ooo` with `ooo` = 1-7 are usable in any manner.
 
-###  3.1. <a name='Example:RLEforlongerrowsofequalbytesnotimplemented'></a>Example: RLE for longer rows of equal bytes (not implemented)
+### 3.1. <a id='Example:RLEforlongerrowsofequalbytesnotimplemented'></a>Example: RLE for longer rows of equal bytes (not implemented)
 
 It is possible to improve compression by the following means. This complicates the encoder and makes no sense for messages like [*Trice*](https://github.com/rokath/trice) produces. But if user data with long equal byte rows are expected, it can make sense to implement it, when computing power matters and a standard zipping code is too slow.
 
@@ -264,13 +264,13 @@ These 5 sigils allow a minimum encoded byte count for equal bytes in a row of up
 
 As said, these extended possibilities are currently **not implemented** and shown just for discussion. A decoder, able to interpret such extension, will decode simple encoding as well.
 
-###  3.2. <a name='OtherExample:Anyproposal'></a>Other Example: Any proposal?
+### 3.2. <a id='OtherExample:Anyproposal'></a>Other Example: Any proposal?
 
 F4 is maybe not use that often and could be used in a completely different way. But this would lead to a different method.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-##  4. <a name='Changelog'></a>Changelog
+## 4. <a id='Changelog'></a>Changelog
 
 | Date | Version | Comment |
 | - | - | - |
