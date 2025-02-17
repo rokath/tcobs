@@ -97,7 +97,8 @@
 
 ###  2.1. <a name='Whynotin2steps'></a> Why not in 2 steps?
 
-* Usually it is better to divide this task and do compression and COBS encoding separately. This is good if size and time do not really matter. 
+* Usually it is better to divide this task and do compression and COBS encoding separately. This is good if size and time do not really matter.
+* Each single transformation adds a separate control byte, so a combined transformation adds just 1 byte instead of 2.
 * The for TCOBS expected messages are typically in the range of 2 to 300 bytes, but not limited, and a run-length encoding then makes sense for real-time compression.
 * Separating compression and COBS costs more time (2 processing loops) and does not allow to squeeze out the last byte.
 * With the TCOBS algorithm, in only one processing loop a smaller transfer packet size is expected, combined with more speed.
