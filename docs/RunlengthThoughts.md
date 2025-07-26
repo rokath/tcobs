@@ -7,6 +7,8 @@
 |    0      | `00nnnnnn` |  00 - 3F | S0              |                     |       |                  |             |       | used later as delimiter byte |
 |    0      | `01nnnnnn` |  40 - 7F | S1              |                     |       |                  |             |       | used later as delimiter byte |
 
+X | Y|
+- | - |
 1 * aa | aa |
 2 * aa | aa aa | 
 3 * aa | aa S0 |
