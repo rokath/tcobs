@@ -174,9 +174,9 @@ The encoding can be done in a straight forward code on the senders side touching
 
 ### 2.1. <a id='CInterfaceandCode'></a>C Interface and Code
 
-* [../tcobs.h](../tcobs.h)
-* [..tcobsEncode.c](../tcobsEncode.c)
-* [..tcobsDecode.c](../tcobsDecode.c)
+* [./v1/tcobs.h](../v1/tcobs.h)
+* [./v1/tcobsEncode.c](../v1/tcobsEncode.c)
+* [../v1/tcobsDecode.c](../v1/tcobsDecode.c)
 
 ### 2.2. <a id='GointerfaceandCode'></a>Go interface and Code
 
@@ -185,14 +185,14 @@ The encoding can be done in a straight forward code on the senders side touching
 func TCOBSCEncode(p []byte) []byte)
 ```
 
-* [../tcobsCEncode.go](../tcobsCEncode.go)
+* [./v1/tcobsCEncode.go](../v1//tcobsCEncode.go)
 
 ```Go
 // TCOBSDecode a null-terminated frame to a slice of bytes
 func TCOBSDecode(p []byte) []byte)
 ```
 
-* [../tcobsDecode.go](../tcobsDecode.go)
+* [./v1/tcobsDecode.go](../v1/tcobsDecode.go)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
