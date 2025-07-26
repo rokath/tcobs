@@ -7,19 +7,19 @@
 |    0      | `00nnnnnn` |  00 - 3F | S0              |                     |       |                  |             |       | used later as delimiter byte |
 |    0      | `01nnnnnn` |  40 - 7F | S1              |                     |       |                  |             |       | used later as delimiter byte |
 
-X | Y|
-- | - |
-1 * aa | aa |
-2 * aa | aa aa | 
-3 * aa | aa S0 |
-4 * aa | aa S1 |
-5 * aa | aa S0 S0 |
-6 * aa | aa S0 S1 |
-7 * aa | aa S1 S0 |
-8 * aa | aa S1 S1 |
-9 * aa | aa S0 S0 S0 |
-...    | ... |
-17 * aa | aa S1 S1 S1 |
+|X | Y|
+|- | - |
+|1 * aa | aa |
+|2 * aa | aa aa | 
+|3 * aa | aa S0 |
+|4 * aa | aa S1 |
+|5 * aa | aa S0 S0 |
+|6 * aa | aa S0 S1 |
+|7 * aa | aa S1 S0 |
+|8 * aa | aa S1 S1 |
+|9 * aa | aa S0 S0 S0 |
+2...    | ... |
+217 * aa | aa S1 S1 S1 |
 
 worst case: + 1 per starting 127 (only n)
 If at least 1 time 3 * aa within starting 127 it is equal
