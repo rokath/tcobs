@@ -13,7 +13,7 @@
 //! For the encoding this macro was used just to verify the code during development.
 #define ASSERT( condition ) // do{ if( !(condition) ){ return -__LINE__; } }while(0);
 
-//! MAX_CIPHERS is max expected sigil bytes of one kind in a row. 
+//! MAX_CIPHERS is the maximum expected sigil-byte count of one kind in a row.
 //! 3^24 = 282.429.536.481, we do not expect so much equal bytes.
 #define MAX_CIPHERS 24 
 
@@ -51,18 +51,18 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
     int fullCount = 0; //!< fullCount is the number of accumulated FF-bytes.
     int reptCount = 0; //!< reptCount is the number of accumulated equal bytes.
 
-    // comment syntax:
-    //     Sigil bytes chaining is done with offset and not shown explicitly.
-    //     All left from comma is already written to o and if, only partially shown.
+    // Comment syntax:
+    //     Sigil-byte chaining uses offset and is not shown explicitly.
+    //     All content left of the comma is already written to o and shown only partially.
     //     n is 0..., representing count number.
-    //     zn, fn, rn right from comma is count in variables, if not shown, then 0.
+    //     zn, fn, rn right of the comma are counts in variables; if not shown, they are 0.
     //     At any moment only one of the 3 counters can be different from 0.
-    //     Zn, Fn, Rn, Nn are (written) sigil bytes.
+    //     Zn, Fn, Rn, Nn are written sigil bytes.
     //     Between comma and dot are the 2 values b_1 and b.
-    //     3 dots ... means it is unknown if bytes follow. 
+    //     3 dots (...) mean it is unknown whether more bytes follow.
     //     !00 is a byte != 00.
     //     !FF is a byte != FF.
-    //     aa is not 00 and not FF and all aa in a row are equal.
+    //     aa is not 00 and not FF, and all aa in a row are equal.
     //     xx yy and zz are any bytes.
     //     Invalid b_1 and b are displayed as --.
 
@@ -220,7 +220,7 @@ lastByte: // , -- xx.
             return err;
         }
         if( distance > 1 ){ // a single F0 at the end needs a terminating N sigil
-            err = writeLastSigil(&out, &distance); // if preceeded by a non sigil byte
+            err = writeLastSigil(&out, &distance); // if preceded by a non-sigil byte
             if( err ){
                 return err;
             }
@@ -326,7 +326,7 @@ static int writeFullCount( uint8_t ** out, int * num, int * distance ){
         }
         switch( ciphers[i] ){
             case F0:
-                if( ciphersCount == 1 ){ // a single F0 (==FF) can be treated as orinary byte
+                if( ciphersCount == 1 ){ // a single F0 (==FF) can be treated as ordinary byte
                     if( *distance == 31 ){
                         err = writeNoopSigil( out, distance);
                     }
@@ -444,10 +444,10 @@ static int CCQNgenericStartValue( int num, int * ciphersCount ){
     return genericStart;
 }
 
-//! CCTNgenericStartValue computes CCQN generic start value of n and returns it.
+//! CCTNgenericStartValue computes the CCTN generic start value of n and returns it.
 //! It also fills ciphersCount with the appropriate number of ciphers.
-//! n->ciphersCount: 0->0, 1->1, 4->1, 5->2
-//! n->genericStart: 0->0, 1->1, 4->1, 5->5 (5=4^0+4^)
+//! n->ciphersCount: 0->0, 2->1, 4->1, 5->2
+//! n->genericStart: 0->1, 2->2, 4->2, 5->5 (5=1+3^0+3^1)
 static int CCTNgenericStartValue( int num, int * ciphersCount ){
     *ciphersCount = 0;
     int power = 1; // 3^0  // 0->0, 1->1, 3->1, 4->2
@@ -486,7 +486,7 @@ static int ntoCCQNFgeneric( int num, uint8_t* ciphers ){
     }
 }
 
-//! ntoCCQNR converts num into a CCQN cipher sequence coded as F sigils to ciphers and returns count of ciphers.
+//! ntoCCTNR converts num into a CCTN cipher sequence coded as R sigils to ciphers and returns count of ciphers.
 static int ntoCCTNRgeneric( int num, uint8_t* ciphers ){
     ASSERT( num > 0 ){
         int ciphersCount = 0;
@@ -536,7 +536,7 @@ static int CCQNtoCCQNF( uint8_t* ciphers, int count ){
     return count;
 }
 
-//! CCTNtoCCTNR converts ciphers in ciphers to Z-sigils.
+//! CCTNtoCCTNR converts ciphers in ciphers to R-sigils.
 static int CCTNtoCCTNR( uint8_t* ciphers, int count ){
     for(int i = 0; i < count; i++ ){
         if( ciphers[i] == 0 ){
@@ -712,4 +712,3 @@ static int ntot(int n, uint8_t* buffer ){
 	return i;
 }
 */
-

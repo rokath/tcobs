@@ -7,13 +7,13 @@ import (
 )
 
 type encoder struct {
-	w    io.Writer // inner writer
-	iBuf []byte    // input buffer
-	iCnt int       // iCnt is byte count on hold in iBuf
+	w    io.Writer // downstream writer receiving encoded bytes
+	iBuf []byte    // internal buffer used for encoded bytes and pending leftovers
+	iCnt int       // number of pending bytes in iBuf that still need flushing
 }
 
-// NewEncoder creates an encoder instance and returns its address.
-// w will be used as inner writer and size is used as initial size for the inner buffer.
+// NewEncoder creates a streaming encoder writing to w.
+// size defines the initial internal encoded-buffer capacity.
 func NewEncoder(w io.Writer, size int) (p *encoder) {
 	p = new(encoder)
 	p.w = w
@@ -21,7 +21,9 @@ func NewEncoder(w io.Writer, size int) (p *encoder) {
 	return
 }
 
-// Write encodes buffer and writes the encoded content.
+// Write encodes buffer, appends a 0 delimiter, and writes the frame to the downstream writer.
+// If the downstream writer performs a short write, remaining bytes are stored internally and
+// Write returns an error until Flush drains the pending bytes.
 func (p *encoder) Write(buffer []byte) (n int, e error) {
 	if p.iCnt > 0 {
 		e = errors.New("inner buffer not empty (needs Flush)")
@@ -38,13 +40,14 @@ func (p *encoder) Write(buffer []byte) (n int, e error) {
 	if m == len(enc) { // all written
 		return
 	}
-	// keep the leftovers for Flush
+	// Keep leftovers for Flush.
 	p.iCnt = copy(p.iBuf, enc[m:])
 	e = errors.New("inner buffer not empty (needs Flush)")
 	return
 }
 
-// Flush tries to write inner buffer with the inner writer and returns nil when all data could be written.
+// Flush writes pending bytes from previous short writes.
+// It returns nil only when the internal pending buffer is fully drained.
 func (p *encoder) Flush() error {
 	n, e := p.w.Write(p.iBuf[:p.iCnt])
 	p.iCnt -= n

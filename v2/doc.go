@@ -1,8 +1,8 @@
-// Package tcobs implements ./docs/TCOBSSpecification.md.
-// For encoding create an Encoder and use the Write method as shown in TestWrite.
-// For decoding create a Decoder and use the Read method as shown in TestSingleRead and TestMultiRead.
-// It is possible to use only the functions tcobs.Decode or tcobs.CEncode.
-// Package tcobs is also a helper for testing the target C-code.
-// Each C function gets a Go wrapper which ist tested in appropriate test functions.
-// For some reason inside the tcobs_test.go an 'import "C"' is not possible.
+// Package tcobsv2 implements TCOBS v2 as documented in ../docs/TCOBSv2Specification.md.
+//
+// The package provides:
+//   - streaming helpers via NewEncoder and NewDecoder
+//   - C wrappers via CEncode and CDecode for the reference C implementation
+//
+// The C wrappers are mainly used for compatibility and testing.
 package tcobsv2

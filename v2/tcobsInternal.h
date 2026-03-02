@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-#define N  0x00 //!< N  is the sigil byte 0x101ooooo, without operation with offsets 1-31 to keep the sigil chain linked.
+#define N  0x00 //!< N is the sigil byte 0x000ooooo, with offsets 1-31 to keep the sigil chain linked.
 //         0x10 is inside N
 #define Z0 0x20 //!< Z0 is the sigil byte 0x001ooooo, a CCQN zeroCount cipher 0 with offsets 0-31.
 //         0x30 is inside Z0
@@ -21,7 +21,7 @@ extern "C" {
 #define R0 0x80 //!< R0 is the sigil byte 0x100ooooo, a CCTN repeatCount cipher 0 with offsets 0-31.
 //         0x90 is inside R0
 #define R2 0xA0 //!< R2 is the sigil byte 0x1010oooo, a CCTN repeatCount cipher 2 with offsets 0-15.
-#define Z3 0xB0 //!< Z3 is the sigil byte 0x0001oooo, a CCQN zeroCount cipher 3 with offsets 0-15.
+#define Z3 0xB0 //!< Z3 is the sigil byte 0x1011oooo, a CCQN zeroCount cipher 3 with offsets 0-15.
 #define F1 0xC0 //!< F1 is the sigil byte 0x110ooooo, a CCQN fullCount cipher 1 with offsets 0-31.
 //         0xD0 is inside F1
 #define F2 0xE0 //!< F2 is the sigil byte 0x1110oooo, a CCQN fullCount cipher 2 with offsets 0-15.

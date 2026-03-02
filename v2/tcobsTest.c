@@ -4,8 +4,8 @@
 #include "tcobs.h"
 #include "tcobsInternal.h"
 
-//! dataSet contains only representative data for debugging.
-//! The more intensive testing is done from Go using CGO.
+//! dataSet contains representative debug data.
+//! More intensive testing is done from Go using CGO.
 static uint8_t dataSet[] = {
   //len, data...
 #if 0

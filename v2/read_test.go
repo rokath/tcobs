@@ -3,7 +3,6 @@ package tcobsv2_test
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"testing"
 
@@ -48,7 +47,6 @@ func TestMultiReadPackets(t *testing.T) {
 	dec := make([]byte, testBufferSize)
 	for i := 0; i < 7; i++ {
 		n, e := p.Read(dec)
-		fmt.Println(e)
 		assert.True(t, e == expErr[i])
 		if e == nil {
 			assert.Equal(t, exp[i], dec[:n])

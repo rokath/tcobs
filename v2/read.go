@@ -8,15 +8,14 @@ import (
 )
 
 type decoder struct {
-	r    io.Reader // inner reader
-	iBuf []byte    // input buffer
-	iCnt int       // valid data inside iBuf
+	r    io.Reader // upstream reader containing 0-delimited encoded frames
+	iBuf []byte    // internal accumulation buffer for encoded bytes
+	iCnt int       // number of valid bytes currently stored in iBuf
 }
 
-// NewDecoder creates a decoder instance and returns its address.
-// r will be used as inner reader.
-// size is used as size for the inner buffers.
-// Max one decoded TCOBS package is returned by Read.
+// NewDecoder creates a streaming decoder reading from r.
+// size defines the internal encoded-frame buffer size.
+// Each Read call returns at most one decoded package.
 func NewDecoder(r io.Reader, size int) (p *decoder) {
 	p = new(decoder)
 	p.r = r
@@ -24,10 +23,9 @@ func NewDecoder(r io.Reader, size int) (p *decoder) {
 	return
 }
 
-// Read returns one decoded TCOBS package if available.
-// io.EOF is returned when inner reader reached end of input stream.
-// The inner buffer must be able to hold the whole TCOBS package, otherwise it is dropped
-// and an error is returned.
+// Read returns one decoded package in buffer when a full 0-delimited frame is available.
+// io.EOF is returned when the upstream reader has no more data and no pending bytes remain.
+// If the internal encoded frame exceeds the configured size, that frame is dropped and an error is returned.
 func (p *decoder) Read(buffer []byte) (n int, e error) {
 	var dataInvalid bool
 start:
@@ -38,17 +36,17 @@ start:
 	nCnt, e := p.r.Read(p.iBuf[p.iCnt:])
 	p.iCnt += nCnt
 	if e != nil && e != io.EOF {
-		return // internal Read error
+		return // upstream read error
 	}
 	if e == io.EOF && p.iCnt == 0 {
-		return // no more data
+		return // end of stream with no pending bytes
 	}
 	before, after, found := bytes.Cut(p.iBuf[:p.iCnt], []byte{0})
 	if !found {
 		goto start
 	}
 	if dataInvalid {
-		p.iCnt = copy(p.iBuf, after) // remove data
+		p.iCnt = copy(p.iBuf, after) // drop oversized frame and keep bytes after delimiter
 		dataInvalid = false
 		e = errors.New("encoded package is bigger than internal buffer, cannot read")
 		return

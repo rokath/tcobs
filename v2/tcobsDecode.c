@@ -12,7 +12,7 @@
 //! For the decoding this macro was used just to verify the code during development.
 #define ASSERT( condition ) // do{ if( !(condition) ){ return -__LINE__; } }while(0);
 
-//! MAX_CIPHERS is max expected sigil bytes of one kind in a row. 
+//! MAX_CIPHERS is the maximum expected sigil-byte count of one kind in a row.
 //! 3^24 = 282.429.536.481, we do not expect so much equal bytes.
 #define MAX_CIPHERS 24 
 
@@ -40,7 +40,7 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
         uint8_t const * i = (uint8_t*)input + length; // input read pointer behind next value
         int zc = 0; // Z sigils in a row
         int fc = 0; // F sigils in a row
-        int rc = 0; // R Z sigils in a row
+        int rc = 0; // R sigils in a row
         uint8_t repeatByte;
         int err;
         for(;;){
@@ -108,8 +108,9 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
                     }
                 }
             }
-// The following jump points are code to be executed inside the upper binary search, but "outsourced" here for better readability.
-// This example is for better decode understanding:
+// The following jump points contain code executed inside the binary dispatch above,
+// but moved here for readability.
+// This example illustrates the decode flow:
 // # state          #                      in buffer #                                   out buffer # state derived action to follow
 // # sg zc fc rc dc # ------------------------------ # -------------------------------------------- # ----------------------------------------------------------
 // #     0  0  0  0 # 22 33 Z0|2 Z0 77 88 99 Z0|3 F3 #                                              # start
