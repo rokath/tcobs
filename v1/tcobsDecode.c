@@ -93,7 +93,8 @@ int TCOBSDecode( void * restrict output, size_t max, const void * restrict input
 	return olen;
 }
 
-// sigilAndOffset interprets b as sigil byte with offset, fills sigil and returns offset.
+// sigilAndOffset interprets b as a sigil byte with offset, writes the sigil class to *sigil,
+// and returns the offset.
 // For details see TCOBSv1Specification.md.
 static int sigilAndOffset( uint8_t* sigil, uint8_t b ){
 	int offset;
@@ -107,7 +108,7 @@ static int sigilAndOffset( uint8_t* sigil, uint8_t b ){
 	return offset;
 }
 
-// repeatByte returns the value to repeat
+// repeatByte returns the value referenced by the repeat sigil.
 static uint8_t repeatByte(int offset, uint8_t* in, int len){
 		if( offset == 0 ){ // left byte of Ri is a sigil byte (probably N)
 				return in[len-2]; // a buffer cannot start with Ri

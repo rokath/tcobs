@@ -24,7 +24,7 @@
     } \
     } while( 0 ); 
 
-//! OUT_zeroSigil writes one of the sigil bytes Z1, Z3, Z3 
+//! OUT_zeroSigil writes one of the sigil bytes Z1, Z2, Z3
 //! according to zeroCount and sets zeroCount=0 and offset=0.
 #define OUT_zeroSigil do{ \
     ASSERT( b_1 == 0  ); \
@@ -36,7 +36,7 @@
     zeroCount = 0; \
     }while(0);
 
-//! OUT_fullSigil writes one of the sigil bytes F2, F3, F4 
+//! OUT_fullSigil writes one of the sigil bytes F2, F3, F4
 //! according to fullCount and sets fullCount=0 and offset=0.
 #define OUT_fullSigil do{ \
     ASSERT( b_1 == 0xFF ); \
@@ -48,9 +48,9 @@
     fullCount = 0; \
     }while(0);
 
-//! OUT_reptSigil writes one of the sigil bytes R2, R3, R4 
+//! OUT_reptSigil writes one of the sigil bytes R2, R3, R4
 //! according to reptCount and sets reptCount=0 and offset=0.
-//! If offset is bigger than 7 a NOP sigil byte is inserted.
+//! If offset is larger than 7, a NOP sigil byte is inserted first.
 #define OUT_reptSigil do{ \
     ASSERT( (zeroCount|fullCount) == 0 ); \
     ASSERT( 2 <= reptCount && reptCount <= 4 ); \
@@ -75,18 +75,18 @@ int TCOBSEncode( void * restrict output, const void * restrict input, size_t len
     uint8_t b_1 = 0; // previous byte
     uint8_t b = 0; // current byte
     uint8_t offset = 0; // link to next sigil or buffer start looking backwards
-    // comment syntax:
-    //     Sigil bytes chaining is done with offset and not shown explicitly.
-    //     All left from comma is already written to o and if, only partially shown.
+    // Comment syntax:
+    //     Sigil-byte chaining uses offset and is not shown explicitly.
+    //     All content left of the comma is already written to o and is shown only partially.
     //     n is 0...3|4 and m is n+1, representing count number.
-    //     zn, fn, rn right from comma is count in variables, if not shown, then 0.
+    //     zn, fn, rn right of the comma are counts in variables; if not shown, they are 0.
     //     At any moment only one of the 3 counters can be different from 0.
-    //     Zn, Fn, Rn, Nn are (written) sigil bytes.
+    //     Zn, Fn, Rn, Nn are written sigil bytes.
     //     Between comma and dot are the 2 values b_1 and b.
-    //     3 dots ... means it is unknown if bytes follow. 
+    //     3 dots (...) mean it is unknown whether more bytes follow.
     //     !00 is a byte != 00.
     //     !FF is a byte != FF.
-    //     aa is not 00 and not FF and all aa in a row are equal.
+    //     aa is not 00 and not FF, and all aa in a row are equal.
     //     xx yy and zz are any bytes.
     //     Invalid b_1 and b are displayed as --.
 
