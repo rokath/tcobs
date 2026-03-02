@@ -37,32 +37,32 @@
 
 ### 1.1. <a id='Symbols'></a>Symbols
 
-* `o` = offset bit to next sigil byte
+* `o` = offset bits to the next sigil byte
 
-* `101ooooo` NOP  sigil byte **N**: `ooooo` = 0-31
+* `101ooooo` NOP sigil byte **N**: `ooooo` = 0-31
 * `001ooooo` Zero sigil byte **Z1**: `ooooo` = 0-31
 * `010ooooo` Zero sigil byte **Z2**: `ooooo` = 0-31
 * `011ooooo` Zero sigil byte **Z3**: `ooooo` = 0-31
 * `110ooooo` Full sigil byte **F2**: `ooooo` = 0-31
 * `111ooooo` Full sigil byte **F3**: `ooooo` = 0-31
 * `100ooooo` Full sigil byte **F4**: `ooooo` = 0-31
-* `00001ooo` Repeat sigil byte **R2**:  `ooo` = 0-7
-* `00010ooo` Repeat sigil byte **R3**:  `ooo` = 0-7
-* `00011ooo` Repeat sigil byte **R4**:  `ooo` = 0-7
+* `00001ooo` Repeat sigil byte **R2**: `ooo` = 0-7
+* `00010ooo` Repeat sigil byte **R3**: `ooo` = 0-7
+* `00011ooo` Repeat sigil byte **R4**: `ooo` = 0-7
 * `00000ooo` reserved bytes: `ooo` = 1-7
-* `00000000` forbidden byte  
+* `00000000` forbidden byte
 
 #### 1.1.1. <a id='NOPSigilByteN'></a>NOP Sigil Byte `N`
 
-This does not represent data in the stream and only serves to keep the chain linked. The remaining 5 bits encode the distance to the next sigil (0 <= n <=31).
-* N_0 = `101000001`
+This sigil does not represent data in the stream. It only keeps the sigil chain linked. The remaining 5 bits encode the distance to the next sigil (`0 <= n <= 31`).
+* N_0 = `10100000`
 * ...
 * N_31 = `10111111`
 
 #### 1.1.2. <a id='ZeroSigilByteZ1Z2Z3'></a>Zero Sigil Byte `Z1`, `Z2`, `Z3`
 
-* This sigil represents 1 to 3 zeroes in the data stream, and is a `00` to `00 00 00` replacement to eliminate zeroes, reduce data and keep the chain linked.
-* The remaining 5 bits encode the distance to the next sigil (0 <= n <= 31).
+* This sigil represents 1 to 3 zero bytes in the data stream and replaces `00` to `00 00 00` to eliminate zeros, reduce data size, and keep the chain linked.
+* The remaining 5 bits encode the distance to the next sigil (`0 <= n <= 31`).
 * Z1 = `001ooooo`
   * Z1_0 = `00100000`
   * ...
@@ -75,8 +75,8 @@ This does not represent data in the stream and only serves to keep the chain lin
 
 #### 1.1.3. <a id='FullSigilByteF2F3F4'></a>Full Sigil Byte `F2`, `F3`, `F4`
 
-* This sigil represents 2 to 4 0xFF in the data stream, and is a `FF FF` to `FF FF FF FF` replacement to reduce data and keep the chain linked.
-* The remaining 5 bits encode the distance to the next sigil (0 <= n <= 31).
+* This sigil represents 2 to 4 `0xFF` bytes in the data stream and replaces `FF FF` to `FF FF FF FF` to reduce data size and keep the chain linked.
+* The remaining 5 bits encode the distance to the next sigil (`0 <= n <= 31`).
 * F2 = `110ooooo`
   * F2_0 = `11000000`
   * ...
@@ -89,12 +89,12 @@ This does not represent data in the stream and only serves to keep the chain lin
 
 #### 1.1.4. <a id='RepeatSigilByteR2R3R4'></a>Repeat Sigil Byte `R2`, `R3`, `R4`
 
-* This sigil represents 2 to 4 repetitions of previous byte in the data stream, and is a replacement to reduce data and keep the chain linked.
-* The remaining 3 bits encode the distance to the next sigil (0 <= n <= 7).
-* R2 = `00010ooo`
-  * R2_0 = `00010000`
+* This sigil represents 2 to 4 repetitions of the previous data byte and is used to reduce data size while keeping the chain linked.
+* The remaining 3 bits encode the distance to the next sigil (`0 <= n <= 7`).
+* R2 = `00001ooo`
+  * R2_0 = `00001000`
   * ...
-  * R2_7 = `00010111`
+  * R2_7 = `00001111`
 * ...
 * R4 = `00011ooo`
   * R4_0 = `00011000`
@@ -103,7 +103,7 @@ This does not represent data in the stream and only serves to keep the chain lin
 
 ### 1.2. <a id='TCOBSEncoding'></a>TCOBS Encoding
 
-The encoding can be done in a straight forward code on the senders side touching each byte only once.
+Encoding can be implemented in a straightforward way on the sender side, touching each byte only once.
 
 #### 1.2.1. <a id='SimpleEncodingAlgorithm'></a>Simple Encoding Algorithm
 
@@ -146,18 +146,18 @@ The encoding can be done in a straight forward code on the senders side touching
 | `FF FF FF FF  FF FF FF FF` | `F4 F4`      | repetition  |
 | ...                        | ...          | repetition  |
 
-* If several encodings possible, the encoder has than the choice.
-  * Example: `00 00 00 00` could be encoded `A0 20` (Z3 Z1) or `40 40` (Z2 Z2)
+* If several encodings are possible, the encoder can choose either one.
+  * Example: `00 00 00 00` can be encoded as `A0 20` (`Z3 Z1`) or `40 40` (`Z2 Z2`).
 * NOP sigil bytes are logically ignored. They simply serve as link chain elements.
 
 #### 1.2.2. <a id='SigilBytesChaining'></a>Sigil Bytes Chaining
 
-* The encoding starts at first buffer address.
+* Encoding starts at the first buffer address.
 * The encoded buffer ends with a sigil byte.
-* The decoding then, starts at the sigil byte which is the last of the encoded data.
-* The first sigil byte (at the end) carries as offset the byte count between it to the next sigil byte (before it) or to the buffer start.
-* If 2 sigil bytes neighbors the offset is 0.
-* Encoded examples: (Sn =sigil byte with offset n, by = data byte)
+* Decoding starts with that final sigil byte.
+* The first decoded sigil byte (at the end of the encoded buffer) carries, as offset, the byte distance to the previous sigil byte or to the buffer start.
+* If two sigil bytes are neighbors, the offset is `0`.
+* Encoded examples (`Sn` = sigil byte with offset `n`, `by` = data byte):
 
   ```c
   S0 // only one sigil byte like F4 (representing FF FF FF FF)
@@ -166,7 +166,7 @@ The encoding can be done in a straight forward code on the senders side touching
   by by by by by by by by by S9 S0 S0 by by by S3 // and so on ...
   ```
 
-* Any next sigil byte carries as offset the byte count to the sigil byte before in buffer start direction.
+* Each next sigil byte carries the byte distance to the previous sigil byte when moving toward buffer start.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -178,18 +178,18 @@ The encoding can be done in a straight forward code on the senders side touching
 * [./v1/tcobsEncode.c](../v1/tcobsEncode.c)
 * [../v1/tcobsDecode.c](../v1/tcobsDecode.c)
 
-### 2.2. <a id='GointerfaceandCode'></a>Go interface and Code
+### 2.2. <a id='GointerfaceandCode'></a>Go Interface and Code
 
-```Go
-// TCOBSCEncode a slice of bytes to a null-terminated frame
-func TCOBSCEncode(p []byte) []byte)
+```go
+// CEncode encodes i into o and returns the number of encoded bytes.
+func CEncode(o, i []byte) int
 ```
 
-* [./v1/tcobsCEncode.go](../v1//tcobsCEncode.go)
+* [./v1/tcobsCEncode.go](../v1/tcobsCEncode.go)
 
-```Go
-// TCOBSDecode a null-terminated frame to a slice of bytes
-func TCOBSDecode(p []byte) []byte)
+```go
+// Decode decodes in into d and returns n = valid decoded length from the end of d.
+func Decode(d, in []byte) (n int, e error)
 ```
 
 * [./v1/tcobsDecode.go](../v1/tcobsDecode.go)
@@ -198,11 +198,11 @@ func TCOBSDecode(p []byte) []byte)
 
 ## 3. <a id='Appendix:ExtendedEncodingPossibilities'></a>Appendix: Extended Encoding Possibilities 
 
-* The reserved bytes `00000ooo` with `ooo` = 1-7 are usable in any manner.
+* The reserved bytes `00000ooo` with `ooo = 1..7` can be used for future extensions.
 
 ### 3.1. <a id='Example:RLEforlongerrowsofequalbytesnotimplemented'></a>Example: RLE for longer rows of equal bytes (not implemented)
 
-It is possible to improve compression by the following means. This complicates the encoder and makes no sense for messages like [*Trice*](https://github.com/rokath/trice) produces. But if user data with long equal byte rows are expected, it can make sense to implement it, when computing power matters and a standard zipping code is too slow.
+Compression can be improved by the following ideas. This would make the encoder more complex and usually does not make sense for messages produced by [*Trice*](https://github.com/rokath/trice). For user data with long runs of equal bytes, it may still be useful when compute power matters and standard compression is too slow.
 
 <!--
 | unencoded data             | encoded data | comment     |
@@ -212,19 +212,19 @@ It is possible to improve compression by the following means. This complicates t
 | ...                        | ...          | addition    |
 -->
 
-* The reserved values `00000ooo` with `ooo` = `001`...`111` are usable for further extended compressing.
-* These sigil bytes then have implicit the offset 0. They are only allowed as "right" neighbor of an other sigil byte.
-* R = Repetition sigils repeat the data bytes according to their count value, if no M sigil (see below) is right of them.
-* Several repetition sigils are added. Examle:
+* The reserved values `00000ooo` with `ooo = 001...111` can be used for additional compression extensions.
+* These sigil bytes then implicitly have offset `0`. They are only allowed as the right neighbor of another sigil byte.
+* `R` repetition sigils repeat data bytes according to their count value if no `M` sigil (see below) is to their right.
+* Multiple repetition sigils can be chained. Example:
   * `aa R4 R3` = (1 + 4 + 3) \* `aa` = 8 \* `aa`
-* M = Multiply sigils multiply their count with the count of the sigil left of them.
-* A multiplication between M sigils is possible unlimited times.
-* If left of a M sigil a R, Z or F sigil occurs it is also multiplied, but the multiplication chain ends then.
+* `M` multiply sigils multiply their count with the count of the sigil to their left.
+* Multiplication between `M` sigils is possible an unlimited number of times.
+* If an `R`, `Z`, or `F` sigil is left of an `M` sigil, it is also multiplied, and the multiplication chain ends there.
 * Examples:
   * `Z2 R3 R4 M8` = ( 2 + 3 + (4 \* 8)) \* `00` = 37 \* `00` 
   * `aa R4 R2 M3 M3` = ( 1 + 4 + (2 \* 3 \*3 ) \* `aa` = 23 \* `aa`
   * `F2 M3 R4 M3 M8 R5` = ( (2 \*3 ) + (4 \* 3 \* 8) + 5 ) ) \* `00` = 107 \* `00`
-* The encoder has the choice how to encode. The decoder follows an clear algorithm. 
+* The encoder can choose among alternatives. The decoder follows a clear algorithm.
 
 | Sigil|code |Use count until 21 repetitions| Comment                    |
 | -    | -   |  :-:                         | -                          |
@@ -236,7 +236,8 @@ It is possible to improve compression by the following means. This complicates t
 | M5   |`110`|  6                           | multiply left count with 5 |
 | M8   |`111`| 10                           | multiply left count with 8 |
 
-These 5 sigils allow a minimum encoded byte count for equal bytes in a row of up over 20.
+These 5 sigils can minimize encoded length for runs of more than 20 equal bytes.
+The table below is exploratory only; tokens like `F1`, `M7`, or `Z4` are historical placeholders and not part of the implemented v1 symbol set.
 
 | Decoded    | TCOBS encoded  | Decoded    | TCOBS encoded   | Decoded    | TCOBS encoded  |
 |  -         | -              |  -         | -               |  -         | -              |
@@ -262,11 +263,11 @@ These 5 sigils allow a minimum encoded byte count for equal bytes in a row of up
 | 20 \* `00` | `Z2 M8 R4`     | 20 \* `FF` | `F2 M8 R4`      | 20 \* `aa` | `aa R4 M4 R3`  |
 | 21 \* `00` | `Z4 M5 Z1`     | 21 \* `FF` | `F3 M5 FF`      | 21 \* `aa` | `aa R4 M5`     |
 
-As said, these extended possibilities are currently **not implemented** and shown just for discussion. A decoder, able to interpret such extension, will decode simple encoding as well.
+These extended possibilities are currently **not implemented** and are shown for discussion only. A decoder that can interpret such extensions will also decode the simple encoding.
 
 ### 3.2. <a id='OtherExample:Anyproposal'></a>Other Example: Any proposal?
 
-F4 is maybe not use that often and could be used in a completely different way. But this would lead to a different method.
+`F4` may not be used very often and could be reassigned for a different purpose, but that would define a different method.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -274,27 +275,28 @@ F4 is maybe not use that often and could be used in a completely different way. 
 
 | Date | Version | Comment |
 | - | - | - |
-| 2022-MAR-17 | 0.0.0 | Moved from (Trice1.0Specification](https://github.com/rokath/trice/blob/master/docs/TCOBSSpecification.md) and reworked |
-| 2022-MAR-17 | 0.1.1 | Clarification |
-| 2022-MAR-18 | 0.2.0 | Correction & Simplifocation |
-| 2022-MAR-18 | 0.3.0 | Software Interface added |
-| 2022-MAR-18 | 0.3.1 | wip TCOBS Encoding |
-| 2022-MAR-19 | 0.4.0 | TCOBS Encoding as C-Code in separate file TCOBS.C |
-| 2022-MAR-20 | 0.4.1 | Sigil chaining better explained.|
-| 2022-MAR-20 | 0.4.2 | Sigil corrected. Now the offset is the byte count between two sigil bytes.|
-| 2022-MAR-21 | 0.5.0 | R5 removed |
-| 2022-MAR-22 | 0.5.1 | Simple encoding example table extended. |
-| 2022-MAR-23 | 0.5.2 | Sigil bytes offset correction, [tcobs.h](../tcobs.h) Link corrected. [tcobs.c](../tcobs.c) Link added|
-| 2022-MAR-24 | 0.6.0 | Comment added to preface after talk with Sergii |
-| 2022-MAR-24 | 0.6.1 | Smaller corrections |
-| 2022-MAR-28 | 0.7.0 | Multiply sigil byte idea added |
-| 2022-MAR-28 | 0.7.1 | Multiply sigil byte idea more specified |
-| 2022-MAR-29 | 0.8.0 | Document slightly restructured, some comments added |
-| 2022-APR-01 | 0.8.1 | Document slightly restructured |
-| 2022-APR-02 | 0.8.2 | Preface reworked |
-| 2022-MAY-08 | 0.8.3 | Correction: in the worst case 1 additional byte per ~32~ 31 bytes |
-| 2022-MAY-22 | 0.8.4 | F4 remark added. Correction: *Trice* \-> message in chapter 2 and 3. |
-| 2022-JUL-24 | 0.8.5 | Smaller wording improvements. |
-| 2022-JUL-30 | 0.9.0 | Common (v1 & v2) parts removed. |
-| 2022-AUG-06 | 0.9.1 | Assumptions moved to TCOBS ReadMe.md |
+| 2026-MAR-02 | 0.9.3 | Wording and typo cleanup, notation clarifications, Go interface snippet correction, and link fixes. |
 | 2022-AUG-08 | 0.9.2 | Link corrected |
+| 2022-AUG-06 | 0.9.1 | Assumptions moved to TCOBS ReadMe.md |
+| 2022-JUL-30 | 0.9.0 | Common (v1 & v2) parts removed. |
+| 2022-JUL-24 | 0.8.5 | Smaller wording improvements. |
+| 2022-MAY-22 | 0.8.4 | F4 remark added. Correction: *Trice* \-> message in chapter 2 and 3. |
+| 2022-MAY-08 | 0.8.3 | Correction: in the worst case 1 additional byte per ~32~ 31 bytes |
+| 2022-APR-02 | 0.8.2 | Preface reworked |
+| 2022-APR-01 | 0.8.1 | Document slightly restructured |
+| 2022-MAR-29 | 0.8.0 | Document slightly restructured, some comments added |
+| 2022-MAR-28 | 0.7.1 | Multiply sigil byte idea more specified |
+| 2022-MAR-28 | 0.7.0 | Multiply sigil byte idea added |
+| 2022-MAR-24 | 0.6.1 | Smaller corrections |
+| 2022-MAR-24 | 0.6.0 | Comment added to preface after talk with Sergii |
+| 2022-MAR-23 | 0.5.2 | Sigil bytes offset correction, [tcobs.h](../tcobs.h) Link corrected. [tcobs.c](../tcobs.c) Link added|
+| 2022-MAR-22 | 0.5.1 | Simple encoding example table extended. |
+| 2022-MAR-21 | 0.5.0 | R5 removed |
+| 2022-MAR-20 | 0.4.2 | Sigil corrected. Now the offset is the byte count between two sigil bytes.|
+| 2022-MAR-20 | 0.4.1 | Sigil chaining better explained.|
+| 2022-MAR-19 | 0.4.0 | TCOBS Encoding as C-Code in separate file TCOBS.C |
+| 2022-MAR-18 | 0.3.1 | wip TCOBS Encoding |
+| 2022-MAR-18 | 0.3.0 | Software Interface added |
+| 2022-MAR-18 | 0.2.0 | Correction & simplification |
+| 2022-MAR-17 | 0.1.1 | Clarification |
+| 2022-MAR-17 | 0.0.0 | Moved from [Trice1.0Specification](https://github.com/rokath/trice/blob/master/docs/TCOBSSpecification.md) and reworked |
