@@ -18,8 +18,7 @@ const (
 	Reserved = 0x00 // reserved sigil byte
 )
 
-// sigilAndOffset interprets by as sigil byte with offset and returns sigil and offset.
-// For details see TCOBSSpecification.md.
+// sigilAndOffset splits one encoded byte into its sigil class and embedded backward offset.
 func sigilAndOffset(by uint8) (sigil, offset int) {
 	b := int(by)
 	sigil = b & 0xE0 // 0x11100000
@@ -32,11 +31,10 @@ func sigilAndOffset(by uint8) (sigil, offset int) {
 	return
 }
 
-// Decode decodes a TCOBS frame `in` (without 0-delimiter) to `d` and returns as `n` the valid data length from the end in `d`.
-// ATTENTION: d is filled from the end! decoded := d[len(d)-n:] is the final result.
-// In case of an error n is 0. n can be 0 without having an error.
-// Framing with 0-delimiter to be done before is assumed, so no 0-checks performed.
-// For details see TCOBSSpecification.md.
+// Decode decodes one TCOBS frame in (without trailing 0 delimiter) into d.
+// The decode writes backward into d and returns n such that decoded data is d[len(d)-n:].
+// n can be zero both for empty input and for some error cases. On any reported error, n is set to 0.
+// Delimiter handling is intentionally out of scope for this function.
 func Decode(d, in []byte) (n int, e error) {
 	var count int
 	var b byte
@@ -132,7 +130,7 @@ func Decode(d, in []byte) (n int, e error) {
 	}
 }
 
-// repeatByte returns the value to repeat
+// repeatByte returns the byte value referenced by a repeat sigil.
 func repeatByte(offset int, in []byte) (b byte, e error) {
 	if offset == 0 { // left byte of Ri is a sigil byte (probably N)
 		if len(in) < 2 {

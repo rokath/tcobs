@@ -10,8 +10,9 @@ import (
 
 // todo: -flto switch does not work on some Windows (Antivirus?) setups.
 
-// CDecode encodes `i` into `o` and returns number of bytes in `o`.
-// For details see https://github.com/rokath/TCOBS/blob/master/docs/TCOBSv1Specification.md.
+// CDecode decodes i into o and returns the decoded length.
+// Decoded bytes are located at o[len(o)-n:].
+// For details see https://github.com/rokath/tcobs/blob/master/docs/TCOBSv1Specification.md.
 // This function is mainly for testing.
 func CDecode(o, i []byte) (n int) {
 	if len(i) == 0 {
