@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"os"
 	"testing"
 
 	tcobs "github.com/rokath/tcobs/v1"
@@ -13,13 +14,25 @@ import (
 )
 
 const (
-	maxLength int = 1000000
-	rounds    int = 2000
-	maxEqual  int = 100000
+	defaultMaxLength int = 120000
+	defaultRounds    int = 120
+	defaultMaxEqual  int = 12000
+
+	stressMaxLength int = 1000000
+	stressRounds    int = 2000
+	stressMaxEqual  int = 100000
 )
+
+func testParams() (maxLength, rounds, maxEqual int) {
+	if os.Getenv("TCOBS_STRESS") == "1" {
+		return stressMaxLength, stressRounds, stressMaxEqual
+	}
+	return defaultMaxLength, defaultRounds, defaultMaxEqual
+}
 
 // TestCEncodeCDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.
 func TestRandom12CEncodeCDecode(t *testing.T) {
+	maxLength, rounds, maxEqual := testParams()
 	datBuf := make([]byte, maxLength)
 
 	for i := 0; i < rounds; i++ {
@@ -37,6 +50,7 @@ func TestRandom12CEncodeCDecode(t *testing.T) {
 
 // TestCEncodeCDecode12 tests on generated random byte numbers 0xFF, 0x00, 0x01 and 0x02 for random length 0-32767.
 func TestRandom12CEncodeGoDecode(t *testing.T) {
+	maxLength, rounds, maxEqual := testParams()
 	datBuf := make([]byte, maxLength)
 
 	for i := 0; i < rounds; i++ {
@@ -54,6 +68,7 @@ func TestRandom12CEncodeGoDecode(t *testing.T) {
 
 // TestCEncodeCDecode1 tests on generated random byte numbers 0xFF, 0x00 and 0x01 for random length 0-32767.
 func TestCEncodeCDecode1(t *testing.T) {
+	maxLength, rounds, _ := testParams()
 	datBuf := make([]byte, maxLength)
 	for i := 0; i < rounds; i++ {
 		length := rand.Intn(maxLength)
@@ -68,6 +83,7 @@ func TestCEncodeCDecode1(t *testing.T) {
 
 // TestCEncodeCDecode1 tests on generated random byte numbers 0xFF, 0x00 and 0x01 for random length 0-32767.
 func TestCEncodeGoDecode1(t *testing.T) {
+	maxLength, rounds, _ := testParams()
 	datBuf := make([]byte, maxLength)
 	for i := 0; i < rounds; i++ {
 		length := rand.Intn(maxLength)
@@ -82,6 +98,7 @@ func TestCEncodeGoDecode1(t *testing.T) {
 
 // TestCEncodeCDecode256 tests on generated random byte numbers for random length 0-32767.
 func TestCEncodeCDecode256(t *testing.T) {
+	maxLength, rounds, _ := testParams()
 	datBuf := make([]byte, maxLength)
 	for i := 0; i < rounds; i++ {
 		length := rand.Intn(maxLength)
@@ -96,6 +113,7 @@ func TestCEncodeCDecode256(t *testing.T) {
 
 // TestCEncodeGoDecode256 tests on generated random byte numbers for random length 0-32767.
 func TestCEncodeGoDecode256(t *testing.T) {
+	maxLength, rounds, _ := testParams()
 	datBuf := make([]byte, maxLength)
 	for i := 0; i < rounds; i++ {
 		length := rand.Intn(maxLength)
