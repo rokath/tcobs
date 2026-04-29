@@ -168,6 +168,8 @@
 
 ##  7. <a name='GettingStarted'></a>Getting Started
 
+For cross-platform CGO setup (Windows, macOS, Linux), see [./docs/Setup.md](./docs/Setup.md).
+
 ###  7.1. <a name='FolderOverview'></a>Folder Overview
 
 Name | Content
