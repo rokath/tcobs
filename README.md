@@ -57,7 +57,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/rokath/tcobs)](https://goreportcard.com/report/github.com/rokath/tcobs)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![test](https://github.com/shogo82148/actions-goveralls/workflows/test/badge.svg?branch=main)](https://coveralls.io/github/rokath/tcobs)
-[![Coverage Status](https://coveralls.io/repos/github/rokath/tcobs/badge.svg?branch=master)](https://coveralls.io/github/rokath/tcobs?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/rokath/tcobs/badge.svg?branch=main)](https://coveralls.io/github/rokath/tcobs?branch=main)
 ![GitHub issues](https://img.shields.io/github/issues/rokath/tcobs)
 
 <!-- ABOUT THE PROJECT -->
@@ -307,14 +307,14 @@ https://www.markdownguide.org/basic-syntax/#reference-style-links -- >
   <p align="center">
     Common Object Byte Stuffing with optimized Run-Length Encoding 
     <br />
-    <a href="https://github.com/rokath/tcobs/blob/master/docs"><strong>Explore docs »</strong></a>
+    <a href="https://github.com/rokath/tcobs/blob/main/docs"><strong>Explore docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/rokath/tcobs/tree/master/v1">v1 Code</a>
+    <a href="https://github.com/rokath/tcobs/tree/main/v1">v1 Code</a>
     ·
-    <a href="https://github.com/rokath/tcobs/tree/master/Cv1">Cv1 Code</a>
+    <a href="https://github.com/rokath/tcobs/tree/main/Cv1">Cv1 Code</a>
     ·
-    <a href="https://github.com/rokath/tcobs/tree/master/Cv2">Cv2 Code</a>
+    <a href="https://github.com/rokath/tcobs/tree/main/Cv2">Cv2 Code</a>
     ·
     <a href="https://github.com/rokath/tcobs/issues">Report Bug / Request Feature</a>
   </p>

@@ -11,7 +11,7 @@ import (
 // todo: -flto switch does not work on some Windows (Antivirus?) setups.
 
 // CEncode encodes i into o and returns the number of written bytes.
-// For details see https://github.com/rokath/tcobs/blob/master/docs/TCOBSv1Specification.md.
+// For details see https://github.com/rokath/tcobs/blob/main/docs/TCOBSv1Specification.md.
 // The CEncode implementation is done in C because the aimed use case is an embedded device running C.
 // This function is mainly for testing.
 func CEncode(o, i []byte) int {
