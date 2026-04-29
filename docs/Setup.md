@@ -1,92 +1,68 @@
-# Cross-Platform Setup (CGO)
+# TCOBS Setup (Windows, macOS, Linux)
 
-This repository uses CGO in multiple packages.  
-To run all tests (`go test ./...`), install Go and a working C compiler.
+This repository contains CGO-based code paths.  
+If a C compiler is missing or not visible in `PATH`, tools like `go list`/`gopls` and commands like `go test ./...` can fail.
 
-## Requirements
+## 1) Required versions
 
-- Go 1.19 or newer
-- A C toolchain available in `PATH`
+- Go: `1.19+` (see `go.mod`)
+- C compiler toolchain:
+  - Windows: `gcc` from MSYS2 (UCRT64 recommended)
+  - macOS: `clang` from Xcode Command Line Tools
+  - Linux: `gcc` (`build-essential` / equivalent)
 
-## Quick Verification
+## 2) Install compiler toolchain
 
-Run these commands in the repository root:
+### Windows
 
-```sh
-go version
-gcc --version
-```
-
-Then run tests:
-
-```sh
-CGO_ENABLED=1 go test ./...
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:CGO_ENABLED='1'
-go test ./...
-```
-
-## Windows (permanent setup)
-
-Recommended compiler: MSYS2 MinGW-w64 (`x86_64`).
-
-1. Install MSYS2 from `https://www.msys2.org/`.
-2. Open **MSYS2 UCRT64** shell and install toolchain:
+1. Install MSYS2: <https://www.msys2.org/>
+2. In **MSYS2 UCRT64** shell:
 
 ```sh
 pacman -S --needed mingw-w64-ucrt-x86_64-toolchain
 ```
 
-3. Add these directories permanently to the **user** `PATH` (order matters):
-- `C:\msys64\ucrt64\bin`
-- `C:\msys64\usr\bin`
+3. Add to **User PATH** (permanent), in this order:
+   - `C:\msys64\ucrt64\bin`
+   - `C:\msys64\usr\bin`
 
-PowerShell example (writes user PATH):
+PowerShell (copy/paste) to prepend both paths to **User PATH**:
 
 ```powershell
 $add = 'C:\msys64\ucrt64\bin;C:\msys64\usr\bin'
-$current = [Environment]::GetEnvironmentVariable('Path', 'User')
-[Environment]::SetEnvironmentVariable('Path', "$add;$current", 'User')
-```
-
-4. Close and reopen terminal.
-5. Verify:
-
-```powershell
-where gcc
-gcc --version
-$env:CGO_ENABLED='1'
-go test ./...
+$cur = [Environment]::GetEnvironmentVariable('Path','User')
+if ([string]::IsNullOrWhiteSpace($cur)) {
+  [Environment]::SetEnvironmentVariable('Path', $add, 'User')
+} elseif ($cur -notlike '*C:\msys64\ucrt64\bin*') {
+  [Environment]::SetEnvironmentVariable('Path', "$add;$cur", 'User')
+}
 ```
 
 If you use `mingw64` instead of `ucrt64`, use:
-- `C:\msys64\mingw64\bin`
-- `C:\msys64\usr\bin`
+   - `C:\msys64\mingw64\bin`
+   - `C:\msys64\usr\bin`
 
-## macOS (permanent setup)
+PowerShell (copy/paste) for `mingw64`:
 
-Install Xcode Command Line Tools:
+```powershell
+$add = 'C:\msys64\mingw64\bin;C:\msys64\usr\bin'
+$cur = [Environment]::GetEnvironmentVariable('Path','User')
+if ([string]::IsNullOrWhiteSpace($cur)) {
+  [Environment]::SetEnvironmentVariable('Path', $add, 'User')
+} elseif ($cur -notlike '*C:\msys64\mingw64\bin*') {
+  [Environment]::SetEnvironmentVariable('Path', "$add;$cur", 'User')
+}
+```
+
+4. Close and reopen terminal/IDE.
+
+### macOS
 
 ```sh
 xcode-select --install
 ```
 
-Verify:
-
-```sh
-clang --version
-go test ./...
-```
-
-No extra PATH changes are usually needed.
-
-## Linux (permanent setup)
-
-Install build tools with your package manager.
+### Linux
 
 Debian/Ubuntu:
 
@@ -107,28 +83,55 @@ Arch:
 sudo pacman -S --needed base-devel
 ```
 
-Verify:
+## 3) Verify environment
 
-```sh
+### Windows PowerShell
+
+```powershell
+go version
+where gcc
 gcc --version
-CGO_ENABLED=1 go test ./...
+$env:CGO_ENABLED='1'
+go test ./...
 ```
 
-## Optional: Local Build Cache
-
-If you want a repo-local Go build cache (useful in CI/debugging):
-
-Linux/macOS:
+### macOS/Linux
 
 ```sh
-export GOCACHE="$PWD/.gocache"
+go version
+which gcc || which clang
+gcc --version || clang --version
 CGO_ENABLED=1 go test ./...
 ```
 
-Windows PowerShell:
+## 4) Fix for IDE `go list` / gopls CGO errors
+
+Typical error:
+
+`go list failed to return CompiledGoFiles ... failure to perform cgo processing`
+
+This usually means the IDE process does not inherit the same `PATH` as your shell.
+
+- Restart IDE after PATH changes.
+- Configure IDE Go environment:
+  - `CGO_ENABLED=1`
+  - `PATH` includes your compiler runtime dirs (Windows: MSYS2 dirs above).
+
+## 5) Optional local caches (useful in restricted environments)
+
+### Windows PowerShell
 
 ```powershell
 $env:GOCACHE = "$PWD\.gocache"
+$env:GOMODCACHE = "$PWD\.gomodcache"
 $env:CGO_ENABLED='1'
 go test ./...
+```
+
+### macOS/Linux
+
+```sh
+export GOCACHE="$PWD/.gocache"
+export GOMODCACHE="$PWD/.gomodcache"
+CGO_ENABLED=1 go test ./...
 ```
